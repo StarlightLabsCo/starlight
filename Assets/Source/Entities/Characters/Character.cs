@@ -113,11 +113,10 @@ public abstract class Character : Entity, IDamagable, IHealable
         }
         else
         {
-            for (int i = 0; i < getQueueTask.Result.Count; i++)
-            {
-                Debug.Log($"Got action {getQueueTask.Result.Peek().Name} from server");
-                ActionQueue.Enqueue(getQueueTask.Result.Dequeue());
-            }
+            // TODO: right now we're only getting new actions once we've finished the current queue
+            // TODO: but in the future, we'll want to be able to add more actions to the queue while it's running
+            // TODO: or even cancel the current queue and start a new one
+            ActionQueue = getQueueTask.Result;
         }
     }
     public void ExecuteAction(Action action)
