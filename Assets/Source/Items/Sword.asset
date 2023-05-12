@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef85ddd6dc57d4722af545c70092b356, type: 3}
-  m_Name: New Action Item
+  m_Script: {fileID: 11500000, guid: 1ad48bb973ad04b5fb3ea72206902d42, type: 3}
+  m_Name: Sword
   m_EditorClassIdentifier: 
-  Id: 
-  Name: 
-  sprite: {fileID: 0}
+  Id: sword
+  Name: Sword
+  sprite: {fileID: -3753825769889500098, guid: f92eaa20f9b2a4e5f975c653143aac27, type: 3}

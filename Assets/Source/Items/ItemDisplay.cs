@@ -18,6 +18,6 @@ public class ItemDisplay : MonoBehaviour
     public void FixedUpdate()
     {
         // Bob up and down
-        transform.position = new Vector3(transform.position.x, transform.position.y + Mathf.Sin(Time.time) * 0.01f, transform.position.z);
+        transform.position = new Vector3(transform.position.x, transform.position.y + Mathf.Sin(Time.time * 2) * 0.005f, transform.position.z);
     }
 }

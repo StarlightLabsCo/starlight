@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public abstract class Action
 {
     public string Id { get; set; }

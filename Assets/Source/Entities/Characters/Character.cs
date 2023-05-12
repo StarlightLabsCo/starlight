@@ -148,6 +148,9 @@ public abstract class Character : Entity, IDamagable, IHealable
 
     public void TakeDamage(int damage)
     {
+        // TODO: how does taking damage interfere with the current action?
+        // TODO: should we cancel the current action?
+
         Health = Mathf.Clamp(Health - damage, 0, MaxHealth);
 
         if (Health == 0)
