@@ -1,7 +1,5 @@
 public abstract class Action
 {
-    // Actions need to call character.isExecutingAction = false when they are done
-
     public string Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }

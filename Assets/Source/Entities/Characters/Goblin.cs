@@ -40,10 +40,11 @@ public class Goblin : Character, IHasInventory
         // Get available actions from inventory
         foreach (Item item in EntityInventory.Items)
         {
-            if (item is IUseable && ((IUseable)item).Action.CanExecute(this))
-            {
-                actions.Add(((IUseable)item).Action);
-            }
+            // TODO: fix this
+            // if (item is IUseable && ((IUseable)item).Action.CanExecute(this))
+            // {
+            //     actions.Add(((IUseable)item).Action);
+            // }
         }
 
         return actions;
