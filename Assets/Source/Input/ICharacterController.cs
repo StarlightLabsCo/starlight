@@ -3,6 +3,6 @@ using System.Threading.Tasks;
 
 public interface ICharacterController
 {
-    void ProcessInput();
-    Task<Queue<Action>> GetActionQueueAsync();
+    void ProcessInput(Character character);
+    Task<Queue<Action>> GetActionQueueAsync(Character character, List<Action> availableActions);
 }

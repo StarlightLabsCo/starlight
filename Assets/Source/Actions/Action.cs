@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public abstract class Action
 {
     public string Id { get; set; }
@@ -32,8 +30,6 @@ public abstract class Action
     {
         return Id.GetHashCode();
     }
-
-    public abstract bool CanExecute(Character character);
 
     // Start the action
     public abstract void Execute(Character character);

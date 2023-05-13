@@ -13,12 +13,6 @@ public class SwingPickaxe : AnimationAction
 
     }
 
-
-    public override bool CanExecute(Character character)
-    {
-        return true;
-    }
-
     public override void Execute(Character character)
     {
         // Play animation

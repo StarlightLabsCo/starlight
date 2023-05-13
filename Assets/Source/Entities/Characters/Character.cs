@@ -62,7 +62,7 @@ public abstract class Character : Entity, IDamagable, IHealable
 
     protected void Update()
     {
-        Controller.ProcessInput();
+        Controller.ProcessInput(this);
 
         if (CurrentAction == null)
         {
@@ -72,7 +72,16 @@ public abstract class Character : Entity, IDamagable, IHealable
             }
             else if (!IsRequestingAction)
             {
-                StartCoroutine(GetActionQueueCoroutine());
+                List<Action> availableActions = GetAvailableActions();
+
+                // Debug
+                Debug.Log("Available actions:");
+                foreach (Action action in availableActions)
+                {
+                    Debug.Log(action);
+                }
+
+                StartCoroutine(GetActionQueueCoroutine(availableActions));
             }
         }
 
@@ -96,11 +105,11 @@ public abstract class Character : Entity, IDamagable, IHealable
 
     public abstract List<Action> GetAvailableActions();
 
-    private IEnumerator GetActionQueueCoroutine()
+    private IEnumerator GetActionQueueCoroutine(List<Action> availableActions)
     {
         IsRequestingAction = true;
 
-        Task<Queue<Action>> getQueueTask = Controller.GetActionQueueAsync();
+        Task<Queue<Action>> getQueueTask = Controller.GetActionQueueAsync(this, availableActions);
 
         // Wait for the server request to complete or for a timeout
         yield return new WaitUntil(() => getQueueTask.IsCompleted || getQueueTask.IsFaulted);

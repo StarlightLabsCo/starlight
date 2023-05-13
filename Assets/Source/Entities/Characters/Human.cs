@@ -26,6 +26,10 @@ public class Human : Character, IHasInventory
     {
         base.Start();
 
+        BaseActions = new List<Action>();
+        BaseActions.Add(new Move());
+        BaseActions.Add(new MoveTo());
+
         EntityInventory = new Inventory(InventoryCapacity);
     }
 
@@ -37,20 +41,27 @@ public class Human : Character, IHasInventory
         // Get base actions
         foreach (Action action in BaseActions)
         {
-            if (action.CanExecute(this))
-            {
-                actions.Add(action);
-            }
+            actions.Add(action);
         }
 
         // Get available actions from inventory
         foreach (Item item in EntityInventory.Items)
         {
-            // TODO: fix this
-            // if (item is IUseable && ((IUseable)item).Action.CanExecute(this))
-            // {
-            //     actions.Add(((IUseable)item).Action);
-            // }
+            if (item is ActionItem)
+            {
+                actions.Add((item as ActionItem).action);
+            }
+        }
+
+        // Get actions from environment
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 1f);
+        foreach (Collider2D collider in colliders)
+        {
+            Debug.Log("Detected object: " + collider.gameObject.name);
+            if (collider.gameObject.GetComponent<ItemDisplay>() != null)
+            {
+                actions.Add(new PickupItem(collider.gameObject.GetComponent<ItemDisplay>()));
+            }
         }
 
         return actions;

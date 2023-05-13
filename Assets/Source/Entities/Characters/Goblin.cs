@@ -31,20 +31,16 @@ public class Goblin : Character, IHasInventory
         // Get base actions
         foreach (Action action in BaseActions)
         {
-            if (action.CanExecute(this))
-            {
-                actions.Add(action);
-            }
+            actions.Add(action);
         }
 
         // Get available actions from inventory
         foreach (Item item in EntityInventory.Items)
         {
-            // TODO: fix this
-            // if (item is IUseable && ((IUseable)item).Action.CanExecute(this))
-            // {
-            //     actions.Add(((IUseable)item).Action);
-            // }
+            if (item is ActionItem)
+            {
+                actions.Add((item as ActionItem).action);
+            }
         }
 
         return actions;

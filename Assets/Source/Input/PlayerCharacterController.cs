@@ -6,7 +6,7 @@ public class PlayerCharacterController : ICharacterController
 {
     public Vector2 direction;
 
-    public void ProcessInput()
+    public void ProcessInput(Character character)
     {
         float moveHorizontal = Input.GetAxisRaw("Horizontal");
         float moveVertical = Input.GetAxisRaw("Vertical");
@@ -14,7 +14,7 @@ public class PlayerCharacterController : ICharacterController
         direction = new Vector2(moveHorizontal, moveVertical).normalized;
     }
 
-    public Task<Queue<Action>> GetActionQueueAsync()
+    public Task<Queue<Action>> GetActionQueueAsync(Character character, List<Action> availableActions)
     {
         if (direction != Vector2.zero)
         {

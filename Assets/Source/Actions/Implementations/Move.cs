@@ -19,17 +19,16 @@ public class Move : Action
         this.direction = direction;
     }
 
+    public Move() : base(System.Guid.NewGuid().ToString(), "Move", "Move in a direction")
+    {
+    }
+
     bool isAccessible(Character character, Vector2 direction)
     {
         // Cast a ray in the direction of movement
         int numCollisions = character.rb.Cast(direction, movementFilter, castCollisions, character.CollisionOffset);
 
         return numCollisions == 0;
-    }
-
-    public override bool CanExecute(Character character)
-    {
-        return isAccessible(character, direction);
     }
 
 

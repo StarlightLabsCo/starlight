@@ -2,13 +2,20 @@ using UnityEngine;
 
 public class ItemDisplay : MonoBehaviour
 {
+
+
     public Item item;
 
-    public Sprite sprite;
-    public SpriteRenderer spriteRenderer;
+    [SerializeField]
+    public ItemInstanceFactory.Items Item;
+
+    Sprite sprite;
+    SpriteRenderer spriteRenderer;
 
     public void Start()
     {
+        item = ItemInstanceFactory.Create(Item);
+
         sprite = item.sprite;
         spriteRenderer = GetComponent<SpriteRenderer>();
 

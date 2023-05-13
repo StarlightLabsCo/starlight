@@ -11,7 +11,7 @@ public class Inventory
         Items = new List<Item>();
     }
 
-    public void AddItem(Item item)
+    public void Add(Item item)
     {
         if (Items.Count < Capacity)
         {
@@ -19,7 +19,7 @@ public class Inventory
         }
     }
 
-    public void RemoveItem(Item item)
+    public void Remove(Item item)
     {
         Items.Remove(item);
     }

@@ -21,10 +21,9 @@ public class MoveTo : Action
         this.target = target;
     }
 
-    public override bool CanExecute(Character character)
+    public MoveTo() : base(System.Guid.NewGuid().ToString(), "MoveTo", "Move to a target location")
     {
-        // TODO: Check if the target is reachable
-        return true;
+
     }
 
     public override void Execute(Character character)
@@ -41,6 +40,8 @@ public class MoveTo : Action
 
     public override void FixedUpdate(Character character)
     {
+        if (path == null) return;
+
         if (currentWaypoint >= path.vectorPath.Count)
         {
             character.FinishAction();
@@ -81,6 +82,6 @@ public class MoveTo : Action
 
     public override void Cleanup(Character character)
     {
-        return;
+        character.PlayAnimation("idle");
     }
 }

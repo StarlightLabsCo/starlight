@@ -21,10 +21,7 @@ public class Skeleton : Character
         // Get base actions
         foreach (Action action in BaseActions)
         {
-            if (action.CanExecute(this))
-            {
-                actions.Add(action);
-            }
+            actions.Add(action);
         }
 
         return actions;

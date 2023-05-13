@@ -13,12 +13,6 @@ public class SwingSword : AnimationAction
 
     }
 
-
-    public override bool CanExecute(Character character)
-    {
-        return true;
-    }
-
     public override void Execute(Character character)
     {
         // Play animation

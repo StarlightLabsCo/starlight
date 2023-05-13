@@ -5,23 +5,18 @@ using UnityEngine;
 public class AgentCharacterController : ICharacterController
 {
 
-    public void ProcessInput()
+    public void ProcessInput(Character character)
     {
-        // TODO: Get surrounding environment
+        return;
     }
 
-    public Task<Queue<Action>> GetActionQueueAsync()
+    public Task<Queue<Action>> GetActionQueueAsync(Character character, List<Action> availableActions)
     {
         Queue<Action> actionQueue = new Queue<Action>();
 
         // Generate random MoveTO action for testing
-        actionQueue.Enqueue(new MoveTo(new Vector2(Random.Range(-10, 10), Random.Range(-10, 10))));
-        actionQueue.Enqueue(new SwingSword());
-        actionQueue.Enqueue(new MoveTo(new Vector2(Random.Range(-10, 10), Random.Range(-10, 10))));
-        actionQueue.Enqueue(new SwingPickaxe());
-        actionQueue.Enqueue(new MoveTo(new Vector2(Random.Range(-10, 10), Random.Range(-10, 10))));
-        actionQueue.Enqueue(new SwingHammer());
-
+        actionQueue.Enqueue(availableActions[2]);
+        actionQueue.Enqueue(new MoveTo(new Vector2(8.23f, 0.0f)));
 
         return Task.FromResult(actionQueue);
     }
