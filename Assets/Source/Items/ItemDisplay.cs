@@ -6,16 +6,11 @@ public class ItemDisplay : MonoBehaviour
 
     public Item item;
 
-    [SerializeField]
-    public ItemInstanceFactory.Items Item;
-
     Sprite sprite;
     SpriteRenderer spriteRenderer;
 
     public void Start()
     {
-        item = ItemInstanceFactory.Create(Item);
-
         sprite = item.sprite;
         spriteRenderer = GetComponent<SpriteRenderer>();
 

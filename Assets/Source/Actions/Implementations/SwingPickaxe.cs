@@ -31,17 +31,28 @@ public class SwingPickaxe : AnimationAction
 
     public override void TriggerEffect(Character character)
     {
-        // Create hitbox in front of character on certain frame
-        Debug.Log("Pickaxe damage would apply now");
+        Debug.Log("Trigger Effect");
 
-        // Check if hitbox collides with enemy
+        Collider2D[] collisions = Utilities.DetectCollisions(character.gameObject, character.transform, new Vector2(0.16f, 0.0f), new Vector2(0.22f, .15f), LayerMask.GetMask("Obstacles"));
+
+        Debug.DrawRay(character.transform.position + character.transform.right * 0.16f + character.transform.up * 0.0f, character.transform.right * 0.22f, Color.red, 0.1f);
 
         // If so deal damage
+        foreach (Collider2D collision in collisions)
+        {
+            Debug.Log("Collision: " + collision.gameObject.name);
+            if (collision.gameObject.GetComponent<CopperOre>() != null)
+            {
+                Debug.Log("Hit copper ore");
+                collision.gameObject.GetComponent<CopperOre>().TakeDamage(5);
+            }
+        }
 
     }
 
     public override void Cleanup(Character character)
     {
+        Debug.Log("SwingPickaxe cleanup");
         character.PlayAnimation("idle");
     }
 }

@@ -15,8 +15,11 @@ public class AgentCharacterController : ICharacterController
         Queue<Action> actionQueue = new Queue<Action>();
 
         // Generate random MoveTO action for testing
-        actionQueue.Enqueue(availableActions[2]);
-        actionQueue.Enqueue(new MoveTo(new Vector2(8.23f, 0.0f)));
+        actionQueue.Enqueue(new MoveTo(new Vector2(-10f, 0.0f)));
+        actionQueue.Enqueue(new SwingPickaxe());
+        actionQueue.Enqueue(new SwingPickaxe());
+        actionQueue.Enqueue(new SwingPickaxe());
+
 
         return Task.FromResult(actionQueue);
     }

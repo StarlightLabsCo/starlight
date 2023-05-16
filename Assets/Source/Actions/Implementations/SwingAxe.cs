@@ -31,13 +31,19 @@ public class SwingAxe : AnimationAction
 
     public override void TriggerEffect(Character character)
     {
-        // Create hitbox in front of character on certain frame
-        Debug.Log("Axe damage would apply now");
-
         // Check if hitbox collides with enemy
+        Collider2D[] collisions = Utilities.DetectCollisions(character.gameObject, character.transform, new Vector2(0.16f, 0.0f), new Vector2(0.22f, .15f), LayerMask.GetMask("Default"));
+
+        Debug.DrawRay(character.transform.position + character.transform.right * 0.16f + character.transform.up * 0.0f, character.transform.right * 0.22f, Color.red, 0.1f);
 
         // If so deal damage
-
+        foreach (Collider2D collision in collisions)
+        {
+            if (collision.gameObject.GetComponent<Tree>() != null)
+            {
+                collision.gameObject.GetComponent<Tree>().TakeDamage(1);
+            }
+        }
     }
 
     public override void Cleanup(Character character)

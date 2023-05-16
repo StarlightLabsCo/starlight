@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [System.Serializable]
-public abstract class Character : Entity, IDamagable, IHealable
+public abstract class Character : Entity
 {
     // Stats
     [SerializeField]
@@ -66,6 +66,7 @@ public abstract class Character : Entity, IDamagable, IHealable
 
         if (CurrentAction == null)
         {
+            Debug.Log("Action queue count: " + ActionQueue.Count);
             if (ActionQueue.Count > 0)
             {
                 ExecuteAction(ActionQueue.Dequeue());
@@ -155,14 +156,11 @@ public abstract class Character : Entity, IDamagable, IHealable
         Health = Mathf.Clamp(Health + health, 0, MaxHealth);
     }
 
-    public void TakeDamage(int damage)
+    public override void TakeDamage(int damage)
     {
-        // TODO: how does taking damage interfere with the current action?
-        // TODO: should we cancel the current action?
-
         Health = Mathf.Clamp(Health - damage, 0, MaxHealth);
 
-        if (Health == 0)
+        if (Health <= 0)
         {
             PlayAnimation("death");
         }
@@ -170,11 +168,6 @@ public abstract class Character : Entity, IDamagable, IHealable
         {
             PlayAnimation("hurt");
         }
-    }
-
-    public void Die()
-    {
-        Destroy(gameObject);
     }
 
     public virtual void PlayAnimation(string animationName)
