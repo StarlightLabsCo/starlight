@@ -34,17 +34,15 @@ public class SwingPickaxe : AnimationAction
         Vector2 offset = new Vector2(1 * character.transform.localScale.x, 0);
         Vector2 size = new Vector2(1.2f, 1f);
 
-        Debug.Log("SwingPickaxe trigger effect");
         Collider2D[] collisions = Utilities.DetectCollisions(character, offset, size, LayerMask.GetMask("Default"));
 
         // If so deal damage
         foreach (Collider2D collision in collisions)
         {
-            Debug.Log("Collision: " + collision.gameObject.name);
-            if (collision.gameObject.GetComponent<CopperOre>() != null)
+            if (collision.gameObject.GetComponent<MineableEntity>() != null)
             {
-                Debug.Log("Hit copper ore");
-                collision.gameObject.GetComponent<CopperOre>().TakeDamage(5);
+
+                collision.gameObject.GetComponent<MineableEntity>().TakeDamage(5);
             }
         }
     }
