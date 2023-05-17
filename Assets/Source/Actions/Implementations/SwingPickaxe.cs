@@ -31,7 +31,7 @@ public class SwingPickaxe : AnimationAction
     public override void TriggerEffect(Character character)
     {
         // Define offset and size as Vector2
-        Vector2 offset = new Vector2(1 * character.transform.localScale.x, 0);
+        Vector2 offset = new Vector2(character.transform.localScale.x, 0);
         Vector2 size = new Vector2(1.2f, 1f);
 
         Collider2D[] collisions = Utilities.DetectCollisions(character, offset, size, LayerMask.GetMask("Default"));

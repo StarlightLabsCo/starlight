@@ -39,7 +39,7 @@ public class PlayerCharacterController : ICharacterController
 
         if (isMouseClicked)
         {
-            actionQueue.Enqueue(new SwingPickaxe());
+            actionQueue.Enqueue(new SwingAxe());
         }
 
         return Task.FromResult(actionQueue);

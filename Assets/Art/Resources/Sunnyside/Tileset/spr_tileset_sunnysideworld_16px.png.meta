@@ -5534,7 +5534,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spr_tileset_sunnysideworld_16px_218
+      name: spr_stump
       rect:
         serializedVersion: 2
         x: 512
@@ -11603,7 +11603,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spr_tileset_sunnysideworld_16px_516
+      name: spr_wood
       rect:
         serializedVersion: 2
         x: 784
@@ -35720,6 +35720,7 @@ TextureImporter:
       spr_stone_large: -1381165647
       spr_stone_medium: -1496183199
       spr_stone_small: 1030542363
+      spr_stump: 7284767129867925296
       spr_tileset_sunnysideworld_16px_0: -6320133571953211665
       spr_tileset_sunnysideworld_16px_1: -8762868595328515131
       spr_tileset_sunnysideworld_16px_10: -2289358929595113809
@@ -36577,7 +36578,6 @@ TextureImporter:
       spr_tileset_sunnysideworld_16px_215: 2076043299697735308
       spr_tileset_sunnysideworld_16px_216: 2759024629262649783
       spr_tileset_sunnysideworld_16px_217: -3093885127615849484
-      spr_tileset_sunnysideworld_16px_218: 7284767129867925296
       spr_tileset_sunnysideworld_16px_219: -7434537292540305456
       spr_tileset_sunnysideworld_16px_22: -2742376856688962001
       spr_tileset_sunnysideworld_16px_220: -153417043989149163
@@ -36908,7 +36908,6 @@ TextureImporter:
       spr_tileset_sunnysideworld_16px_513: -1228787208
       spr_tileset_sunnysideworld_16px_514: -1133899751
       spr_tileset_sunnysideworld_16px_515: 279904095
-      spr_tileset_sunnysideworld_16px_516: 2091209808
       spr_tileset_sunnysideworld_16px_517: 1304420560
       spr_tileset_sunnysideworld_16px_518: -1491519135
       spr_tileset_sunnysideworld_16px_519: -4501899272092308651
@@ -37440,6 +37439,7 @@ TextureImporter:
       spr_tileset_sunnysideworld_16px_997: -739282685
       spr_tileset_sunnysideworld_16px_998: 1732314657
       spr_tileset_sunnysideworld_16px_999: 1052163013
+      spr_wood: 2091209808
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

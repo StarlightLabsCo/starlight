@@ -9,6 +9,7 @@ public abstract class Entity : MonoBehaviour
     public int MaxHealth;
 
     public virtual Item itemOnDeath { get; set; } = null;
+    public virtual GameObject entityOnDeath { get; set; } = null;
 
     public Entity(string id, string name)
     {
@@ -52,6 +53,13 @@ public abstract class Entity : MonoBehaviour
             GameObject item = Instantiate(Resources.Load("Item") as GameObject);
             item.GetComponent<ItemDisplay>().item = itemOnDeath;
             item.transform.position = transform.position;
+        }
+
+        if (entityOnDeath != null)
+        {
+            Debug.Log("Entity on death");
+            GameObject entity = Instantiate(entityOnDeath);
+            entity.transform.position = transform.position;
         }
 
         Destroy(gameObject);

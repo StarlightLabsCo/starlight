@@ -31,11 +31,9 @@ public class SwingAxe : AnimationAction
 
     public override void TriggerEffect(Character character)
     {
-        Vector3 facingDirection = new Vector3(character.transform.localScale.x, 0, 0);
-
         // Define offset and size as Vector2
-        Vector2 offset = new Vector2(0.4f * facingDirection.x, 0);
-        Vector2 size = new Vector2(1f, 1f);
+        Vector2 offset = new Vector2(character.transform.localScale.x, 0);
+        Vector2 size = new Vector2(1.2f, 1f);
 
         Collider2D[] collisions = Utilities.DetectCollisions(character, offset, size, LayerMask.GetMask("Default"));
 
@@ -44,7 +42,8 @@ public class SwingAxe : AnimationAction
         {
             if (collision.gameObject.GetComponent<Tree>() != null)
             {
-                collision.gameObject.GetComponent<Tree>().TakeDamage(1);
+                Debug.Log("Tree hit");
+                collision.gameObject.GetComponent<Tree>().TakeDamage(5);
             }
         }
     }
