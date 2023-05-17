@@ -28,14 +28,14 @@ public class SwingPickaxe : AnimationAction
     {
         return;
     }
-
     public override void TriggerEffect(Character character)
     {
-        Debug.Log("Trigger Effect");
+        // Define offset and size as Vector2
+        Vector2 offset = new Vector2(1 * character.transform.localScale.x, 0);
+        Vector2 size = new Vector2(1.2f, 1f);
 
-        Collider2D[] collisions = Utilities.DetectCollisions(character.gameObject, character.transform, new Vector2(0.16f, 0.0f), new Vector2(0.22f, .15f), LayerMask.GetMask("Obstacles"));
-
-        Debug.DrawRay(character.transform.position + character.transform.right * 0.16f + character.transform.up * 0.0f, character.transform.right * 0.22f, Color.red, 0.1f);
+        Debug.Log("SwingPickaxe trigger effect");
+        Collider2D[] collisions = Utilities.DetectCollisions(character, offset, size, LayerMask.GetMask("Default"));
 
         // If so deal damage
         foreach (Collider2D collision in collisions)
@@ -47,7 +47,6 @@ public class SwingPickaxe : AnimationAction
                 collision.gameObject.GetComponent<CopperOre>().TakeDamage(5);
             }
         }
-
     }
 
     public override void Cleanup(Character character)

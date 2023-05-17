@@ -66,7 +66,6 @@ public abstract class Character : Entity
 
         if (CurrentAction == null)
         {
-            Debug.Log("Action queue count: " + ActionQueue.Count);
             if (ActionQueue.Count > 0)
             {
                 ExecuteAction(ActionQueue.Dequeue());
@@ -74,13 +73,6 @@ public abstract class Character : Entity
             else if (!IsRequestingAction)
             {
                 List<Action> availableActions = GetAvailableActions();
-
-                // Debug
-                Debug.Log("Available actions:");
-                foreach (Action action in availableActions)
-                {
-                    Debug.Log(action);
-                }
 
                 StartCoroutine(GetActionQueueCoroutine(availableActions));
             }

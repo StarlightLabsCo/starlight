@@ -57,7 +57,6 @@ public class Human : Character, IHasInventory
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 1f);
         foreach (Collider2D collider in colliders)
         {
-            Debug.Log("Detected object: " + collider.gameObject.name);
             if (collider.gameObject.GetComponent<ItemDisplay>() != null)
             {
                 actions.Add(new PickupItem(collider.gameObject.GetComponent<ItemDisplay>()));

@@ -31,10 +31,13 @@ public class SwingAxe : AnimationAction
 
     public override void TriggerEffect(Character character)
     {
-        // Check if hitbox collides with enemy
-        Collider2D[] collisions = Utilities.DetectCollisions(character.gameObject, character.transform, new Vector2(0.16f, 0.0f), new Vector2(0.22f, .15f), LayerMask.GetMask("Default"));
+        Vector3 facingDirection = new Vector3(character.transform.localScale.x, 0, 0);
 
-        Debug.DrawRay(character.transform.position + character.transform.right * 0.16f + character.transform.up * 0.0f, character.transform.right * 0.22f, Color.red, 0.1f);
+        // Define offset and size as Vector2
+        Vector2 offset = new Vector2(0.4f * facingDirection.x, 0);
+        Vector2 size = new Vector2(1f, 1f);
+
+        Collider2D[] collisions = Utilities.DetectCollisions(character, offset, size, LayerMask.GetMask("Default"));
 
         // If so deal damage
         foreach (Collider2D collision in collisions)
