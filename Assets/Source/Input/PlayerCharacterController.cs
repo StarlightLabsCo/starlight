@@ -1,10 +1,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+
 public class PlayerCharacterController : ICharacterController
 {
     public Vector2 direction;
     public bool isMouseClicked;
+    public bool isEKeyPressed;
+    public bool isQKeyPressed;
     private float lastActionTime;
     private float actionCooldown = 0f; // Cooldown in seconds between actions
 
@@ -45,9 +48,17 @@ public class PlayerCharacterController : ICharacterController
             isMouseClicked = true;
             lastActionTime = Time.time;
         }
-        else
+
+        // Check for "E" key press
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            isMouseClicked = false;
+            isEKeyPressed = true;
+        }
+
+        // Check for "Q" key press
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            isQKeyPressed = true;
         }
     }
 
@@ -66,10 +77,36 @@ public class PlayerCharacterController : ICharacterController
             {
                 case "Pickaxe":
                     actionQueue.Enqueue(new SwingPickaxe());
+                    isMouseClicked = false; // Reset the flag after enqueuing the action
                     break;
                 case "Axe":
                     actionQueue.Enqueue(new SwingAxe());
+                    isMouseClicked = false; // Reset the flag after enqueuing the action
                     break;
+            }
+        }
+
+        // Check if "E" key was pressed
+        if (isEKeyPressed)
+        {
+            // Find the first PickupItem action in the available actions list
+            Action pickupItemAction = availableActions.Find(action => action is PickupItem);
+            if (pickupItemAction != null)
+            {
+                actionQueue.Enqueue(pickupItemAction);
+                isEKeyPressed = false; // Reset the flag after enqueuing the action
+            }
+        }
+
+        // Check if "Q" key was pressed
+        if (isQKeyPressed && character is IHasInventory)
+        {
+            IHasInventory inventory = character as IHasInventory;
+            if (inventory.EntityInventory.Items.Count > 0)
+            {
+                // Enqueue a DropItem action for the first item in the inventory
+                actionQueue.Enqueue(new DropItem(inventory.EntityInventory.Items[0]));
+                isQKeyPressed = false; // Reset the flag after enqueuing the action
             }
         }
 

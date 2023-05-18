@@ -6,15 +6,6 @@ using UnityEngine;
 [System.Serializable]
 public abstract class Character : Entity
 {
-    // Stats
-    [SerializeField]
-    protected int health;
-    public int Health { get => health; set => health = value; }
-
-    [SerializeField]
-    protected int maxHealth;
-    public int MaxHealth { get => maxHealth; set => maxHealth = value; }
-
     [SerializeField]
     protected float speed;
     public float Speed { get => speed; set => speed = value; }

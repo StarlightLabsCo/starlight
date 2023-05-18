@@ -25,11 +25,18 @@ public class PickupItem : Action
         if (character is IHasInventory)
         {
             IHasInventory inventory = character as IHasInventory;
-            inventory.EntityInventory.Add(item);
-
-            GameObject.Destroy(itemDisplay.gameObject);
+            bool wasAdded = inventory.EntityInventory.Add(item);
+            if (wasAdded)
+            {
+                GameObject.Destroy(itemDisplay.gameObject);
+            }
+            else
+            {
+                Debug.Log("Inventory is full");
+            }
 
             // Debug
+            Debug.Log("----- Inventory -----");
             for (int i = 0; i < inventory.EntityInventory.Items.Count; i++)
             {
                 Debug.Log("Inventory item: " + inventory.EntityInventory.Items[i].Name);

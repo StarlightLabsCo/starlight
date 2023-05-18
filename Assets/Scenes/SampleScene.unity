@@ -243,15 +243,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 671a0c0a5bb6649b1b34ee7d295420c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Health: 0
-  MaxHealth: 0
-  health: 0
-  maxHealth: 0
+  Health: 25
+  MaxHealth: 25
   speed: 1.75
   collisionOffset: 0.2
   IsPlayerControlled: 1
   rb: {fileID: 0}
-  inventoryCapacity: 0
+  inventoryCapacity: 10
   HairAnimator: {fileID: 1260807336}
   BaseAnimator: {fileID: 1982882052}
   ToolsAnimator: {fileID: 207286506}
@@ -1020,7 +1018,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 8.098214
+  orthographic size: 7.625
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

@@ -11,16 +11,29 @@ public class Inventory
         Items = new List<Item>();
     }
 
-    public void Add(Item item)
+    public bool Add(Item item)
     {
         if (Items.Count < Capacity)
         {
             Items.Add(item);
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
-    public void Remove(Item item)
+    public bool Remove(Item item)
     {
-        Items.Remove(item);
+        if (Items.Contains(item))
+        {
+            Items.Remove(item);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
