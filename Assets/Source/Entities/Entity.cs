@@ -53,6 +53,17 @@ public abstract class Entity : MonoBehaviour
             GameObject item = Instantiate(Resources.Load("Item") as GameObject);
             item.GetComponent<ItemDisplay>().item = itemOnDeath;
             item.transform.position = transform.position;
+
+            // Ensure the item has a Rigidbody2D component
+            Rigidbody2D rb = item.GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                // Add a random force to the item
+                float force = 5f; // Change this value to control the amount of force
+                float angle = Random.Range(0f, 360f);
+                Vector2 direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+                rb.AddForce(direction * force, ForceMode2D.Impulse);
+            }
         }
 
         if (entityOnDeath != null)

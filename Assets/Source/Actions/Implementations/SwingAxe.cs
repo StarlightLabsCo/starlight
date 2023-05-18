@@ -40,10 +40,10 @@ public class SwingAxe : AnimationAction
         // If so deal damage
         foreach (Collider2D collision in collisions)
         {
-            if (collision.gameObject.GetComponent<Tree>() != null)
+            if (collision.gameObject.GetComponent<ChoppableEntity>() != null)
             {
                 Debug.Log("Tree hit");
-                collision.gameObject.GetComponent<Tree>().TakeDamage(5);
+                collision.gameObject.GetComponent<ChoppableEntity>().TakeDamage(5);
             }
         }
     }

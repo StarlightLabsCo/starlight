@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class CoalOre : MineableEntity
+public class CoalOreSmall : MineableEntity
 {
-    public CoalOre(string id, string name) : base(id, name)
+    public CoalOreSmall(string id, string name) : base(id, name)
     {
     }
 

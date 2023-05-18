@@ -1,4 +1,4 @@
-public class Stump : Entity
+public class Stump : ChoppableEntity
 {
     public Stump(string id, string name) : base(id, name)
     {

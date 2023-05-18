@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Tree : Entity
+public class Tree : ChoppableEntity
 {
     public Tree(string id, string name) : base(id, name)
     {
