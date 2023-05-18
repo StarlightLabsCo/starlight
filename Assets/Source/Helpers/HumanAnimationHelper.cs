@@ -18,4 +18,14 @@ public class HumanAnimationHelper : MonoBehaviour
     {
         Human.FinishAction();
     }
+
+    public void ReturnToIdle()
+    {
+        Human.ReturnToIdle();
+    }
+
+    public void Die()
+    {
+        Human.Die();
+    }
 }

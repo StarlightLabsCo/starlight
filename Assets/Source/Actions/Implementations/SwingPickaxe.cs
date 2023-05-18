@@ -41,7 +41,6 @@ public class SwingPickaxe : AnimationAction
         {
             if (collision.gameObject.GetComponent<MineableEntity>() != null)
             {
-
                 collision.gameObject.GetComponent<MineableEntity>().TakeDamage(5);
             }
         }

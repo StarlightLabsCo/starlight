@@ -11,10 +11,15 @@ public class PlayerCharacterController : ICharacterController
     private float lastActionTime;
     private float actionCooldown = 0f; // Cooldown in seconds between actions
 
+    private float lastScrollTime;
+    private float scrollCooldown = 0.2f;
+
     // Tools
-    private List<string> availableTools = new List<string> { "Pickaxe", "Axe" };
+    private List<string> availableTools = new List<string> { "Pickaxe", "Sword", "Axe" };
     private string currentTool;
     private int currentToolIndex = 0;
+
+
 
     public PlayerCharacterController()
     {
@@ -30,7 +35,7 @@ public class PlayerCharacterController : ICharacterController
 
         // Handle tool switching
         float scroll = Input.GetAxis("Mouse ScrollWheel");
-        if (scroll != 0)
+        if (scroll != 0 && Time.time - lastScrollTime > scrollCooldown)
         {
             if (scroll > 0) currentToolIndex--; // Scroll up
             else if (scroll < 0) currentToolIndex++; // Scroll down
@@ -40,6 +45,10 @@ public class PlayerCharacterController : ICharacterController
 
             // Update current tool
             currentTool = availableTools[currentToolIndex];
+
+            Debug.Log("Current tool: " + currentTool);
+
+            lastScrollTime = Time.time; // Update the last scroll time
         }
 
         // Only register a mouse click if enough time has passed since the last action
@@ -77,6 +86,10 @@ public class PlayerCharacterController : ICharacterController
             {
                 case "Pickaxe":
                     actionQueue.Enqueue(new SwingPickaxe());
+                    isMouseClicked = false; // Reset the flag after enqueuing the action
+                    break;
+                case "Sword":
+                    actionQueue.Enqueue(new SwingSword());
                     isMouseClicked = false; // Reset the flag after enqueuing the action
                     break;
                 case "Axe":

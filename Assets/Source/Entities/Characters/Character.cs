@@ -24,6 +24,8 @@ public abstract class Character : Entity
     protected Queue<Action> ActionQueue; // The queue of actions that the character will execute
     protected bool IsRequestingAction;
 
+    protected bool PauseCharacter = false;
+
     // Animations
     protected string CurrentAnimation;
 
@@ -53,6 +55,11 @@ public abstract class Character : Entity
 
     protected void Update()
     {
+        if (PauseCharacter)
+        {
+            return;
+        }
+
         Controller.ProcessInput(this);
 
         if (CurrentAction == null)
@@ -77,6 +84,11 @@ public abstract class Character : Entity
 
     protected void FixedUpdate()
     {
+        if (PauseCharacter)
+        {
+            return;
+        }
+
         if (CurrentAction != null)
         {
             CurrentAction.FixedUpdate(this);
@@ -141,6 +153,12 @@ public abstract class Character : Entity
 
     public override void TakeDamage(int damage)
     {
+        // Throw out the current action if the character is taking damage
+        CurrentAction = null;
+
+        // Pause the character's actions while they're taking damage
+        PauseCharacter = true;
+
         Health = Mathf.Clamp(Health - damage, 0, MaxHealth);
 
         if (Health <= 0)
@@ -151,6 +169,14 @@ public abstract class Character : Entity
         {
             PlayAnimation("hurt");
         }
+    }
+
+    // Used after the character has finished taking damage
+    public void ReturnToIdle()
+    {
+        PauseCharacter = false;
+
+        PlayAnimation("idle");
     }
 
     public virtual void PlayAnimation(string animationName)
