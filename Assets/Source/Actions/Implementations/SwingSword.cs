@@ -31,12 +31,20 @@ public class SwingSword : AnimationAction
 
     public override void TriggerEffect(Character character)
     {
-        // Create hitbox in front of character on certain frame
-        Debug.Log("Sword damage would apply now");
+        // Define offset and size as Vector2
+        Vector2 offset = new Vector2(character.transform.localScale.x, 0);
+        Vector2 size = new Vector2(1.2f, 1f);
 
-        // Check if hitbox collides with enemy
+        Collider2D[] collisions = Utilities.DetectCollisions(character, offset, size, LayerMask.GetMask("Default"));
 
         // If so deal damage
+        foreach (Collider2D collision in collisions)
+        {
+            if (collision.gameObject.GetComponent<Character>() != null)
+            {
+                collision.gameObject.GetComponent<Character>().TakeDamage(10);
+            }
+        }
 
     }
 
