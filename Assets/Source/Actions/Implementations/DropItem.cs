@@ -13,6 +13,11 @@ public class DropItem : Action
         this.item = item;
     }
 
+    public override string ToString()
+    {
+        return $"[DropItem] Drop {item.Name} from inventory to ground.";
+    }
+
     public override void Cleanup(Character character)
     {
         return;
@@ -47,13 +52,6 @@ public class DropItem : Action
             else
             {
                 Debug.Log("Item not found in inventory");
-            }
-
-            // Debug
-            Debug.Log("----- Inventory -----");
-            for (int i = 0; i < inventory.EntityInventory.Items.Count; i++)
-            {
-                Debug.Log("Inventory item: " + inventory.EntityInventory.Items[i].Name);
             }
 
             character.FinishAction();

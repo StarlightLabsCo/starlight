@@ -13,6 +13,11 @@ public class SwingHammer : AnimationAction
 
     }
 
+    public override string ToString()
+    {
+        return $"[SwingHammer] Swing hammer.";
+    }
+
     public override void Execute(Character character)
     {
         // Play animation

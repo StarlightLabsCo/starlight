@@ -71,7 +71,7 @@ public class PlayerCharacterController : ICharacterController
         }
     }
 
-    public Task<Queue<Action>> GetActionQueueAsync(Character character, List<Action> availableActions)
+    public void RequestAction(Character character, List<Action> availableActions)
     {
         Queue<Action> actionQueue = new Queue<Action>();
 
@@ -100,16 +100,28 @@ public class PlayerCharacterController : ICharacterController
         }
 
         // Check if "E" key was pressed
+        // Check if "E" key was pressed
         if (isEKeyPressed)
         {
-            // Find the first PickupItem action in the available actions list
-            Action pickupItemAction = availableActions.Find(action => action is PickupItem);
-            if (pickupItemAction != null)
+            // Find the first OpenChest action in the available actions list
+            Action addItemToChest = availableActions.Find(action => action is AddItemToChest);
+            if (addItemToChest != null)
             {
-                actionQueue.Enqueue(pickupItemAction);
+                actionQueue.Enqueue(addItemToChest);
                 isEKeyPressed = false; // Reset the flag after enqueuing the action
             }
+            else
+            {
+                // Find the first PickupItem action in the available actions list
+                Action pickupItemAction = availableActions.Find(action => action is PickupItem);
+                if (pickupItemAction != null)
+                {
+                    actionQueue.Enqueue(pickupItemAction);
+                    isEKeyPressed = false; // Reset the flag after enqueuing the action
+                }
+            }
         }
+
 
         // Check if "Q" key was pressed
         if (isQKeyPressed && character is IHasInventory)
@@ -123,6 +135,9 @@ public class PlayerCharacterController : ICharacterController
             }
         }
 
-        return Task.FromResult(actionQueue);
+        for (int i = 0; i < actionQueue.Count; i++)
+        {
+            character.ActionQueue.Enqueue(actionQueue.Dequeue());
+        }
     }
 }

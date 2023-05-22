@@ -18,7 +18,7 @@ public class Human : Character, IHasInventory
     public Animator BaseAnimator;
     public Animator ToolsAnimator;
 
-    public Human(string id, string name) : base(id, name)
+    public Human(string id, string name) : base("human", "Human")
     {
     }
 
@@ -31,11 +31,11 @@ public class Human : Character, IHasInventory
         BaseActions.Add(new MoveTo());
 
         EntityInventory = new Inventory(InventoryCapacity);
+        EntityInventory.Add(new Axe());
     }
 
     public override List<Action> GetAvailableActions()
     {
-
         List<Action> actions = new List<Action>();
 
         // Get base actions
@@ -60,6 +60,13 @@ public class Human : Character, IHasInventory
             if (collider.gameObject.GetComponent<ItemDisplay>() != null)
             {
                 actions.Add(new PickupItem(collider.gameObject.GetComponent<ItemDisplay>()));
+            }
+            else if (collider.gameObject.GetComponent<Chest>() != null)
+            {
+                if (EntityInventory.Items.Count > 0)
+                {
+                    actions.Add(new AddItemToChest(collider.gameObject.GetComponent<Chest>(), EntityInventory.Items[0]));
+                }
             }
         }
 

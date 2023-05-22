@@ -6,5 +6,11 @@ public class CoalOreSmall : MineableEntity
     {
     }
 
+    public void Start()
+    {
+        Id = "coal_ore_small";
+        Name = "Coal Ore Deposit (Small)";
+    }
+
     public override Item itemOnDeath { get => new Coal(); set => base.itemOnDeath = value; }
 }

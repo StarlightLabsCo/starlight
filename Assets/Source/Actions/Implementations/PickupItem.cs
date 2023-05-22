@@ -15,6 +15,11 @@ public class PickupItem : Action
         this.item = itemDisplay.item;
     }
 
+    public override string ToString()
+    {
+        return $"[PickupItem] Pickup {item.Name} (X: {itemDisplay.gameObject.transform.position.x}, Y: {itemDisplay.gameObject.transform.position.y}) from ground.";
+    }
+
     public override void Cleanup(Character character)
     {
         return;
@@ -33,13 +38,6 @@ public class PickupItem : Action
             else
             {
                 Debug.Log("Inventory is full");
-            }
-
-            // Debug
-            Debug.Log("----- Inventory -----");
-            for (int i = 0; i < inventory.EntityInventory.Items.Count; i++)
-            {
-                Debug.Log("Inventory item: " + inventory.EntityInventory.Items[i].Name);
             }
 
             character.FinishAction();

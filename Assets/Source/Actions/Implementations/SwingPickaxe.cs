@@ -13,6 +13,11 @@ public class SwingPickaxe : AnimationAction
 
     }
 
+    public override string ToString()
+    {
+        return $"[SwingPickaxe] Swing pickaxe.";
+    }
+
     public override void Execute(Character character)
     {
         // Play animation

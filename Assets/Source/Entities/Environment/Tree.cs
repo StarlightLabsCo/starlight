@@ -6,6 +6,12 @@ public class Tree : ChoppableEntity
     {
     }
 
+    public void Start()
+    {
+        Id = "tree";
+        Name = "Tree";
+    }
+
     public override Item itemOnDeath { get => new Wood(); set => base.itemOnDeath = value; }
 
     // Load stump prefab

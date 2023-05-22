@@ -13,6 +13,11 @@ public class SwingSword : AnimationAction
 
     }
 
+    public override string ToString()
+    {
+        return $"[SwingSword] Swing sword.";
+    }
+
     public override void Execute(Character character)
     {
         // Play animation

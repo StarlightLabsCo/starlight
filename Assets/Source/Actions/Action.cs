@@ -11,11 +11,6 @@ public abstract class Action
         Description = description;
     }
 
-    public override string ToString()
-    {
-        return $"{Name} ({Id})";
-    }
-
     public override bool Equals(object obj)
     {
         if (obj is Action)

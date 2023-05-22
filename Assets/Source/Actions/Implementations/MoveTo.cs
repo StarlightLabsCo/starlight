@@ -26,6 +26,16 @@ public class MoveTo : Action
 
     }
 
+    public MoveTo(float x, float y) : base(System.Guid.NewGuid().ToString(), "MoveTo", "Move to a target location")
+    {
+        this.target = new Vector2(x, y);
+    }
+
+    public override string ToString()
+    {
+        return $"[MoveTo] Move to a specific target location (X, Y).";
+    }
+
     public override void Execute(Character character)
     {
         seeker = character.GetComponent<Seeker>();

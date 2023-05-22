@@ -21,7 +21,7 @@ public abstract class Character : Entity
     // Actions
     public List<Action> BaseActions; // Actions that are always available to the character
     protected Action CurrentAction; // The action that the character is currently executing
-    protected Queue<Action> ActionQueue; // The queue of actions that the character will execute
+    public Queue<Action> ActionQueue; // The queue of actions that the character will execute
     protected bool IsRequestingAction;
 
     protected bool PauseCharacter = false;
@@ -31,6 +31,9 @@ public abstract class Character : Entity
 
     // References
     public Rigidbody2D rb;
+
+    // Starlight
+    public string characterId;
 
     protected Character(string id, string name) : base(id, name)
     {
@@ -72,7 +75,9 @@ public abstract class Character : Entity
             {
                 List<Action> availableActions = GetAvailableActions();
 
-                StartCoroutine(GetActionQueueCoroutine(availableActions));
+                IsRequestingAction = true;
+
+                Controller.RequestAction(this, availableActions);
             }
         }
 
@@ -99,31 +104,51 @@ public abstract class Character : Entity
         }
     }
 
+    public string[] GetEnvironment()
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 5f);
+        List<Entity> entities = new List<Entity>();
+        List<ItemDisplay> items = new List<ItemDisplay>();
+
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider.gameObject.GetComponent<Entity>() != null && collider.gameObject.GetComponent<Entity>() != this)
+            {
+                entities.Add(collider.gameObject.GetComponent<Entity>());
+            }
+            else if (collider.gameObject.GetComponent<ItemDisplay>() != null)
+            {
+                items.Add(collider.gameObject.GetComponent<ItemDisplay>());
+            }
+        }
+
+        // Create a list of strings of the entities and items that are in the environment and their position & distance from the character
+        List<string> environmentStringArray = new List<string>();
+
+        foreach (Entity entity in entities)
+        {
+            environmentStringArray.Add(entity.Name + " (X: " + entity.transform.position.x + ", Y: " + entity.transform.position.y + ", Distance: " + Vector2.Distance(transform.position, entity.transform.position) + "m)");
+        }
+
+        foreach (ItemDisplay item in items)
+        {
+            environmentStringArray.Add(item.item.Name + " (X: " + item.transform.position.x + ", Y: " + item.transform.position.y + ", Distance: " + Vector2.Distance(transform.position, item.transform.position) + "m)");
+        }
+
+        // Sort entities and items by distance from the character
+        environmentStringArray.Sort((a, b) =>
+        {
+            float aDistance = float.Parse(a.Split(' ')[a.Split(' ').Length - 1].Replace("m)", ""));
+            float bDistance = float.Parse(b.Split(' ')[b.Split(' ').Length - 1].Replace("m)", ""));
+
+            return aDistance.CompareTo(bDistance);
+        });
+
+        return environmentStringArray.ToArray();
+    }
+
     public abstract List<Action> GetAvailableActions();
 
-    private IEnumerator GetActionQueueCoroutine(List<Action> availableActions)
-    {
-        IsRequestingAction = true;
-
-        Task<Queue<Action>> getQueueTask = Controller.GetActionQueueAsync(this, availableActions);
-
-        // Wait for the server request to complete or for a timeout
-        yield return new WaitUntil(() => getQueueTask.IsCompleted || getQueueTask.IsFaulted);
-
-        IsRequestingAction = false;
-
-        if (getQueueTask.IsFaulted)
-        {
-            // Handle error...
-        }
-        else
-        {
-            // TODO: right now we're only getting new actions once we've finished the current queue
-            // TODO: but in the future, we'll want to be able to add more actions to the queue while it's running
-            // TODO: or even cancel the current queue and start a new one
-            ActionQueue = getQueueTask.Result;
-        }
-    }
     public void ExecuteAction(Action action)
     {
         CurrentAction = action;

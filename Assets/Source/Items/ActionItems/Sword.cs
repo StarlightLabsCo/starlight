@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class Sword : ActionItem
@@ -6,10 +7,11 @@ public class Sword : ActionItem
     {
         Id = "sword";
         Name = "Sword";
-        sprite = Resources.Load<Sprite>("Sunnyside/UI/sword") as Sprite;
-
-        Debug.Log("Loaded sword sprite: " + sprite);
 
         action = new SwingSword();
+
+        Sprite[] sprites = Resources.LoadAll<Sprite>("Sunnyside/Tileset/spr_tileset_sunnysideworld_16px");
+
+        sprite = sprites.Single(s => s.name == "spr_sword");
     }
 }

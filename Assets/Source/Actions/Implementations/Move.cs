@@ -19,6 +19,11 @@ public class Move : Action
         this.direction = direction;
     }
 
+    public override string ToString()
+    {
+        return $"[Move] Move based on a provided normalized vector (X, Y).";
+    }
+
     public Move() : base(System.Guid.NewGuid().ToString(), "Move", "Move in a direction")
     {
     }

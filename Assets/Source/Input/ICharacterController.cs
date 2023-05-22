@@ -4,5 +4,5 @@ using System.Threading.Tasks;
 public interface ICharacterController
 {
     void ProcessInput(Character character);
-    Task<Queue<Action>> GetActionQueueAsync(Character character, List<Action> availableActions);
+    void RequestAction(Character character, List<Action> availableActions);
 }

@@ -25967,7 +25967,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spr_tileset_sunnysideworld_16px_1271
+      name: spr_chest
       rect:
         serializedVersion: 2
         x: 608
@@ -26537,8 +26537,8 @@ TextureImporter:
       name: spr_tileset_sunnysideworld_16px_1304
       rect:
         serializedVersion: 2
-        x: 416
-        y: 512
+        x: 484
+        y: 434
         width: 16
         height: 16
       alignment: 0
@@ -35606,7 +35606,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spr_tileset_sunnysideworld_16px_1676
+      name: spr_axe
       rect:
         serializedVersion: 2
         x: 672
@@ -35627,7 +35627,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spr_tileset_sunnysideworld_16px_1722
+      name: spr_sword
       rect:
         serializedVersion: 2
         x: 672
@@ -35648,7 +35648,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spr_tileset_sunnysideworld_16px_1730
+      name: spr_pickaxe
       rect:
         serializedVersion: 2
         x: 656
@@ -35669,7 +35669,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spr_tileset_sunnysideworld_16px_1731
+      name: spr_shovel
       rect:
         serializedVersion: 2
         x: 672
@@ -35700,6 +35700,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      spr_axe: -1949464106
+      spr_chest: -2029849499
       spr_coal: 1635281438
       spr_coal_ore_large: 526631014
       spr_coal_ore_medium: 1763587951
@@ -35716,11 +35718,14 @@ TextureImporter:
       spr_iron_ore_large: 253482510
       spr_iron_ore_medium: -709040414
       spr_iron_ore_small: -2142789100
+      spr_pickaxe: -1710468401
+      spr_shovel: 2073578443
       spr_stone: 321904907
       spr_stone_large: -1381165647
       spr_stone_medium: -1496183199
       spr_stone_small: 1030542363
       spr_stump: 7284767129867925296
+      spr_sword: 721924841
       spr_tileset_sunnysideworld_16px_0: -6320133571953211665
       spr_tileset_sunnysideworld_16px_1: -8762868595328515131
       spr_tileset_sunnysideworld_16px_10: -2289358929595113809
@@ -36010,7 +36015,6 @@ TextureImporter:
       spr_tileset_sunnysideworld_16px_1269: -1045435467
       spr_tileset_sunnysideworld_16px_127: 5874220462497910023
       spr_tileset_sunnysideworld_16px_1270: -1380259131
-      spr_tileset_sunnysideworld_16px_1271: -2029849499
       spr_tileset_sunnysideworld_16px_1272: 1269980870
       spr_tileset_sunnysideworld_16px_1273: 1328215290
       spr_tileset_sunnysideworld_16px_1274: -1321844661
@@ -36458,7 +36462,6 @@ TextureImporter:
       spr_tileset_sunnysideworld_16px_1673: -1810742840
       spr_tileset_sunnysideworld_16px_1674: 1150306121
       spr_tileset_sunnysideworld_16px_1675: 1140219681
-      spr_tileset_sunnysideworld_16px_1676: -1949464106
       spr_tileset_sunnysideworld_16px_1677: -1842071123
       spr_tileset_sunnysideworld_16px_1678: 1929566007
       spr_tileset_sunnysideworld_16px_1679: -102280558
@@ -36510,7 +36513,6 @@ TextureImporter:
       spr_tileset_sunnysideworld_16px_172: 78223547853505418
       spr_tileset_sunnysideworld_16px_1720: 1306981852
       spr_tileset_sunnysideworld_16px_1721: -446993349
-      spr_tileset_sunnysideworld_16px_1722: 721924841
       spr_tileset_sunnysideworld_16px_1723: -173861860
       spr_tileset_sunnysideworld_16px_1724: -1988098933
       spr_tileset_sunnysideworld_16px_1725: 1098056515
@@ -36519,8 +36521,6 @@ TextureImporter:
       spr_tileset_sunnysideworld_16px_1728: 1324211035
       spr_tileset_sunnysideworld_16px_1729: -6921985821927310941
       spr_tileset_sunnysideworld_16px_173: -1613402505
-      spr_tileset_sunnysideworld_16px_1730: -1710468401
-      spr_tileset_sunnysideworld_16px_1731: 2073578443
       spr_tileset_sunnysideworld_16px_1732: 251573479
       spr_tileset_sunnysideworld_16px_1733: 441972081
       spr_tileset_sunnysideworld_16px_1734: -153591280
