@@ -89,9 +89,9 @@ public class WebSocketClient : MonoBehaviour
                     SwingAxeEvent swingAxeEvent = jsonObject["data"].ToObject<SwingAxeEvent>();
                     OnSwingAxe(swingAxeEvent);
                     break;
-                case "PickupItem":
-                    PickupItemEvent pickupItemEvent = jsonObject["data"].ToObject<PickupItemEvent>();
-                    OnPickupItem(pickupItemEvent);
+                case "PickUpItem":
+                    PickUpItemEvent pickUpItemEvent = jsonObject["data"].ToObject<PickUpItemEvent>();
+                    OnPickupItem(pickUpItemEvent);
                     break;
                 default:
                     // Try again
@@ -206,11 +206,11 @@ public class WebSocketClient : MonoBehaviour
         characterDictionary[swingPickaxeEvent.characterId].IsRequestingAction = false;
     }
 
-    public void OnPickupItem(PickupItemEvent pickupItemEvent)
+    public void OnPickupItem(PickUpItemEvent pickUpItemEvent)
     {
-        PickupItem pickupItem = new PickupItem(characterDictionary[pickupItemEvent.characterId].itemDisplayDictionary[pickupItemEvent.itemId]);
-        characterDictionary[pickupItemEvent.characterId].ActionQueue.Enqueue(pickupItem);
-        characterDictionary[pickupItemEvent.characterId].IsRequestingAction = false;
+        PickupItem pickupItem = new PickupItem(characterDictionary[pickUpItemEvent.characterId].itemDisplayDictionary[pickUpItemEvent.itemId]);
+        characterDictionary[pickUpItemEvent.characterId].ActionQueue.Enqueue(pickupItem);
+        characterDictionary[pickUpItemEvent.characterId].IsRequestingAction = false;
     }
 
 }
