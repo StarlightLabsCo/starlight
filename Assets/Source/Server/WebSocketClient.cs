@@ -10,7 +10,7 @@ using System.Linq;
 
 public class WebSocketClient : MonoBehaviour
 {
-    WebSocket websocket;
+    public WebSocket websocket;
 
     public static WebSocketClient Instance { get; private set; }
 
@@ -32,7 +32,7 @@ public class WebSocketClient : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    async void Start()
     {
         // Create a dictionary of id -> character
         foreach (Character c in character)
@@ -89,15 +89,20 @@ public class WebSocketClient : MonoBehaviour
                     SwingAxeEvent swingAxeEvent = jsonObject["data"].ToObject<SwingAxeEvent>();
                     OnSwingAxe(swingAxeEvent);
                     break;
+                case "PickupItem":
+                    PickupItemEvent pickupItemEvent = jsonObject["data"].ToObject<PickupItemEvent>();
+                    OnPickupItem(pickupItemEvent);
+                    break;
                 default:
-                    throw new Exception("Unknown event type: " + eventType);
+                    // Try again
+                    Debug.Log("Unknown event type: " + eventType);
+                    SendWebSocketMessage();
+                    break;
             }
         };
 
         // waiting for messages
-        websocket.Connect();
-
-        InvokeRepeating("SendWebSocketMessage", 2.0f, 7f);
+        await websocket.Connect();
     }
 
     void Update()
@@ -144,11 +149,8 @@ public class WebSocketClient : MonoBehaviour
         {
             if (collision.gameObject.GetComponent<Entity>() != null && collision.gameObject.GetComponent<Entity>() != character)
             {
-                hitboxArray.Add(collision.gameObject.GetComponent<Entity>().Name);
-            }
-            else if (collision.gameObject.GetComponent<ItemDisplay>() != null)
-            {
-                hitboxArray.Add(collision.gameObject.GetComponent<ItemDisplay>().item.Name);
+                Entity entity = collision.gameObject.GetComponent<Entity>();
+                hitboxArray.Add(collision.gameObject.GetComponent<Entity>().Name + " (Health: " + entity.Health + "/" + entity.MaxHealth + ")");
             }
         }
 
@@ -166,8 +168,11 @@ public class WebSocketClient : MonoBehaviour
 
             string jsonString = "{ \"type\": \"GetAction\", \"data\": { \"characterId\": \"1\", \"location\": " + characterLocation + ", \"availableActions\": " + actionsJson + ", \"inventory\": " + JsonConvert.SerializeObject(inventoryArray) + ", \"environment\": " + environmentJson + ", \"hitbox\": " + hitboxJson + " } }";
 
-
             await websocket.SendText(jsonString);
+        }
+        else
+        {
+            Debug.Log("Websocket not open");
         }
     }
 
@@ -180,21 +185,32 @@ public class WebSocketClient : MonoBehaviour
     public void OnMoveTo(MoveToEvent moveToEvent)
     {
         characterDictionary[moveToEvent.characterId].ActionQueue.Enqueue(new MoveTo(moveToEvent.x, moveToEvent.y));
+        characterDictionary[moveToEvent.characterId].IsRequestingAction = false;
     }
 
     public void OnSwingAxe(SwingAxeEvent swingAxeEvent)
     {
         characterDictionary[swingAxeEvent.characterId].ActionQueue.Enqueue(new SwingAxe());
+        characterDictionary[swingAxeEvent.characterId].IsRequestingAction = false;
     }
 
     public void OnSwingSword(SwingSwordEvent swingSwordEvent)
     {
         characterDictionary[swingSwordEvent.characterId].ActionQueue.Enqueue(new SwingSword());
+        characterDictionary[swingSwordEvent.characterId].IsRequestingAction = false;
     }
 
     public void OnSwingPickaxe(SwingPickaxeEvent swingPickaxeEvent)
     {
         characterDictionary[swingPickaxeEvent.characterId].ActionQueue.Enqueue(new SwingPickaxe());
+        characterDictionary[swingPickaxeEvent.characterId].IsRequestingAction = false;
+    }
+
+    public void OnPickupItem(PickupItemEvent pickupItemEvent)
+    {
+        PickupItem pickupItem = new PickupItem(characterDictionary[pickupItemEvent.characterId].itemDisplayDictionary[pickupItemEvent.itemId]);
+        characterDictionary[pickupItemEvent.characterId].ActionQueue.Enqueue(pickupItem);
+        characterDictionary[pickupItemEvent.characterId].IsRequestingAction = false;
     }
 
 }

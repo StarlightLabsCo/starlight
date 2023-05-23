@@ -2,8 +2,7 @@ using UnityEngine;
 
 public class ItemDisplay : MonoBehaviour
 {
-
-
+    public string Id;
     public Item item;
 
     Sprite sprite;
@@ -11,6 +10,8 @@ public class ItemDisplay : MonoBehaviour
 
     public void Start()
     {
+        Id = System.Guid.NewGuid().ToString();
+
         sprite = item.sprite;
         spriteRenderer = GetComponent<SpriteRenderer>();
 

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NativeWebSocket;
 using UnityEngine;
 
 public class AgentCharacterController : ICharacterController
@@ -12,8 +13,14 @@ public class AgentCharacterController : ICharacterController
 
     public void RequestAction(Character character, List<Action> availableActions)
     {
-        // Send Web Socket message
-        WebSocketClient.Instance.SendWebSocketMessage();
+        if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+        {
+
+            // Send Web Socket message
+            WebSocketClient.Instance.SendWebSocketMessage();
+
+            character.IsRequestingAction = true;
+        }
     }
 
 }

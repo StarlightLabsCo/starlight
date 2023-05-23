@@ -22,7 +22,7 @@ public abstract class Character : Entity
     public List<Action> BaseActions; // Actions that are always available to the character
     protected Action CurrentAction; // The action that the character is currently executing
     public Queue<Action> ActionQueue; // The queue of actions that the character will execute
-    protected bool IsRequestingAction;
+    public bool IsRequestingAction;
 
     protected bool PauseCharacter = false;
 
@@ -34,6 +34,10 @@ public abstract class Character : Entity
 
     // Starlight
     public string characterId;
+
+    // Item Dictionary, this is very much a hack
+    // TODO: future me, pls fix this
+    public Dictionary<string, ItemDisplay> itemDisplayDictionary;
 
     protected Character(string id, string name) : base(id, name)
     {
@@ -54,6 +58,8 @@ public abstract class Character : Entity
         {
             Controller = new AgentCharacterController();
         }
+
+        itemDisplayDictionary = new Dictionary<string, ItemDisplay>();
     }
 
     protected void Update()
@@ -74,8 +80,6 @@ public abstract class Character : Entity
             else if (!IsRequestingAction)
             {
                 List<Action> availableActions = GetAvailableActions();
-
-                IsRequestingAction = true;
 
                 Controller.RequestAction(this, availableActions);
             }
@@ -119,6 +123,7 @@ public abstract class Character : Entity
             else if (collider.gameObject.GetComponent<ItemDisplay>() != null)
             {
                 items.Add(collider.gameObject.GetComponent<ItemDisplay>());
+                itemDisplayDictionary[collider.gameObject.GetComponent<ItemDisplay>().item.Id] = collider.gameObject.GetComponent<ItemDisplay>();
             }
         }
 
@@ -127,19 +132,19 @@ public abstract class Character : Entity
 
         foreach (Entity entity in entities)
         {
-            environmentStringArray.Add(entity.Name + " (X: " + entity.transform.position.x + ", Y: " + entity.transform.position.y + ", Distance: " + Vector2.Distance(transform.position, entity.transform.position) + "m)");
+            environmentStringArray.Add(entity.Name + " (Health: " + entity.Health + "/" + entity.MaxHealth + ") [X: " + entity.transform.position.x + ", Y: " + entity.transform.position.y + ", Distance: " + Vector2.Distance(transform.position, entity.transform.position) + "m]");
         }
 
-        foreach (ItemDisplay item in items)
+        foreach (ItemDisplay itemDisplay in items)
         {
-            environmentStringArray.Add(item.item.Name + " (X: " + item.transform.position.x + ", Y: " + item.transform.position.y + ", Distance: " + Vector2.Distance(transform.position, item.transform.position) + "m)");
+            environmentStringArray.Add(itemDisplay.item.Name + " (Item ID: " + itemDisplay.Id + ") [X: " + itemDisplay.transform.position.x + ", Y: " + itemDisplay.transform.position.y + ", Distance: " + Vector2.Distance(transform.position, itemDisplay.transform.position) + "m]");
         }
 
         // Sort entities and items by distance from the character
         environmentStringArray.Sort((a, b) =>
         {
-            float aDistance = float.Parse(a.Split(' ')[a.Split(' ').Length - 1].Replace("m)", ""));
-            float bDistance = float.Parse(b.Split(' ')[b.Split(' ').Length - 1].Replace("m)", ""));
+            float aDistance = float.Parse(a.Split(' ')[a.Split(' ').Length - 1].Replace("m]", ""));
+            float bDistance = float.Parse(b.Split(' ')[b.Split(' ').Length - 1].Replace("m]", ""));
 
             return aDistance.CompareTo(bDistance);
         });

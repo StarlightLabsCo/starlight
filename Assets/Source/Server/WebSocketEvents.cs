@@ -34,4 +34,10 @@ namespace WebSocketEvents
         public string characterId { get; set; }
         public string location { get; set; }
     }
+
+    public class PickupItemEvent : WebSocketEvent
+    {
+        public string characterId { get; set; }
+        public string itemId { get; set; }
+    }
 }

@@ -3,7 +3,6 @@ using UnityEngine;
 public class PickupItem : Action
 {
     ItemDisplay itemDisplay;
-    Item item;
 
     public PickupItem(string id, string name, string description) : base(id, name, description)
     {
@@ -12,12 +11,11 @@ public class PickupItem : Action
     public PickupItem(ItemDisplay itemDisplay) : base("pickup", "Pickup", "Pickup an item")
     {
         this.itemDisplay = itemDisplay;
-        this.item = itemDisplay.item;
     }
 
     public override string ToString()
     {
-        return $"[PickupItem] Pickup {item.Name} (X: {itemDisplay.gameObject.transform.position.x}, Y: {itemDisplay.gameObject.transform.position.y}) from ground.";
+        return $"[PickupItem] Pickup {itemDisplay.item.Name} (ID: {itemDisplay.Id}) from ground.";
     }
 
     public override void Cleanup(Character character)
@@ -30,7 +28,7 @@ public class PickupItem : Action
         if (character is IHasInventory)
         {
             IHasInventory inventory = character as IHasInventory;
-            bool wasAdded = inventory.EntityInventory.Add(item);
+            bool wasAdded = inventory.EntityInventory.Add(itemDisplay.item);
             if (wasAdded)
             {
                 GameObject.Destroy(itemDisplay.gameObject);

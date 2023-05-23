@@ -54,6 +54,7 @@ public class MoveTo : Action
 
         if (currentWaypoint >= path.vectorPath.Count)
         {
+            Debug.Log("End Of Path Reached");
             character.FinishAction();
             return;
         }
