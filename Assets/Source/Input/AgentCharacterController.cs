@@ -17,7 +17,7 @@ public class AgentCharacterController : ICharacterController
         {
 
             // Send Web Socket message
-            WebSocketClient.Instance.SendWebSocketMessage();
+            WebSocketClient.Instance.SendWebSocketMessage(character);
 
             character.IsRequestingAction = true;
         }

@@ -123,7 +123,7 @@ public abstract class Character : Entity
             else if (collider.gameObject.GetComponent<ItemDisplay>() != null)
             {
                 items.Add(collider.gameObject.GetComponent<ItemDisplay>());
-                itemDisplayDictionary[collider.gameObject.GetComponent<ItemDisplay>().item.Id] = collider.gameObject.GetComponent<ItemDisplay>();
+                itemDisplayDictionary[collider.gameObject.GetComponent<ItemDisplay>().Id] = collider.gameObject.GetComponent<ItemDisplay>();
             }
         }
 

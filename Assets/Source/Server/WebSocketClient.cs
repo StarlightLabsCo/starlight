@@ -96,7 +96,7 @@ public class WebSocketClient : MonoBehaviour
                 default:
                     // Try again
                     Debug.Log("Unknown event type: " + eventType);
-                    SendWebSocketMessage();
+                    //TODO: add SendWebSocketMessage();
                     break;
             }
         };
@@ -111,12 +111,8 @@ public class WebSocketClient : MonoBehaviour
         websocket.DispatchMessageQueue();
 #endif
     }
-    public async void SendWebSocketMessage()
+    public async void SendWebSocketMessage(Character character)
     {
-        string characterId = "1";
-
-        Character character = characterDictionary[characterId];
-
         string characterLocation = "{ \"x\": " + character.gameObject.transform.position.x + ", \"y\": " + character.gameObject.transform.position.y + " }";
 
         // Get current character inventory
@@ -208,7 +204,7 @@ public class WebSocketClient : MonoBehaviour
 
     public void OnPickupItem(PickUpItemEvent pickUpItemEvent)
     {
-        PickupItem pickupItem = new PickupItem(characterDictionary[pickUpItemEvent.characterId].itemDisplayDictionary[pickUpItemEvent.itemId]);
+        PickupItem pickupItem = new(characterDictionary[pickUpItemEvent.characterId].itemDisplayDictionary[pickUpItemEvent.itemId]);
         characterDictionary[pickUpItemEvent.characterId].ActionQueue.Enqueue(pickupItem);
         characterDictionary[pickUpItemEvent.characterId].IsRequestingAction = false;
     }
