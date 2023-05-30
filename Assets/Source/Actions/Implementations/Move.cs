@@ -21,7 +21,7 @@ public class Move : Action
 
     public override string ToString()
     {
-        return $"[Move] Move based on a provided normalized vector (X, Y).";
+        return $"[Move] Move based on a provided normalized vector (X, Y)." + "\n-- e.g. { \"type\": \"Move\", \"data\": { \"characterId\": \"A1\", \"x\": -1.0, \"y\": 0.0 }}";
     }
 
     public Move() : base(System.Guid.NewGuid().ToString(), "Move", "Move in a direction")

@@ -18,7 +18,7 @@ public class Chest : Entity, IHasInventory
     protected void Start()
     {
         EntityInventory = new Inventory(InventoryCapacity);
-        Id = "chest";
+        Id = System.Guid.NewGuid().ToString();
         Name = "Chest";
     }
 

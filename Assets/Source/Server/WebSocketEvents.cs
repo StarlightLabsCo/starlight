@@ -40,4 +40,24 @@ namespace WebSocketEvents
         public string characterId { get; set; }
         public string itemId { get; set; }
     }
+
+    public class DropItemEvent : WebSocketEvent
+    {
+        public string characterId { get; set; }
+        public string itemId { get; set; }
+    }
+
+    public class AddItemToChestEvent : WebSocketEvent
+    {
+        public string characterId { get; set; }
+        public string itemId { get; set; }
+        public string chestId { get; set; }
+    }
+
+    public class RemoveItemFromChestEvent : WebSocketEvent
+    {
+        public string characterId { get; set; }
+        public string itemId { get; set; }
+        public string chestId { get; set; }
+    }
 }

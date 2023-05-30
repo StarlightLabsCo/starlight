@@ -44,13 +44,27 @@ public class Human : Character, IHasInventory
             actions.Add(action);
         }
 
+        Vector2 offset = new Vector2(this.transform.localScale.x, 0);
+        Vector2 size = new Vector2(1.2f, 1f);
+
+        Collider2D[] collisions = Utilities.DetectCollisions(this, offset, size, LayerMask.GetMask("Default"));
+
         // Get available actions from inventory
         foreach (Item item in EntityInventory.Items)
         {
             if (item is ActionItem)
             {
-                actions.Add((item as ActionItem).action);
+                if ((item as ActionItem).action is AnimationAction && collisions.Length > 0)
+                {
+                    actions.Add((item as ActionItem).action);
+                }
+                else if (!((item as ActionItem).action is AnimationAction))
+                {
+                    actions.Add((item as ActionItem).action);
+                }
             }
+
+            actions.Add(new DropItem(item));
         }
 
         // Get actions from environment
@@ -63,9 +77,14 @@ public class Human : Character, IHasInventory
             }
             else if (collider.gameObject.GetComponent<Chest>() != null)
             {
-                if (EntityInventory.Items.Count > 0)
+                for (int i = 0; i < EntityInventory.Items.Count; i++)
                 {
-                    actions.Add(new AddItemToChest(collider.gameObject.GetComponent<Chest>(), EntityInventory.Items[0]));
+                    actions.Add(new AddItemToChest(collider.gameObject.GetComponent<Chest>(), EntityInventory.Items[i]));
+                }
+
+                for (int i = 0; i < collider.gameObject.GetComponent<Chest>().EntityInventory.Items.Count; i++)
+                {
+                    actions.Add(new RemoveItemFromChest(collider.gameObject.GetComponent<Chest>(), collider.gameObject.GetComponent<Chest>().EntityInventory.Items[i]));
                 }
             }
         }

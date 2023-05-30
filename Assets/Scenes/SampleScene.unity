@@ -1192,6 +1192,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a2b6a810502d24b9096172bc16c702d6, type: 3}
+--- !u!114 &510251442 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6508679003812137441, guid: 899fac15bfcd8492fa5df13c649c8b46, type: 3}
+  m_PrefabInstance: {fileID: 892691482}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23a5daa7145f946389ca426bdb7f2857, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1299,7 +1310,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 8.375
+  orthographic size: 11.78125
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1434,6 +1445,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   character:
   - {fileID: 1103679001}
+  chest:
+  - {fileID: 510251442}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0

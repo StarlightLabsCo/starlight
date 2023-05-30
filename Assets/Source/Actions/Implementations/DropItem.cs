@@ -15,7 +15,7 @@ public class DropItem : Action
 
     public override string ToString()
     {
-        return $"[DropItem] Drop {item.Name} from inventory to ground.";
+        return $"[DropItem] Drop {item.Name} from inventory to ground.\n-- e.g. " + "{\"type\": \"DropItem\", \"data\": {\"characterId\": \"A1\", \"itemId\": \"" + item.Id + "\"}}";
     }
 
     public override void Cleanup(Character character)

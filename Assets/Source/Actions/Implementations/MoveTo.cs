@@ -33,7 +33,7 @@ public class MoveTo : Action
 
     public override string ToString()
     {
-        return $"[MoveTo] Move to a specific target location (X, Y).";
+        return "[MoveTo] Move to a specific target location (X, Y). \n-- e.g. { \"type\": \"MoveTo\", \"data\": { \"characterId\": \"A1\", \"x\": -0.6865366, \"y\": -1.433641 }}";
     }
 
     public override void Execute(Character character)

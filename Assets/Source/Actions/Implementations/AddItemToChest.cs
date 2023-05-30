@@ -14,7 +14,7 @@ public class AddItemToChest : Action
 
     public override string ToString()
     {
-        return $"[AddItemToChest] Add {item.Name} to chest.";
+        return $"[AddItemToChest] Add {item.Name} to chest.\n" + "-- e.g. { \"type\": \"AddItemToChest\", \"data\": { \"characterId\": \"A1\", \"chestId\": \"" + chest.Id + "\", \"itemId\": \"" + item.Id + "\" }}";
     }
 
     public override void Cleanup(Character character)

@@ -15,7 +15,7 @@ public class PickupItem : Action
 
     public override string ToString()
     {
-        return $"[PickUpItem] Pick up {itemDisplay.item.Name} (Item ID: {itemDisplay.Id}) from ground.";
+        return $"[PickUpItem] Pick up {itemDisplay.item.Name} (Item ID: {itemDisplay.Id}) from ground. \n-- e.g. " + "{\"type\": \"PickUpItem\", \"data\": {\"characterId\": \"A1\", \"itemId\": \"" + itemDisplay.Id + "\"}}";
     }
 
     public override void Cleanup(Character character)

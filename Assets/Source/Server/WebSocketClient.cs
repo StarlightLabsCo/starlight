@@ -18,6 +18,10 @@ public class WebSocketClient : MonoBehaviour
     public List<Character> character;
     private Dictionary<string, Character> characterDictionary = new Dictionary<string, Character>();
 
+    // Chests
+    public List<Chest> chest;
+    private Dictionary<string, Chest> chestDictionary = new Dictionary<string, Chest>();
+
     private void Awake()
     {
         if (Instance == null)
@@ -39,6 +43,12 @@ public class WebSocketClient : MonoBehaviour
         {
             Debug.Log("Adding character " + c.characterId + " to dictionary");
             characterDictionary.Add(c.characterId, c);
+        }
+
+        foreach (Chest c in chest)
+        {
+            Debug.Log("Adding chest " + c.Id + " to dictionary");
+            chestDictionary.Add(c.Id, c);
         }
 
         // Set up the websocket
@@ -92,6 +102,18 @@ public class WebSocketClient : MonoBehaviour
                 case "PickUpItem":
                     PickUpItemEvent pickUpItemEvent = jsonObject["data"].ToObject<PickUpItemEvent>();
                     OnPickupItem(pickUpItemEvent);
+                    break;
+                case "DropItem":
+                    DropItemEvent dropItemEvent = jsonObject["data"].ToObject<DropItemEvent>();
+                    OnDropItem(dropItemEvent);
+                    break;
+                case "AddItemToChest":
+                    AddItemToChestEvent addItemToChestEvent = jsonObject["data"].ToObject<AddItemToChestEvent>();
+                    OnAddItemToChest(addItemToChestEvent);
+                    break;
+                case "RemoveItemFromChest":
+                    RemoveItemFromChestEvent removeItemFromChestEvent = jsonObject["data"].ToObject<RemoveItemFromChestEvent>();
+                    OnRemoveItemFromChest(removeItemFromChestEvent);
                     break;
                 default:
                     // Try again
@@ -207,6 +229,26 @@ public class WebSocketClient : MonoBehaviour
         PickupItem pickupItem = new(characterDictionary[pickUpItemEvent.characterId].itemDisplayDictionary[pickUpItemEvent.itemId]);
         characterDictionary[pickUpItemEvent.characterId].ActionQueue.Enqueue(pickupItem);
         characterDictionary[pickUpItemEvent.characterId].IsRequestingAction = false;
+    }
+    public void OnDropItem(DropItemEvent dropItemEvent)
+    {
+        DropItem dropItem = new(Utilities.idToItem(dropItemEvent.itemId));
+        characterDictionary[dropItemEvent.characterId].ActionQueue.Enqueue(dropItem);
+        characterDictionary[dropItemEvent.characterId].IsRequestingAction = false;
+    }
+
+    public void OnAddItemToChest(AddItemToChestEvent addItemToChestEvent)
+    {
+        AddItemToChest addItemToChest = new(chestDictionary[addItemToChestEvent.chestId], Utilities.idToItem(addItemToChestEvent.itemId));
+        characterDictionary[addItemToChestEvent.characterId].ActionQueue.Enqueue(addItemToChest);
+        characterDictionary[addItemToChestEvent.characterId].IsRequestingAction = false;
+    }
+
+    public void OnRemoveItemFromChest(RemoveItemFromChestEvent removeItemFromChestEvent)
+    {
+        RemoveItemFromChest removeItemFromChest = new(chestDictionary[removeItemFromChestEvent.chestId], Utilities.idToItem(removeItemFromChestEvent.itemId));
+        characterDictionary[removeItemFromChestEvent.characterId].ActionQueue.Enqueue(removeItemFromChest);
+        characterDictionary[removeItemFromChestEvent.characterId].IsRequestingAction = false;
     }
 
 }

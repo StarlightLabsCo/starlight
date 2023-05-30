@@ -14,7 +14,7 @@ public class RemoveItemFromChest : Action
 
     public override string ToString()
     {
-        return $"[RemoveItemFromChest] Remove {item.Name} from chest and add to inventory.";
+        return $"[RemoveItemFromChest] Remove {item.Name} from chest and add to inventory.\n" + "-- e.g. { \"type\": \"RemoveItemFromChest\", \"data\": { \"characterId\": \"A1\", \"chestId\": \"" + chest.Id + "\", \"itemId\": \"" + item.Id + "\" }}";
     }
 
     public override void Cleanup(Character character)

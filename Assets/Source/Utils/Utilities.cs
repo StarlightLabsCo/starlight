@@ -34,4 +34,31 @@ public static class Utilities
 
         return hitColliders;
     }
+
+    public static Item idToItem(string itemId)
+    {
+        switch (itemId)
+        {
+            case "wood":
+                return new Wood();
+            case "stone":
+                return new Stone();
+            case "iron":
+                return new Iron();
+            case "diamond":
+                return new Diamond();
+            case "copper":
+                return new Copper();
+            case "coal":
+                return new Coal();
+            case "axe":
+                return new Axe();
+            case "pickaxe":
+                return new Pickaxe();
+            case "sword":
+                return new Sword();
+            default:
+                return null;
+        }
+    }
 }
