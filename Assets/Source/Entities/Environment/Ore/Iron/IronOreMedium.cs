@@ -6,9 +6,11 @@ public class IronOreMedium : MineableEntity
     {
     }
 
-    public void Start()
+    protected override void Awake()
     {
-        Id = "iron_ore_medium";
+        base.Awake();
+
+        Id = "iron_ore_medium_" + System.Guid.NewGuid().ToString();
         Name = "Iron Ore Deposit (Medium)";
     }
 

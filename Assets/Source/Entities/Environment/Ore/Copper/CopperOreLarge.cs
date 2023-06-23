@@ -6,9 +6,11 @@ public class CopperOreLarge : MineableEntity
     {
     }
 
-    public void Start()
+    protected override void Awake()
     {
-        Id = "copper_ore_large";
+        base.Awake();
+
+        Id = "copper_ore_large_" + System.Guid.NewGuid().ToString();
         Name = "Copper Ore Deposit (Large)";
     }
 

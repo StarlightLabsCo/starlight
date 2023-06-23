@@ -7,9 +7,11 @@ public class CopperOreMedium : MineableEntity
     }
 
 
-    public void Start()
+    protected override void Awake()
     {
-        Id = "copper_ore_medium";
+        base.Awake();
+
+        Id = "copper_ore_medium_" + System.Guid.NewGuid().ToString();
         Name = "Copper Ore Deposit (Medium)";
     }
 

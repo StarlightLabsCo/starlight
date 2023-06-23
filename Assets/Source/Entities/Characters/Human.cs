@@ -22,6 +22,14 @@ public class Human : Character, IHasInventory
     {
     }
 
+    protected override void Awake()
+    {
+        base.Awake();
+
+        Id = "human_" + System.Guid.NewGuid().ToString();
+        Name = "Human";
+    }
+
     protected override void Start()
     {
         base.Start();
@@ -73,7 +81,7 @@ public class Human : Character, IHasInventory
         {
             if (collider.gameObject.GetComponent<ItemDisplay>() != null)
             {
-                actions.Add(new PickupItem(collider.gameObject.GetComponent<ItemDisplay>()));
+                // actions.Add(new PickupItem(collider.gameObject.GetComponent<ItemDisplay>()));
             }
             else if (collider.gameObject.GetComponent<Chest>() != null)
             {

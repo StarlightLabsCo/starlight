@@ -17,6 +17,11 @@ public abstract class Entity : MonoBehaviour
         Name = name;
     }
 
+    protected virtual void Awake()
+    {
+        Health = MaxHealth;
+    }
+
     public override string ToString()
     {
         return $"{Name} ({Id})";

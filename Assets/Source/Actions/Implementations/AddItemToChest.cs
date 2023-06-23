@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AddItemToChest : Action
@@ -24,19 +23,41 @@ public class AddItemToChest : Action
 
     public override void Execute(Character character)
     {
+        Debug.Log("Character items before: ");
+        foreach (Item item in (character as IHasInventory).EntityInventory.Items)
+        {
+            Debug.Log(item.Name);
+        }
+
         if (character is IHasInventory)
         {
             bool success = chest.AddItem(item);
 
             if (success)
             {
-                (character as IHasInventory).EntityInventory.Remove(item);
                 Debug.Log("Added " + item.Name + " to chest");
+
+                bool removed = (character as IHasInventory).EntityInventory.Remove(item);
+
+                if (removed)
+                {
+                    Debug.Log("Removed " + item.Name + " from character");
+                }
+                else
+                {
+                    Debug.Log("Failed to remove " + item.Name + " from character");
+                }
             }
             else
             {
                 Debug.Log("Failed to add " + item.Name + " to chest");
             }
+        }
+
+        Debug.Log("Character items after: ");
+        foreach (Item item in (character as IHasInventory).EntityInventory.Items)
+        {
+            Debug.Log(item.Name);
         }
 
         character.FinishAction();

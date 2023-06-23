@@ -24,6 +24,14 @@ public class Goblin : Character, IHasInventory
         EntityInventory = new Inventory(InventoryCapacity);
     }
 
+    protected override void Awake()
+    {
+        base.Awake();
+
+        Id = "goblin_" + System.Guid.NewGuid().ToString();
+        Name = "Goblin";
+    }
+
     public override List<Action> GetAvailableActions()
     {
         List<Action> actions = new List<Action>();

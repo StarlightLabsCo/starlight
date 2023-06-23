@@ -6,9 +6,11 @@ public class CoalOreSmall : MineableEntity
     {
     }
 
-    public void Start()
+    protected override void Awake()
     {
-        Id = "coal_ore_small";
+        base.Awake();
+
+        Id = "coal_ore_small_" + System.Guid.NewGuid().ToString();
         Name = "Coal Ore Deposit (Small)";
     }
 

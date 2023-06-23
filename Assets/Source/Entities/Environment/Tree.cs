@@ -6,9 +6,11 @@ public class Tree : ChoppableEntity
     {
     }
 
-    public void Start()
+    protected override void Awake()
     {
-        Id = "tree";
+        base.Awake();
+
+        Id = "tree_" + System.Guid.NewGuid().ToString();
         Name = "Tree";
     }
 

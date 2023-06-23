@@ -6,10 +6,12 @@ public class StoneOreMedium : MineableEntity
     {
     }
 
-    public void Start()
+    protected override void Awake()
     {
-        Id = "stone_ore_medium";
-        Name = "Stone Deposit (Medium)";
+        base.Awake();
+
+        Id = "stone_ore_medium_" + System.Guid.NewGuid().ToString();
+        Name = "Stone Ore Deposit (Medium)";
     }
 
     public override Item itemOnDeath { get => new Stone(); set => base.itemOnDeath = value; }

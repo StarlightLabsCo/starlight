@@ -4,10 +4,12 @@ public class Stump : ChoppableEntity
     {
     }
 
-    public void Start()
+    protected override void Awake()
     {
-        Id = "stump";
-        Name = "Stump";
+        base.Awake();
+
+        Id = "tree_stump_" + System.Guid.NewGuid().ToString();
+        Name = "Tree Stump";
     }
 
     public override Item itemOnDeath { get => new Wood(); set => base.itemOnDeath = value; }

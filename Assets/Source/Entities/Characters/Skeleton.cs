@@ -14,6 +14,14 @@ public class Skeleton : Character
         base.Start();
     }
 
+    protected override void Awake()
+    {
+        base.Awake();
+
+        Id = "skeleton_" + System.Guid.NewGuid().ToString();
+        Name = "Skeleton";
+    }
+
     public override List<Action> GetAvailableActions()
     {
         List<Action> actions = new List<Action>();

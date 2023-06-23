@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using NativeWebSocket;
 
 [System.Serializable]
 public abstract class Character : Entity
@@ -34,10 +35,7 @@ public abstract class Character : Entity
 
     // Starlight
     public string characterId;
-
-    // Item Dictionary, this is very much a hack
-    // TODO: future me, pls fix this
-    public Dictionary<string, ItemDisplay> itemDisplayDictionary;
+    HashSet<Entity> observedEntities;
 
     protected Character(string id, string name) : base(id, name)
     {
@@ -59,7 +57,7 @@ public abstract class Character : Entity
             Controller = new AgentCharacterController();
         }
 
-        itemDisplayDictionary = new Dictionary<string, ItemDisplay>();
+        observedEntities = new HashSet<Entity>();
     }
 
     protected void Update()
@@ -88,6 +86,39 @@ public abstract class Character : Entity
         if (CurrentAction != null)
         {
             CurrentAction.Update(this);
+        }
+
+        // Get any items nearby
+        if (this is IHasInventory && (this as IHasInventory).EntityInventory.Items.Count < (this as IHasInventory).InventoryCapacity)
+        {
+            // TODO: add observation here
+
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 0.3f);
+            foreach (Collider2D collider in colliders)
+            {
+                if (collider.gameObject.GetComponent<ItemDisplay>() != null)
+                {
+                    ItemDisplay itemDisplay = collider.gameObject.GetComponent<ItemDisplay>();
+
+                    bool success = ((IHasInventory)this).EntityInventory.Add(itemDisplay.item);
+                    if (success)
+                    {
+                        Debug.Log("Added " + itemDisplay.item.Name + " to character");
+                        Destroy(itemDisplay.gameObject);
+                    }
+                    else
+                    {
+                        Debug.Log("Failed to add " + itemDisplay.item.Name + " to character");
+                    }
+                }
+            }
+        }
+
+        // TODO: move this to the entity level
+        // Collect observations for the character and send them to the agent
+        if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+        {
+            observedEntities = Utilities.UpdateObservedEntities(this, observedEntities, transform, 5f);
         }
     }
 
@@ -123,7 +154,6 @@ public abstract class Character : Entity
             else if (collider.gameObject.GetComponent<ItemDisplay>() != null)
             {
                 items.Add(collider.gameObject.GetComponent<ItemDisplay>());
-                itemDisplayDictionary[collider.gameObject.GetComponent<ItemDisplay>().Id] = collider.gameObject.GetComponent<ItemDisplay>();
             }
         }
 
@@ -137,7 +167,9 @@ public abstract class Character : Entity
 
         foreach (ItemDisplay itemDisplay in items)
         {
-            environmentStringArray.Add(itemDisplay.item.Name + " (Item ID: " + itemDisplay.Id + ") [X: " + itemDisplay.transform.position.x + ", Y: " + itemDisplay.transform.position.y + ", Distance: " + Vector2.Distance(transform.position, itemDisplay.transform.position) + "m]");
+            float distance = Vector2.Distance(transform.position, itemDisplay.transform.position);
+
+            environmentStringArray.Add(itemDisplay.item.Name + " (Item ID: " + itemDisplay.Id + ") [X: " + itemDisplay.transform.position.x + ", Y: " + itemDisplay.transform.position.y + ", Distance: " + distance + "m]");
         }
 
         // Sort entities and items by distance from the character

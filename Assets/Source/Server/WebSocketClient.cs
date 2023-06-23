@@ -19,7 +19,7 @@ public class WebSocketClient : MonoBehaviour
     private Dictionary<string, Character> characterDictionary = new Dictionary<string, Character>();
 
     // Chests
-    public List<Chest> chest;
+    public List<Chest> chests;
     private Dictionary<string, Chest> chestDictionary = new Dictionary<string, Chest>();
 
     private void Awake()
@@ -45,7 +45,7 @@ public class WebSocketClient : MonoBehaviour
             characterDictionary.Add(c.characterId, c);
         }
 
-        foreach (Chest c in chest)
+        foreach (Chest c in chests)
         {
             Debug.Log("Adding chest " + c.Id + " to dictionary");
             chestDictionary.Add(c.Id, c);
@@ -74,6 +74,8 @@ public class WebSocketClient : MonoBehaviour
             // parse the message into a JSON object
             string message = System.Text.Encoding.UTF8.GetString(bytes);
 
+            Debug.Log("OnMessage! " + message);
+
             // Deserialize the message into JObject
             var jsonObject = JsonConvert.DeserializeObject<JObject>(message);
             var eventType = jsonObject["type"].Value<string>();
@@ -99,10 +101,6 @@ public class WebSocketClient : MonoBehaviour
                     SwingAxeEvent swingAxeEvent = jsonObject["data"].ToObject<SwingAxeEvent>();
                     OnSwingAxe(swingAxeEvent);
                     break;
-                case "PickUpItem":
-                    PickUpItemEvent pickUpItemEvent = jsonObject["data"].ToObject<PickUpItemEvent>();
-                    OnPickupItem(pickUpItemEvent);
-                    break;
                 case "DropItem":
                     DropItemEvent dropItemEvent = jsonObject["data"].ToObject<DropItemEvent>();
                     OnDropItem(dropItemEvent);
@@ -118,7 +116,7 @@ public class WebSocketClient : MonoBehaviour
                 default:
                     // Try again
                     Debug.Log("Unknown event type: " + eventType);
-                    //TODO: add SendWebSocketMessage();
+                    SendWebSocketMessage(characterDictionary["A1"]);
                     break;
             }
         };
@@ -224,12 +222,6 @@ public class WebSocketClient : MonoBehaviour
         characterDictionary[swingPickaxeEvent.characterId].IsRequestingAction = false;
     }
 
-    public void OnPickupItem(PickUpItemEvent pickUpItemEvent)
-    {
-        PickupItem pickupItem = new(characterDictionary[pickUpItemEvent.characterId].itemDisplayDictionary[pickUpItemEvent.itemId]);
-        characterDictionary[pickUpItemEvent.characterId].ActionQueue.Enqueue(pickupItem);
-        characterDictionary[pickUpItemEvent.characterId].IsRequestingAction = false;
-    }
     public void OnDropItem(DropItemEvent dropItemEvent)
     {
         DropItem dropItem = new(Utilities.idToItem(dropItemEvent.itemId));
@@ -239,7 +231,12 @@ public class WebSocketClient : MonoBehaviour
 
     public void OnAddItemToChest(AddItemToChestEvent addItemToChestEvent)
     {
-        AddItemToChest addItemToChest = new(chestDictionary[addItemToChestEvent.chestId], Utilities.idToItem(addItemToChestEvent.itemId));
+        Debug.Log("Adding item to chest " + addItemToChestEvent.chestId + " from character " + addItemToChestEvent.characterId + " with item " + addItemToChestEvent.itemId);
+        Debug.Log("Chest dictionary: " + chestDictionary);
+        Debug.Log("Chest dictionary result: " + chestDictionary[addItemToChestEvent.chestId]);
+        Debug.Log("Item mapping: " + Utilities.idToItem(addItemToChestEvent.itemId));
+
+        AddItemToChest addItemToChest = new AddItemToChest(chestDictionary[addItemToChestEvent.chestId], Utilities.idToItem(addItemToChestEvent.itemId));
         characterDictionary[addItemToChestEvent.characterId].ActionQueue.Enqueue(addItemToChest);
         characterDictionary[addItemToChestEvent.characterId].IsRequestingAction = false;
     }

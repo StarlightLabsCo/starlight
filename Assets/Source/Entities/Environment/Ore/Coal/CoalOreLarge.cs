@@ -6,9 +6,11 @@ public class CoalOreLarge : MineableEntity
     {
     }
 
-    public void Start()
+    protected override void Awake()
     {
-        Id = "coal_ore_large";
+        base.Awake();
+
+        Id = "coal_ore_large_" + System.Guid.NewGuid().ToString();
         Name = "Coal Ore Deposit (Large)";
     }
 

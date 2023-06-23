@@ -6,9 +6,11 @@ public class DiamondOreLarge : MineableEntity
     {
     }
 
-    public void Start()
+    protected override void Awake()
     {
-        Id = "diamond_ore_large";
+        base.Awake();
+
+        Id = "diamond_ore_large_" + System.Guid.NewGuid().ToString();
         Name = "Diamond Ore Deposit (Large)";
     }
 

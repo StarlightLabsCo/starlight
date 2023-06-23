@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public static class Utilities
@@ -33,6 +35,60 @@ public static class Utilities
         // End Debug drawing
 
         return hitColliders;
+    }
+
+    // TODO: add handling item displays as well, maybe that should be an entity
+    // TODO: move this into the entity class, make it so all entities can see other entities? would be very systemic
+    public static HashSet<Entity> UpdateObservedEntities(Character character, HashSet<Entity> observedEntities, Transform transform, float radius)
+    {
+        // First filter out any null entities in observedEntities
+        observedEntities = new HashSet<Entity>(observedEntities.Where(entity => entity != null));
+
+        // Get all GameObjects within the radius
+        Vector2 detectionCenter = transform.position;
+
+        int layerMask = ~0; // This selects all layers. Adjust as needed to exclude specific layers.
+        Collider2D[] collidersInRange = Physics2D.OverlapCircleAll(detectionCenter, radius, layerMask);
+
+        HashSet<Entity> newEntitiesInRange = new HashSet<Entity>(collidersInRange.Select(gameObject => gameObject.GetComponent<Entity>()).Where(entity => entity != null && entity != character));
+
+        HashSet<Entity> addedEntities = new HashSet<Entity>(newEntitiesInRange.Except(observedEntities));
+        HashSet<Entity> removedEntities = new HashSet<Entity>(observedEntities.Except(newEntitiesInRange));
+
+        foreach (Entity entity in addedEntities)
+        {
+            Debug.Log(character.name + " sees " + entity.name + " at X: " + entity.transform.position.x + ", Y: " + entity.transform.position.y);
+
+            string json = JsonConvert.SerializeObject(new
+            {
+                type = "Observation",
+                data = new
+                {
+                    observerId = character.Id.ToString(),
+                    observation = character.name + " sees " + entity.name + " at X: " + entity.transform.position.x + ", Y: " + entity.transform.position.y
+                }
+            }, Formatting.None);
+
+            WebSocketClient.Instance.websocket.SendText(json);
+        }
+
+        foreach (Entity entity in removedEntities)
+        {
+            Debug.Log(character.name + " no longer sees " + entity.name);
+            string json = JsonConvert.SerializeObject(new
+            {
+                type = "Observation",
+                data = new
+                {
+                    observerId = character.Id.ToString(),
+                    observation = character.name + " no longer sees " + entity.name + " at X: " + entity.transform.position.x + ", Y: " + entity.transform.position.y
+                }
+            }, Formatting.None);
+
+            WebSocketClient.Instance.websocket.SendText(json);
+        }
+
+        return newEntitiesInRange;
     }
 
     public static Item idToItem(string itemId)

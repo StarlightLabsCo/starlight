@@ -6,9 +6,11 @@ public class DiamondOreMedium : MineableEntity
     {
     }
 
-    public void Start()
+    protected override void Awake()
     {
-        Id = "diamond_ore_medium";
+        base.Awake();
+
+        Id = "diamond_ore_medium_" + System.Guid.NewGuid().ToString();
         Name = "Diamond Ore Deposit (Medium)";
     }
 

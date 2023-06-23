@@ -6,9 +6,11 @@ public class CopperOreSmall : MineableEntity
     {
     }
 
-    public void Start()
+    protected override void Awake()
     {
-        Id = "copper_ore_small";
+        base.Awake();
+
+        Id = "copper_ore_small_" + System.Guid.NewGuid().ToString();
         Name = "Copper Ore Deposit (Small)";
     }
 

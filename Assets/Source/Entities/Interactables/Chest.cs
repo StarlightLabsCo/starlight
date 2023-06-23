@@ -10,16 +10,23 @@ public class Chest : Entity, IHasInventory
     private int inventoryCapacity;
     public int InventoryCapacity { get => inventoryCapacity; set => inventoryCapacity = value; }
 
-    public Chest(string id, string name) : base("chest", "Chest")
+    public Chest(string id, string name) : base(System.Guid.NewGuid().ToString(), "Chest")
     {
 
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        Id = "chest_" + System.Guid.NewGuid().ToString();
+        Name = "Chest";
     }
 
     protected void Start()
     {
         EntityInventory = new Inventory(InventoryCapacity);
         Id = System.Guid.NewGuid().ToString();
-        Name = "Chest";
     }
 
     public List<Item> ViewItems()
