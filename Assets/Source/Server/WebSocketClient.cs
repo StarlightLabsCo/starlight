@@ -182,7 +182,7 @@ public class WebSocketClient : MonoBehaviour
             string environmentJson = JsonConvert.SerializeObject(environmentArray);
             string hitboxJson = JsonConvert.SerializeObject(hitboxStringArray);
 
-            string jsonString = "{ \"type\": \"GetAction\", \"data\": { \"characterId\": \"1\", \"location\": " + characterLocation + ", \"availableActions\": " + actionsJson + ", \"inventory\": " + JsonConvert.SerializeObject(inventoryArray) + ", \"environment\": " + environmentJson + ", \"hitbox\": " + hitboxJson + " } }";
+            string jsonString = "{ \"type\": \"GetAction\", \"data\": { \"characterId\": \"" + character.Id + "\", \"location\": " + characterLocation + ", \"availableActions\": " + actionsJson + ", \"inventory\": " + JsonConvert.SerializeObject(inventoryArray) + ", \"environment\": " + environmentJson + ", \"hitbox\": " + hitboxJson + " } }";
 
             await websocket.SendText(jsonString);
         }

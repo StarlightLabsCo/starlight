@@ -26,8 +26,8 @@ public class Human : Character, IHasInventory
     {
         base.Awake();
 
-        Id = "human_" + System.Guid.NewGuid().ToString();
-        Name = "Human";
+        // Id = "human_" + System.Guid.NewGuid().ToString();
+        Name = "Thomas Smith";
     }
 
     protected override void Start()

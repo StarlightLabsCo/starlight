@@ -41,6 +41,13 @@ public abstract class Character : Entity
     {
     }
 
+    protected override void Awake()
+    {
+        base.Awake();
+
+        Id = characterId;
+    }
+
     protected virtual void Start()
     {
         rb = GetComponent<Rigidbody2D>();
