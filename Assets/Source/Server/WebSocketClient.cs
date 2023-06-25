@@ -200,52 +200,103 @@ public class WebSocketClient : MonoBehaviour
     // Event handlers
     public void OnMoveTo(MoveToEvent moveToEvent)
     {
-        characterDictionary[moveToEvent.characterId].ActionQueue.Enqueue(new MoveTo(moveToEvent.x, moveToEvent.y));
-        characterDictionary[moveToEvent.characterId].IsRequestingAction = false;
+        try
+        {
+            characterDictionary[moveToEvent.characterId].ActionQueue.Enqueue(new MoveTo(moveToEvent.x, moveToEvent.y));
+            characterDictionary[moveToEvent.characterId].IsRequestingAction = false;
+        }
+        catch (Exception e)
+        {
+            // Retry
+            // TODO: make this more exlpicit on what failed
+            SendWebSocketMessage(characterDictionary[moveToEvent.characterId]);
+        }
     }
 
     public void OnSwingAxe(SwingAxeEvent swingAxeEvent)
     {
-        characterDictionary[swingAxeEvent.characterId].ActionQueue.Enqueue(new SwingAxe());
-        characterDictionary[swingAxeEvent.characterId].IsRequestingAction = false;
+        try
+        {
+            characterDictionary[swingAxeEvent.characterId].ActionQueue.Enqueue(new SwingAxe());
+            characterDictionary[swingAxeEvent.characterId].IsRequestingAction = false;
+        }
+        catch (Exception e)
+        {
+            SendWebSocketMessage(characterDictionary[swingAxeEvent.characterId]);
+        }
     }
 
     public void OnSwingSword(SwingSwordEvent swingSwordEvent)
     {
-        characterDictionary[swingSwordEvent.characterId].ActionQueue.Enqueue(new SwingSword());
-        characterDictionary[swingSwordEvent.characterId].IsRequestingAction = false;
+        try
+        {
+            characterDictionary[swingSwordEvent.characterId].ActionQueue.Enqueue(new SwingSword());
+            characterDictionary[swingSwordEvent.characterId].IsRequestingAction = false;
+        }
+        catch (Exception e)
+        {
+            SendWebSocketMessage(characterDictionary[swingSwordEvent.characterId]);
+        }
     }
 
     public void OnSwingPickaxe(SwingPickaxeEvent swingPickaxeEvent)
     {
-        characterDictionary[swingPickaxeEvent.characterId].ActionQueue.Enqueue(new SwingPickaxe());
-        characterDictionary[swingPickaxeEvent.characterId].IsRequestingAction = false;
+        try
+        {
+            characterDictionary[swingPickaxeEvent.characterId].ActionQueue.Enqueue(new SwingPickaxe());
+            characterDictionary[swingPickaxeEvent.characterId].IsRequestingAction = false;
+        }
+        catch (Exception e)
+        {
+            SendWebSocketMessage(characterDictionary[swingPickaxeEvent.characterId]);
+        }
     }
 
     public void OnDropItem(DropItemEvent dropItemEvent)
     {
-        DropItem dropItem = new(Utilities.idToItem(dropItemEvent.itemId));
-        characterDictionary[dropItemEvent.characterId].ActionQueue.Enqueue(dropItem);
-        characterDictionary[dropItemEvent.characterId].IsRequestingAction = false;
+        try
+        {
+            DropItem dropItem = new(Utilities.idToItem(dropItemEvent.itemId));
+            characterDictionary[dropItemEvent.characterId].ActionQueue.Enqueue(dropItem);
+            characterDictionary[dropItemEvent.characterId].IsRequestingAction = false;
+        }
+        catch (Exception e)
+        {
+            SendWebSocketMessage(characterDictionary[dropItemEvent.characterId]);
+        }
     }
 
     public void OnAddItemToChest(AddItemToChestEvent addItemToChestEvent)
     {
-        Debug.Log("Adding item to chest " + addItemToChestEvent.chestId + " from character " + addItemToChestEvent.characterId + " with item " + addItemToChestEvent.itemId);
-        Debug.Log("Chest dictionary: " + chestDictionary);
-        Debug.Log("Chest dictionary result: " + chestDictionary[addItemToChestEvent.chestId]);
-        Debug.Log("Item mapping: " + Utilities.idToItem(addItemToChestEvent.itemId));
+        try
+        {
+            Debug.Log("Adding item to chest " + addItemToChestEvent.chestId + " from character " + addItemToChestEvent.characterId + " with item " + addItemToChestEvent.itemId);
+            Debug.Log("Chest dictionary: " + chestDictionary);
+            Debug.Log("Chest dictionary result: " + chestDictionary[addItemToChestEvent.chestId]);
+            Debug.Log("Item mapping: " + Utilities.idToItem(addItemToChestEvent.itemId));
 
-        AddItemToChest addItemToChest = new AddItemToChest(chestDictionary[addItemToChestEvent.chestId], Utilities.idToItem(addItemToChestEvent.itemId));
-        characterDictionary[addItemToChestEvent.characterId].ActionQueue.Enqueue(addItemToChest);
-        characterDictionary[addItemToChestEvent.characterId].IsRequestingAction = false;
+            AddItemToChest addItemToChest = new AddItemToChest(chestDictionary[addItemToChestEvent.chestId], Utilities.idToItem(addItemToChestEvent.itemId));
+            characterDictionary[addItemToChestEvent.characterId].ActionQueue.Enqueue(addItemToChest);
+            characterDictionary[addItemToChestEvent.characterId].IsRequestingAction = false;
+        }
+        catch (Exception e)
+        {
+            SendWebSocketMessage(characterDictionary[addItemToChestEvent.characterId]);
+        }
     }
 
     public void OnRemoveItemFromChest(RemoveItemFromChestEvent removeItemFromChestEvent)
     {
-        RemoveItemFromChest removeItemFromChest = new(chestDictionary[removeItemFromChestEvent.chestId], Utilities.idToItem(removeItemFromChestEvent.itemId));
-        characterDictionary[removeItemFromChestEvent.characterId].ActionQueue.Enqueue(removeItemFromChest);
-        characterDictionary[removeItemFromChestEvent.characterId].IsRequestingAction = false;
+        try
+        {
+            RemoveItemFromChest removeItemFromChest = new(chestDictionary[removeItemFromChestEvent.chestId], Utilities.idToItem(removeItemFromChestEvent.itemId));
+            characterDictionary[removeItemFromChestEvent.characterId].ActionQueue.Enqueue(removeItemFromChest);
+            characterDictionary[removeItemFromChestEvent.characterId].IsRequestingAction = false;
+        }
+        catch (Exception e)
+        {
+            SendWebSocketMessage(characterDictionary[removeItemFromChestEvent.characterId]);
+        }
     }
 
 }

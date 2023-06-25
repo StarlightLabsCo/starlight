@@ -57,7 +57,7 @@ public static class Utilities
 
         foreach (Entity entity in addedEntities)
         {
-            Debug.Log(character.name + " sees " + entity.name + " at X: " + entity.transform.position.x + ", Y: " + entity.transform.position.y);
+            Debug.Log(character.Name + " sees  " + entity.Name + " at X: " + entity.transform.position.x + ", Y: " + entity.transform.position.y); // TODO: change this to past tense?
 
             string json = JsonConvert.SerializeObject(new
             {
@@ -65,7 +65,7 @@ public static class Utilities
                 data = new
                 {
                     observerId = character.Id.ToString(),
-                    observation = character.name + " sees " + entity.name + " at X: " + entity.transform.position.x + ", Y: " + entity.transform.position.y
+                    observation = character.Name + " sees " + entity.Name + " at X: " + entity.transform.position.x + ", Y: " + entity.transform.position.y
                 }
             }, Formatting.None);
 
@@ -74,14 +74,14 @@ public static class Utilities
 
         foreach (Entity entity in removedEntities)
         {
-            Debug.Log(character.name + " no longer sees " + entity.name);
+            Debug.Log(character.Name + " no longer sees " + entity.name);
             string json = JsonConvert.SerializeObject(new
             {
                 type = "Observation",
                 data = new
                 {
                     observerId = character.Id.ToString(),
-                    observation = character.name + " no longer sees " + entity.name + " at X: " + entity.transform.position.x + ", Y: " + entity.transform.position.y
+                    observation = character.Name + " no longer sees " + entity.name + " at X: " + entity.transform.position.x + ", Y: " + entity.transform.position.y
                 }
             }, Formatting.None);
 
@@ -93,7 +93,7 @@ public static class Utilities
 
     public static Item idToItem(string itemId)
     {
-        switch (itemId)
+        switch (itemId.ToLower())
         {
             case "wood":
                 return new Wood();

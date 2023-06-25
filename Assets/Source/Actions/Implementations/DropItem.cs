@@ -27,10 +27,19 @@ public class DropItem : Action
     {
         if (character is IHasInventory)
         {
+            Debug.Log("Dropping item " + item.Name + " from inventory");
+            Debug.Log("Inventory before: ");
+            foreach (Item i in (character as IHasInventory).EntityInventory.Items)
+            {
+                Debug.Log("- " + i.Name);
+            }
+
             IHasInventory inventory = character as IHasInventory;
             bool wasRemoved = inventory.EntityInventory.Remove(item);
             if (wasRemoved)
             {
+                Debug.Log("Item removed from inventory");
+
                 GameObject itemDisplay = GameObject.Instantiate(Resources.Load<GameObject>("Item"));
                 itemDisplay.GetComponent<ItemDisplay>().item = item;
                 itemDisplay.transform.position = character.transform.position;
@@ -48,9 +57,12 @@ public class DropItem : Action
 
                     rb.AddForce(direction * force, ForceMode2D.Impulse);
                 }
+
+                // TODO: add memory observation here 
             }
             else
             {
+                // TODO: add memory observation here 
                 Debug.Log("Item not found in inventory");
             }
 
