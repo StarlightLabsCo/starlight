@@ -1,3 +1,5 @@
+using NativeWebSocket;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class AddItemToChest : Action
@@ -36,6 +38,21 @@ public class AddItemToChest : Action
             if (success)
             {
                 Debug.Log("Added " + item.Name + " to chest");
+
+                if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+                {
+                    string json = JsonConvert.SerializeObject(new
+                    {
+                        type = "Observation",
+                        data = new
+                        {
+                            observerId = character.Id.ToString(),
+                            observation = character.Name + " deposited " + item.Name + " to chest (" + chest.Id + ") at X: " + chest.transform.position.x + ", Y: " + chest.transform.position.y
+                        }
+                    }, Formatting.None);
+
+                    WebSocketClient.Instance.websocket.SendText(json);
+                }
 
                 bool removed = (character as IHasInventory).EntityInventory.Remove(item);
 

@@ -1,3 +1,5 @@
+using NativeWebSocket;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class SwingSword : AnimationAction
@@ -43,12 +45,29 @@ public class SwingSword : AnimationAction
         Collider2D[] collisions = Utilities.DetectCollisions(character, offset, size, LayerMask.GetMask("Default"));
 
         // If so deal damage
+        int hits = 0;
         foreach (Collider2D collision in collisions)
         {
             if (collision.gameObject.GetComponent<Character>() != null)
             {
+                hits++;
                 collision.gameObject.GetComponent<Character>().TakeDamage(10);
             }
+        }
+
+        if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+        {
+            string json = JsonConvert.SerializeObject(new
+            {
+                type = "Observation",
+                data = new
+                {
+                    observerId = character.Id.ToString(),
+                    observation = character.Name + " swong a sword at X: " + character.transform.position.x + ", Y: " + character.transform.position.y + " and hit " + hits + " characters."
+                }
+            }, Formatting.None);
+
+            WebSocketClient.Instance.websocket.SendText(json);
         }
 
     }

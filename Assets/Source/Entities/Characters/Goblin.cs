@@ -55,7 +55,12 @@ public class Goblin : Character, IHasInventory
     }
     public override void PlayAnimation(string animationName)
     {
-        base.PlayAnimation(animationName);
+        if (CurrentAnimation == animationName)
+        {
+            return;
+        }
+
+        CurrentAnimation = animationName;
 
         Animator.Play("goblin_" + animationName);
     }

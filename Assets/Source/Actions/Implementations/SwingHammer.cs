@@ -1,3 +1,5 @@
+using NativeWebSocket;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class SwingHammer : AnimationAction
@@ -43,6 +45,20 @@ public class SwingHammer : AnimationAction
 
         // If so deal damage
 
+        if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+        {
+            string json = JsonConvert.SerializeObject(new
+            {
+                type = "Observation",
+                data = new
+                {
+                    observerId = character.Id.ToString(),
+                    observation = character.Name + " swong a hammer at X: " + character.transform.position.x + ", Y: " + character.transform.position.y
+                }
+            }, Formatting.None);
+
+            WebSocketClient.Instance.websocket.SendText(json);
+        }
     }
 
     public override void Cleanup(Character character)

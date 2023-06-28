@@ -99,29 +99,6 @@ public class PlayerCharacterController : ICharacterController
             }
         }
 
-        // Check if "E" key was pressed
-        // Check if "E" key was pressed
-        if (isEKeyPressed)
-        {
-            // Find the first OpenChest action in the available actions list
-            Action addItemToChest = availableActions.Find(action => action is AddItemToChest);
-            if (addItemToChest != null)
-            {
-                actionQueue.Enqueue(addItemToChest);
-                isEKeyPressed = false; // Reset the flag after enqueuing the action
-            }
-            else
-            {
-                // Find the first PickupItem action in the available actions list
-                Action pickupItemAction = availableActions.Find(action => action is PickupItem);
-                if (pickupItemAction != null)
-                {
-                    actionQueue.Enqueue(pickupItemAction);
-                    isEKeyPressed = false; // Reset the flag after enqueuing the action
-                }
-            }
-        }
-
 
         // Check if "Q" key was pressed
         if (isQKeyPressed && character is IHasInventory)

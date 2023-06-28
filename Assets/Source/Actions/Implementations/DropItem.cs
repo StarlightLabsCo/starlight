@@ -1,3 +1,5 @@
+using NativeWebSocket;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class DropItem : Action
@@ -58,11 +60,23 @@ public class DropItem : Action
                     rb.AddForce(direction * force, ForceMode2D.Impulse);
                 }
 
-                // TODO: add memory observation here 
+                if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+                {
+                    string json = JsonConvert.SerializeObject(new
+                    {
+                        type = "Observation",
+                        data = new
+                        {
+                            observerId = character.Id.ToString(),
+                            observation = character.Name + " dropped " + item.Name + " at X: " + rb.transform.position.x + ", Y: " + rb.transform.position.y
+                        }
+                    }, Formatting.None);
+
+                    WebSocketClient.Instance.websocket.SendText(json);
+                }
             }
             else
             {
-                // TODO: add memory observation here 
                 Debug.Log("Item not found in inventory");
             }
 

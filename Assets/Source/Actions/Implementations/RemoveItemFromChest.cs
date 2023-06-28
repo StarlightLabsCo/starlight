@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using NativeWebSocket;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class RemoveItemFromChest : Action
@@ -30,6 +32,22 @@ public class RemoveItemFromChest : Action
 
             if (success)
             {
+
+                if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+                {
+                    string json = JsonConvert.SerializeObject(new
+                    {
+                        type = "Observation",
+                        data = new
+                        {
+                            observerId = character.Id.ToString(),
+                            observation = character.Name + " withdrew " + item.Name + " from chest (" + chest.Id + ") at X: " + chest.transform.position.x + ", Y: " + chest.transform.position.y
+                        }
+                    }, Formatting.None);
+
+                    WebSocketClient.Instance.websocket.SendText(json);
+                }
+
                 (character as IHasInventory).EntityInventory.Add(item);
                 Debug.Log("Removed " + item.Name + " from chest");
             }

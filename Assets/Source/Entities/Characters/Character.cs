@@ -78,12 +78,15 @@ public abstract class Character : Entity
 
         if (CurrentAction == null)
         {
+            Debug.Log("Current action is null");
             if (ActionQueue.Count > 0)
             {
+                Debug.Log("Executing " + ActionQueue.Peek().ToString() + " from queue (" + ActionQueue.Count + " remaining)");
                 ExecuteAction(ActionQueue.Dequeue());
             }
             else if (!IsRequestingAction)
             {
+                Debug.Log("Requesting action");
                 List<Action> availableActions = GetAvailableActions();
 
                 Controller.RequestAction(this, availableActions);
@@ -121,7 +124,7 @@ public abstract class Character : Entity
             }
         }
 
-        // TODO: move this to the entity level
+        // TODO: move this to the entity level, ehh i mean, does it really make sense for trees to have observations?
         // Collect observations for the character and send them to the agent
         if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
         {
@@ -148,7 +151,7 @@ public abstract class Character : Entity
 
     public string[] GetEnvironment()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 5f);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 8f);
         List<Entity> entities = new List<Entity>();
         List<ItemDisplay> items = new List<ItemDisplay>();
 
@@ -248,15 +251,7 @@ public abstract class Character : Entity
         PlayAnimation("idle");
     }
 
-    public virtual void PlayAnimation(string animationName)
-    {
-        if (CurrentAnimation == animationName)
-        {
-            return;
-        }
-
-        CurrentAnimation = animationName;
-    }
+    public abstract void PlayAnimation(string animationName);
 
     public void Flip(float movementX)
     {

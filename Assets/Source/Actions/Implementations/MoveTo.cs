@@ -1,3 +1,5 @@
+using NativeWebSocket;
+using Newtonsoft.Json;
 using Pathfinding;
 using UnityEngine;
 
@@ -40,6 +42,21 @@ public class MoveTo : Action
     {
         seeker = character.GetComponent<Seeker>();
         seeker.StartPath(character.transform.position, target, OnPathComplete);
+
+        if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+        {
+            string json = JsonConvert.SerializeObject(new
+            {
+                type = "Observation",
+                data = new
+                {
+                    observerId = character.Id.ToString(),
+                    observation = character.Name + " has started walking to " + target.x + ", Y: " + target.y + ".",
+                }
+            }, Formatting.None);
+
+            WebSocketClient.Instance.websocket.SendText(json);
+        }
     }
 
 
@@ -56,6 +73,22 @@ public class MoveTo : Action
         {
             Debug.Log("End Of Path Reached");
             character.FinishAction();
+
+            if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+            {
+                string json = JsonConvert.SerializeObject(new
+                {
+                    type = "Observation",
+                    data = new
+                    {
+                        observerId = character.Id.ToString(),
+                        observation = character.Name + " finished walking to " + target.x + ", Y: " + target.y + ".",
+                    }
+                }, Formatting.None);
+
+                WebSocketClient.Instance.websocket.SendText(json);
+            }
+
             return;
         }
 

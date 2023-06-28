@@ -1,3 +1,5 @@
+using NativeWebSocket;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class SwingAxe : AnimationAction
@@ -21,6 +23,8 @@ public class SwingAxe : AnimationAction
     public override void Execute(Character character)
     {
         // Play animation
+        Debug.Log("[1] SwingAxe execute");
+
         character.PlayAnimation("axe");
     }
 
@@ -36,6 +40,8 @@ public class SwingAxe : AnimationAction
 
     public override void TriggerEffect(Character character)
     {
+        Debug.Log("[1] SwingAxe trigger effect");
+
         // Define offset and size as Vector2
         Vector2 offset = new Vector2(character.transform.localScale.x, 0);
         Vector2 size = new Vector2(1.2f, 1f);
@@ -43,18 +49,37 @@ public class SwingAxe : AnimationAction
         Collider2D[] collisions = Utilities.DetectCollisions(character, offset, size, LayerMask.GetMask("Default"));
 
         // If so deal damage
+        int hits = 0;
         foreach (Collider2D collision in collisions)
         {
             if (collision.gameObject.GetComponent<ChoppableEntity>() != null)
             {
                 Debug.Log("Tree hit");
+                hits++;
                 collision.gameObject.GetComponent<ChoppableEntity>().TakeDamage(5);
             }
+        }
+
+        if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+        {
+            string json = JsonConvert.SerializeObject(new
+            {
+                type = "Observation",
+                data = new
+                {
+                    observerId = character.Id.ToString(),
+                    observation = character.Name + " swong an axe at X: " + character.transform.position.x + ", Y: " + character.transform.position.y + " and hit " + hits + " trees."
+                }
+            }, Formatting.None);
+
+            WebSocketClient.Instance.websocket.SendText(json);
         }
     }
 
     public override void Cleanup(Character character)
     {
+        Debug.Log("[1] SwingAxe cleanup");
+
         character.PlayAnimation("idle");
     }
 }

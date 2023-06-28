@@ -35,7 +35,6 @@ public class Human : Character, IHasInventory
         base.Start();
 
         BaseActions = new List<Action>();
-        BaseActions.Add(new Move());
         BaseActions.Add(new MoveTo());
 
         EntityInventory = new Inventory(InventoryCapacity);
@@ -103,7 +102,17 @@ public class Human : Character, IHasInventory
 
     public override void PlayAnimation(string animationName)
     {
-        base.PlayAnimation(animationName);
+        Debug.Log("[1] Current animation: " + CurrentAnimation + ", new animation: " + animationName);
+
+        if (CurrentAnimation == animationName)
+        {
+            Debug.Log("[1] Animation already playing");
+            return;
+        }
+
+        Debug.Log("[1] Playing animation " + animationName + " on " + Name + " (" + Id + ")");
+
+        CurrentAnimation = animationName;
 
         HairAnimator.Play("human_hair_" + animationName);
         BaseAnimator.Play("human_base_" + animationName);
