@@ -65,7 +65,7 @@ public static class Utilities
                 data = new
                 {
                     observerId = character.Id.ToString(),
-                    observation = character.Name + " sees " + entity.Name + " at X: " + entity.transform.position.x + ", Y: " + entity.transform.position.y
+                    observation = character.Name + " sees " + entity.Name + " at X: " + entity.transform.position.x + ", Y: " + entity.transform.position.y + "."
                 }
             }, Formatting.None);
 

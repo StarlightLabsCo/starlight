@@ -20,11 +20,6 @@ public class DropItem : Action
         return $"[DropItem] Drop {item.Name} from inventory to ground.\n-- e.g. " + "{\"type\": \"DropItem\", \"data\": {\"characterId\": \"A1\", \"itemId\": \"" + item.Id + "\"}}";
     }
 
-    public override void Cleanup(Character character)
-    {
-        return;
-    }
-
     public override void Execute(Character character)
     {
         if (character is IHasInventory)
@@ -42,6 +37,9 @@ public class DropItem : Action
             {
                 Debug.Log("Item removed from inventory");
 
+                character.PlayRemoveItemAnimation(item.sprite);
+
+                // Create a new item display and place it at the character's position
                 GameObject itemDisplay = GameObject.Instantiate(Resources.Load<GameObject>("Item"));
                 itemDisplay.GetComponent<ItemDisplay>().item = item;
                 itemDisplay.transform.position = character.transform.position;
@@ -92,5 +90,23 @@ public class DropItem : Action
     public override void Update(Character character)
     {
         return;
+    }
+
+    public override void Cleanup(Character character)
+    {
+        if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+        {
+            string json = JsonConvert.SerializeObject(new
+            {
+                type = "ActionExecuted",
+                data = new
+                {
+                    characterId = character.Id.ToString(),
+                    result = character.Name + " dropped " + item.Name + " on the ground at X: " + character.transform.position.x + ", Y: " + character.transform.position.y + "."
+                }
+            }, Formatting.None);
+
+            WebSocketClient.Instance.websocket.SendText(json);
+        }
     }
 }

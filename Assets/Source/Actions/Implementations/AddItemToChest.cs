@@ -18,21 +18,14 @@ public class AddItemToChest : Action
         return $"[AddItemToChest] Add {item.Name} to chest.\n" + "-- e.g. { \"type\": \"AddItemToChest\", \"data\": { \"characterId\": \"A1\", \"chestId\": \"" + chest.Id + "\", \"itemId\": \"" + item.Id + "\" }}";
     }
 
-    public override void Cleanup(Character character)
-    {
-        return;
-    }
-
     public override void Execute(Character character)
     {
-        Debug.Log("Character items before: ");
-        foreach (Item item in (character as IHasInventory).EntityInventory.Items)
-        {
-            Debug.Log(item.Name);
-        }
+        Debug.Log("Adding " + item.Name + " to chest " + chest.Id + " at X: " + chest.transform.position.x + ", Y: " + chest.transform.position.y);
 
         if (character is IHasInventory)
         {
+            Debug.Log("Character has inventory");
+
             bool success = chest.AddItem(item);
 
             if (success)
@@ -58,23 +51,17 @@ public class AddItemToChest : Action
 
                 if (removed)
                 {
-                    Debug.Log("Removed " + item.Name + " from character");
+                    character.PlayRemoveItemAnimation(item.sprite);
                 }
                 else
                 {
-                    Debug.Log("Failed to remove " + item.Name + " from character");
+                    Debug.LogError("Failed to remove " + item.Name + " from character");
                 }
             }
             else
             {
-                Debug.Log("Failed to add " + item.Name + " to chest");
+                Debug.LogError("Failed to add " + item.Name + " to chest");
             }
-        }
-
-        Debug.Log("Character items after: ");
-        foreach (Item item in (character as IHasInventory).EntityInventory.Items)
-        {
-            Debug.Log(item.Name);
         }
 
         character.FinishAction();
@@ -88,5 +75,23 @@ public class AddItemToChest : Action
     public override void Update(Character character)
     {
         return;
+    }
+
+    public override void Cleanup(Character character)
+    {
+        if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+        {
+            string json = JsonConvert.SerializeObject(new
+            {
+                type = "ActionExecuted",
+                data = new
+                {
+                    characterId = character.Id.ToString(),
+                    result = character.Name + " deposited " + item.Name + " into chest " + chest.Id + " at X: " + chest.transform.position.x + ", Y: " + chest.transform.position.y + "."
+                }
+            }, Formatting.None);
+
+            WebSocketClient.Instance.websocket.SendText(json);
+        }
     }
 }

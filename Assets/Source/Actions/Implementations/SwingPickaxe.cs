@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SwingPickaxe : AnimationAction
 {
+    int hits = 0;
+
     public SwingPickaxe() : base(System.Guid.NewGuid().ToString(), "SwingPickaxe", "Swing Pickaxe")
     {
 
@@ -44,7 +46,6 @@ public class SwingPickaxe : AnimationAction
         Collider2D[] collisions = Utilities.DetectCollisions(character, offset, size, LayerMask.GetMask("Default"));
 
         // If so deal damage
-        int hits = 0;
         foreach (Collider2D collision in collisions)
         {
             if (collision.gameObject.GetComponent<MineableEntity>() != null)
@@ -54,25 +55,26 @@ public class SwingPickaxe : AnimationAction
             }
         }
 
+
+    }
+
+    public override void Cleanup(Character character)
+    {
         if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
         {
             string json = JsonConvert.SerializeObject(new
             {
-                type = "Observation",
+                type = "ActionExecuted",
                 data = new
                 {
-                    observerId = character.Id.ToString(),
-                    observation = character.Name + " swong a pickaxe at X: " + character.transform.position.x + ", Y: " + character.transform.position.y + " and hit " + hits + " mineable entities."
+                    characterId = character.Id.ToString(),
+                    result = character.Name + " swong their pickaxe at X: " + character.transform.position.x + ", Y: " + character.transform.position.y + " and hit " + hits + " mineable entities."
                 }
             }, Formatting.None);
 
             WebSocketClient.Instance.websocket.SendText(json);
         }
-    }
 
-    public override void Cleanup(Character character)
-    {
-        Debug.Log("SwingPickaxe cleanup");
         character.PlayAnimation("idle");
     }
 }

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -78,11 +77,7 @@ public class Human : Character, IHasInventory
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 1f);
         foreach (Collider2D collider in colliders)
         {
-            if (collider.gameObject.GetComponent<ItemDisplay>() != null)
-            {
-                // actions.Add(new PickupItem(collider.gameObject.GetComponent<ItemDisplay>()));
-            }
-            else if (collider.gameObject.GetComponent<Chest>() != null)
+            if (collider.gameObject.GetComponent<Chest>() != null)
             {
                 for (int i = 0; i < EntityInventory.Items.Count; i++)
                 {
@@ -102,20 +97,15 @@ public class Human : Character, IHasInventory
 
     public override void PlayAnimation(string animationName)
     {
-        Debug.Log("[1] Current animation: " + CurrentAnimation + ", new animation: " + animationName);
-
         if (CurrentAnimation == animationName)
         {
-            Debug.Log("[1] Animation already playing");
             return;
         }
 
-        Debug.Log("[1] Playing animation " + animationName + " on " + Name + " (" + Id + ")");
-
         CurrentAnimation = animationName;
 
-        HairAnimator.Play("human_hair_" + animationName);
-        BaseAnimator.Play("human_base_" + animationName);
-        ToolsAnimator.Play("human_tools_" + animationName);
+        HairAnimator.Play("human_hair_" + animationName, -1, 0f);
+        BaseAnimator.Play("human_base_" + animationName, -1, 0f);
+        ToolsAnimator.Play("human_tools_" + animationName, -1, 0f);
     }
 }

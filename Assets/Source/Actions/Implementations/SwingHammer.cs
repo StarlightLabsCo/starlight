@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SwingHammer : AnimationAction
 {
+    int hits = 0;
+
     public SwingHammer() : base(System.Guid.NewGuid().ToString(), "SwingHammer", "Swing Hammer")
     {
 
@@ -45,24 +47,26 @@ public class SwingHammer : AnimationAction
 
         // If so deal damage
 
+
+    }
+
+    public override void Cleanup(Character character)
+    {
         if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
         {
             string json = JsonConvert.SerializeObject(new
             {
-                type = "Observation",
+                type = "ActionExecuted",
                 data = new
                 {
-                    observerId = character.Id.ToString(),
-                    observation = character.Name + " swong a hammer at X: " + character.transform.position.x + ", Y: " + character.transform.position.y
+                    characterId = character.Id.ToString(),
+                    result = character.Name + " swong their hammer at X: " + character.transform.position.x + ", Y: " + character.transform.position.y
                 }
             }, Formatting.None);
 
             WebSocketClient.Instance.websocket.SendText(json);
         }
-    }
 
-    public override void Cleanup(Character character)
-    {
         character.PlayAnimation("idle");
     }
 }

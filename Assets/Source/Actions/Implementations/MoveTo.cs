@@ -126,6 +126,19 @@ public class MoveTo : Action
 
     public override void Cleanup(Character character)
     {
-        character.PlayAnimation("idle");
+        if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+        {
+            string json = JsonConvert.SerializeObject(new
+            {
+                type = "ActionExecuted",
+                data = new
+                {
+                    characterId = character.Id.ToString(),
+                    result = character.Name + " walked to X: " + target.x + ", Y: " + target.y + ".",
+                }
+            }, Formatting.None);
+
+            WebSocketClient.Instance.websocket.SendText(json);
+        }
     }
 }

@@ -33,6 +33,29 @@ public abstract class Character : Entity
     // References
     public Rigidbody2D rb;
 
+    // Item animation
+    public GameObject iconContainer;
+
+    [SerializeField]
+    private SpriteRenderer itemDisplay;
+    public SpriteRenderer ItemDisplay { get => itemDisplay; set => itemDisplay = value; }
+
+    [SerializeField]
+    private SpriteRenderer plusIcon;
+    public SpriteRenderer PlusIcon { get => plusIcon; set => plusIcon = value; }
+
+    [SerializeField]
+    private SpriteRenderer minusIcon;
+    public SpriteRenderer MinusIcon { get => minusIcon; set => minusIcon = value; }
+
+    private Coroutine displayCoroutine;
+
+    Vector3 iconPos;
+    Vector3 iconInitialScale;
+    Vector3 itemPos;
+    Vector3 itemInitialScale;
+
+
     // Starlight
     public string characterId;
     HashSet<Entity> observedEntities;
@@ -46,6 +69,15 @@ public abstract class Character : Entity
         base.Awake();
 
         Id = characterId;
+
+        ItemDisplay.enabled = false;
+        PlusIcon.enabled = false;
+        MinusIcon.enabled = false;
+
+        iconPos = PlusIcon.transform.localPosition;
+        iconInitialScale = PlusIcon.transform.localScale;
+        itemPos = ItemDisplay.transform.localPosition;
+        itemInitialScale = ItemDisplay.transform.localScale;
     }
 
     protected virtual void Start()
@@ -65,10 +97,15 @@ public abstract class Character : Entity
         }
 
         observedEntities = new HashSet<Entity>();
+
+        iconContainer = new GameObject("Icon Container");
+        iconContainer.transform.position = transform.position;
     }
 
     protected void Update()
     {
+        iconContainer.transform.position = transform.position;
+
         if (PauseCharacter)
         {
             return;
@@ -78,7 +115,6 @@ public abstract class Character : Entity
 
         if (CurrentAction == null)
         {
-            Debug.Log("Current action is null");
             if (ActionQueue.Count > 0)
             {
                 Debug.Log("Executing " + ActionQueue.Peek().ToString() + " from queue (" + ActionQueue.Count + " remaining)");
@@ -113,7 +149,8 @@ public abstract class Character : Entity
                     bool success = ((IHasInventory)this).EntityInventory.Add(itemDisplay.item);
                     if (success)
                     {
-                        Debug.Log("Added " + itemDisplay.item.Name + " to character");
+                        PlayAddItemAnimation(itemDisplay.item.sprite);
+
                         Destroy(itemDisplay.gameObject);
                     }
                     else
@@ -130,6 +167,68 @@ public abstract class Character : Entity
         {
             observedEntities = Utilities.UpdateObservedEntities(this, observedEntities, transform, 5f);
         }
+    }
+
+    public void PlayAddItemAnimation(Sprite item)
+    {
+        // In PlayAddItemAnimation
+        SpriteRenderer newItemDisplay = Instantiate(ItemDisplay, iconContainer.transform);
+        SpriteRenderer newPlusIcon = Instantiate(PlusIcon, iconContainer.transform);
+
+        newItemDisplay.sprite = item;
+        newItemDisplay.enabled = true;
+        newPlusIcon.enabled = true;
+
+        // start new coroutine
+        StartCoroutine(DisplayAndHideIcons(newItemDisplay, newPlusIcon));
+
+    }
+
+    public void PlayRemoveItemAnimation(Sprite item)
+    {
+        // In PlayRemoveItemAnimation
+        SpriteRenderer newItemDisplay = Instantiate(ItemDisplay, iconContainer.transform);
+        SpriteRenderer newMinusIcon = Instantiate(MinusIcon, iconContainer.transform);
+
+        newItemDisplay.sprite = item;
+        newItemDisplay.enabled = true;
+        newMinusIcon.enabled = true;
+
+        // start new coroutine
+        StartCoroutine(DisplayAndHideIcons(newItemDisplay, newMinusIcon));
+    }
+
+    private IEnumerator DisplayAndHideIcons(SpriteRenderer display, SpriteRenderer icon)
+    {
+        // You may adjust the duration as per your needs
+        float displayDuration = .85f;
+        float currentTime = 0f;
+
+        Vector3 iconInitialPos = icon.transform.position;
+        Color iconInitialColor = icon.color;
+
+        Vector3 itemInitialPos = display.transform.position;
+        Color itemInitialColor = display.color;
+
+        while (currentTime < displayDuration)
+        {
+            currentTime += Time.deltaTime;
+
+            // Calculate lerp factor
+            float lerpFactor = currentTime / displayDuration;
+
+            icon.transform.position = Vector3.Lerp(iconInitialPos, iconInitialPos + new Vector3(0, 0.5f, 0), lerpFactor);
+            icon.color = new Color(iconInitialColor.r, iconInitialColor.g, iconInitialColor.b, Mathf.Lerp(1f, 0f, lerpFactor));
+
+            display.transform.position = Vector3.Lerp(itemInitialPos, itemInitialPos + new Vector3(0, 0.5f, 0), lerpFactor);
+            display.color = new Color(itemInitialColor.r, itemInitialColor.g, itemInitialColor.b, Mathf.Lerp(1f, 0f, lerpFactor));
+
+            yield return null;
+        }
+
+        // Destroy the game objects after the effect
+        Destroy(display.gameObject);
+        Destroy(icon.gameObject);
     }
 
     protected void FixedUpdate()

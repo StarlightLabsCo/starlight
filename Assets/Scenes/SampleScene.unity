@@ -1310,7 +1310,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 8.875
+  orthographic size: 7.203125
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1447,6 +1447,11 @@ MonoBehaviour:
   - {fileID: 1103679001}
   chests:
   - {fileID: 510251442}
+--- !u!212 &563876570 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 4031395119199391757, guid: 02b39cea52f8c4c71858f807a3e57d27, type: 3}
+  m_PrefabInstance: {fileID: 8832298931077286533}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -17676,6 +17681,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a2b6a810502d24b9096172bc16c702d6, type: 3}
+--- !u!212 &1456621075 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 6139070287899700040, guid: 02b39cea52f8c4c71858f807a3e57d27, type: 3}
+  m_PrefabInstance: {fileID: 8832298931077286533}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1463943232
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17737,6 +17747,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a2b6a810502d24b9096172bc16c702d6, type: 3}
+--- !u!212 &1523018408 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 1610557300082415060, guid: 02b39cea52f8c4c71858f807a3e57d27, type: 3}
+  m_PrefabInstance: {fileID: 8832298931077286533}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1524581463
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18034,9 +18049,21 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5531478987216640992, guid: 02b39cea52f8c4c71858f807a3e57d27, type: 3}
+      propertyPath: plusIcon
+      value: 
+      objectReference: {fileID: 1456621075}
+    - target: {fileID: 5531478987216640992, guid: 02b39cea52f8c4c71858f807a3e57d27, type: 3}
+      propertyPath: minusIcon
+      value: 
+      objectReference: {fileID: 563876570}
+    - target: {fileID: 5531478987216640992, guid: 02b39cea52f8c4c71858f807a3e57d27, type: 3}
       propertyPath: characterId
       value: A1
       objectReference: {fileID: 0}
+    - target: {fileID: 5531478987216640992, guid: 02b39cea52f8c4c71858f807a3e57d27, type: 3}
+      propertyPath: itemDisplay
+      value: 
+      objectReference: {fileID: 1523018408}
     - target: {fileID: 5531478987216640992, guid: 02b39cea52f8c4c71858f807a3e57d27, type: 3}
       propertyPath: IsPlayerControlled
       value: 0

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SwingAxe : AnimationAction
 {
+    int hits = 0;
+
     public SwingAxe() : base(System.Guid.NewGuid().ToString(), "SwingAxe", "Swing Axe")
     {
 
@@ -49,7 +51,6 @@ public class SwingAxe : AnimationAction
         Collider2D[] collisions = Utilities.DetectCollisions(character, offset, size, LayerMask.GetMask("Default"));
 
         // If so deal damage
-        int hits = 0;
         foreach (Collider2D collision in collisions)
         {
             if (collision.gameObject.GetComponent<ChoppableEntity>() != null)
@@ -59,26 +60,23 @@ public class SwingAxe : AnimationAction
                 collision.gameObject.GetComponent<ChoppableEntity>().TakeDamage(5);
             }
         }
-
+    }
+    public override void Cleanup(Character character)
+    {
         if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
         {
             string json = JsonConvert.SerializeObject(new
             {
-                type = "Observation",
+                type = "ActionExecuted",
                 data = new
                 {
-                    observerId = character.Id.ToString(),
-                    observation = character.Name + " swong an axe at X: " + character.transform.position.x + ", Y: " + character.transform.position.y + " and hit " + hits + " trees."
+                    characterId = character.Id.ToString(),
+                    result = character.Name + " swong their axe at X: " + character.transform.position.x + ", Y: " + character.transform.position.y + " and hit " + hits + " trees."
                 }
             }, Formatting.None);
 
             WebSocketClient.Instance.websocket.SendText(json);
         }
-    }
-
-    public override void Cleanup(Character character)
-    {
-        Debug.Log("[1] SwingAxe cleanup");
 
         character.PlayAnimation("idle");
     }
