@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using NativeWebSocket;
+using Newtonsoft.Json;
 
 [System.Serializable]
 public abstract class Character : Entity
@@ -149,12 +150,42 @@ public abstract class Character : Entity
                     bool success = ((IHasInventory)this).EntityInventory.Add(itemDisplay.item);
                     if (success)
                     {
+                        if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+                        {
+                            string json = JsonConvert.SerializeObject(new
+                            {
+                                type = "Observation",
+                                data = new
+                                {
+                                    observerId = Id.ToString(),
+                                    observation = Name + " dropped " + itemDisplay.item.Name + " at X: " + rb.transform.position.x + ", Y: " + rb.transform.position.y
+                                }
+                            }, Formatting.None);
+
+                            WebSocketClient.Instance.websocket.SendText(json);
+                        }
+
                         PlayAddItemAnimation(itemDisplay.item.sprite);
 
                         Destroy(itemDisplay.gameObject);
                     }
                     else
                     {
+                        if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+                        {
+                            string json = JsonConvert.SerializeObject(new
+                            {
+                                type = "Observation",
+                                data = new
+                                {
+                                    observerId = Id.ToString(),
+                                    observation = Name + " failed to pick up " + itemDisplay.item.Name + " at X: " + rb.transform.position.x + ", Y: " + rb.transform.position.y + " because their inventory is full."
+                                }
+                            }, Formatting.None);
+
+                            WebSocketClient.Instance.websocket.SendText(json);
+                        }
+
                         Debug.Log("Failed to add " + itemDisplay.item.Name + " to character");
                     }
                 }
