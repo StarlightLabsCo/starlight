@@ -19,7 +19,7 @@ public class SwingPickaxe : AnimationAction
 
     public override string ToString()
     {
-        return $"[SwingPickaxe] Swing pickaxe.";
+        return "[SwingPickaxe] Swing pickaxe. \n-- e.g. {\"type\": \"SwingPickaxe\", \"data\": {\"characterId\": \"A1\"}}";
     }
 
     public override void Execute(Character character)

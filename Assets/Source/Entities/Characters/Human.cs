@@ -38,6 +38,8 @@ public class Human : Character, IHasInventory
 
         EntityInventory = new Inventory(InventoryCapacity);
         EntityInventory.Add(new Axe());
+        EntityInventory.Add(new Pickaxe());
+        EntityInventory.Add(new Sword());
     }
 
     public override List<Action> GetAvailableActions()

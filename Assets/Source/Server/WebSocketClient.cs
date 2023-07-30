@@ -200,6 +200,7 @@ public class WebSocketClient : MonoBehaviour
     // Event handlers
     public void OnMoveTo(MoveToEvent moveToEvent)
     {
+        Debug.Log("Move to event received for character " + moveToEvent.characterId + " at X: " + moveToEvent.x + ", Y: " + moveToEvent.y);
         try
         {
             characterDictionary[moveToEvent.characterId].ActionQueue.Enqueue(new MoveTo(moveToEvent.x, moveToEvent.y));

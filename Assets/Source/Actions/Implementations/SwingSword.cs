@@ -18,7 +18,7 @@ public class SwingSword : AnimationAction
 
     public override string ToString()
     {
-        return $"[SwingSword] Swing sword.";
+        return "[SwingSword] Swing sword. \n-- e.g. {\"type\": \"SwingSword\", \"data\": {\"characterId\": \"A1\"}}";
     }
 
     public override void Execute(Character character)
