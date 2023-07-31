@@ -10,8 +10,23 @@ public class WorldTime : MonoBehaviour
     private Light2D light2D;
     private float startTime;
 
+    public static WorldTime Instance { get; private set; }
+
+    float hour = 0;
+    float minute = 0;
+
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         light2D = GetComponent<Light2D>();
         startTime = Time.time;
     }
@@ -19,10 +34,16 @@ public class WorldTime : MonoBehaviour
     private void Update()
     {
         float timeElapsed = Time.time - startTime;
-        float percentage = Mathf.Sin(timeElapsed / duration * Mathf.PI * 2) / 2 + 0.5f;
+        float percentage = (timeElapsed / duration) % 1;
 
-        percentage = Mathf.Clamp(percentage, 0, 1);
+        hour = percentage * 24;
+        minute = (hour % 1) * 60;
 
         light2D.color = gradient.Evaluate(percentage);
+    }
+
+    public string GetTime()
+    {
+        return Mathf.FloorToInt(hour) + ":" + Mathf.FloorToInt(minute).ToString("D2");
     }
 }
