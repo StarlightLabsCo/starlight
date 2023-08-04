@@ -1,13 +1,37 @@
+using System;
 using NativeWebSocket;
 using Newtonsoft.Json;
 using UnityEngine;
+using static Utilities;
 
 public class AddItemToChest : Action
 {
     private Chest chest;
     private Item item;
 
-    public AddItemToChest(Chest chest, Item item) : base("add_item_to_chest", "Add Item To Chest", "Add an item to a chest")
+    public AddItemToChest(Chest chest, Item item) : base($"add_{item.Id}_to_chest", $"add_{item.Id}_to_chest", $"Add ${item.Name} to chest {chest.Id}.", JsonConvert.SerializeObject(new
+    {
+        type = "object",
+        properties = new
+        {
+            characterId = new
+            {
+                type = "string",
+                description = "The character ID of the character that is adding the item to the chest."
+            },
+            chestId = new
+            {
+                type = "string",
+                description = "The chest ID of the chest that the item is being added to."
+            },
+            itemId = new
+            {
+                type = "string",
+                description = "The item ID of the item that is being added to the chest.",
+                values = Enum.GetNames(typeof(ItemId))
+            }
+        }
+    }))
     {
         this.chest = chest;
         this.item = item;
@@ -40,7 +64,8 @@ public class AddItemToChest : Action
                         data = new
                         {
                             observerId = character.Id.ToString(),
-                            observation = character.Name + " deposited " + item.Name + " to chest (" + chest.Id + ") at X: " + chest.transform.position.x + ", Y: " + chest.transform.position.y
+                            observation = character.Name + " deposited " + item.Name + " to chest (" + chest.Id + ") at X: " + chest.transform.position.x + ", Y: " + chest.transform.position.y,
+                            time = Time.time
                         }
                     }, Formatting.None);
 
@@ -87,7 +112,8 @@ public class AddItemToChest : Action
                 data = new
                 {
                     characterId = character.Id.ToString(),
-                    result = character.Name + " deposited " + item.Name + " into chest " + chest.Id + " at X: " + chest.transform.position.x + ", Y: " + chest.transform.position.y + "."
+                    result = character.Name + " deposited " + item.Name + " into chest " + chest.Id + " at X: " + chest.transform.position.x + ", Y: " + chest.transform.position.y + ".",
+                    resultTime = Time.time
                 }
             }, Formatting.None);
 

@@ -6,13 +6,18 @@ public class SwingHammer : AnimationAction
 {
     int hits = 0;
 
-    public SwingHammer() : base(System.Guid.NewGuid().ToString(), "SwingHammer", "Swing Hammer")
+    public SwingHammer() : base("swing_hammer", "swing_hammer", "Swing Hammer.", JsonConvert.SerializeObject(new
     {
-
-    }
-
-
-    public SwingHammer(string id, string name, string description) : base(id, name, description)
+        type = "object",
+        properties = new
+        {
+            characterId = new
+            {
+                type = "string",
+                description = "The character ID of the character that is adding the item to the chest."
+            },
+        }
+    }))
     {
 
     }
@@ -60,7 +65,8 @@ public class SwingHammer : AnimationAction
                 data = new
                 {
                     characterId = character.Id.ToString(),
-                    result = character.Name + " swong their hammer at X: " + character.transform.position.x + ", Y: " + character.transform.position.y
+                    result = character.Name + " swong their hammer at X: " + character.transform.position.x + ", Y: " + character.transform.position.y,
+                    resultTime = Time.time
                 }
             }, Formatting.None);
 

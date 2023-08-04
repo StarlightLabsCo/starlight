@@ -6,13 +6,18 @@ public class SwingAxe : AnimationAction
 {
     int hits = 0;
 
-    public SwingAxe() : base(System.Guid.NewGuid().ToString(), "SwingAxe", "Swing Axe")
+    public SwingAxe() : base("swing_axe", "swing_axe", "Swing Axe.", JsonConvert.SerializeObject(new
     {
-
-    }
-
-
-    public SwingAxe(string id, string name, string description) : base(id, name, description)
+        type = "object",
+        properties = new
+        {
+            characterId = new
+            {
+                type = "string",
+                description = "The character ID of the character that is adding the item to the chest."
+            },
+        }
+    }))
     {
 
     }
@@ -48,7 +53,7 @@ public class SwingAxe : AnimationAction
         Vector2 offset = new Vector2(character.transform.localScale.x, 0);
         Vector2 size = new Vector2(1.2f, 1f);
 
-        Collider2D[] collisions = Utilities.DetectCollisions(character, offset, size, LayerMask.GetMask("Default"));
+        Collider2D[] collisions = Utilities.DetectCollisions(character, offset, size, LayerMask.GetMask("Obstacles"));
 
         // If so deal damage
         foreach (Collider2D collision in collisions)
@@ -71,7 +76,8 @@ public class SwingAxe : AnimationAction
                 data = new
                 {
                     characterId = character.Id.ToString(),
-                    result = character.Name + " swong their axe at X: " + character.transform.position.x + ", Y: " + character.transform.position.y + " and hit " + hits + " trees."
+                    result = character.Name + " swong their axe at X: " + character.transform.position.x + ", Y: " + character.transform.position.y + " and hit " + hits + " trees.",
+                    resultTime = Time.time
                 }
             }, Formatting.None);
 

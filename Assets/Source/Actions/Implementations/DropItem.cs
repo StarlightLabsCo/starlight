@@ -1,16 +1,32 @@
+using System;
 using NativeWebSocket;
 using Newtonsoft.Json;
 using UnityEngine;
+using static Utilities;
+using Random = UnityEngine.Random;
 
 public class DropItem : Action
 {
     Item item;
 
-    public DropItem(string id, string name, string description) : base(id, name, description)
+    public DropItem(Item item) : base($"drop_{item.Id}", $"drop_{item.Id}", $"Drop {item.Name} onto the ground.", JsonConvert.SerializeObject(new
     {
-    }
-
-    public DropItem(Item item) : base("drop", "Drop", "Drop an item from your inventory")
+        type = "object",
+        properties = new
+        {
+            characterId = new
+            {
+                type = "string",
+                description = "The character ID of the character that is adding the item to the chest."
+            },
+            itemId = new
+            {
+                type = "string",
+                description = "The item ID of the item that is being added to the chest.",
+                values = Enum.GetNames(typeof(ItemId))
+            }
+        }
+    }))
     {
         this.item = item;
     }
@@ -66,7 +82,8 @@ public class DropItem : Action
                         data = new
                         {
                             observerId = character.Id.ToString(),
-                            observation = character.Name + " dropped " + item.Name + " at X: " + rb.transform.position.x + ", Y: " + rb.transform.position.y
+                            observation = character.Name + " dropped " + item.Name + " at X: " + rb.transform.position.x + ", Y: " + rb.transform.position.y,
+                            time = Time.time
                         }
                     }, Formatting.None);
 
@@ -102,7 +119,8 @@ public class DropItem : Action
                 data = new
                 {
                     characterId = character.Id.ToString(),
-                    result = character.Name + " dropped " + item.Name + " on the ground at X: " + character.transform.position.x + ", Y: " + character.transform.position.y + "."
+                    result = character.Name + " dropped " + item.Name + " on the ground at X: " + character.transform.position.x + ", Y: " + character.transform.position.y + ".",
+                    resultTime = Time.time
                 }
             }, Formatting.None);
 

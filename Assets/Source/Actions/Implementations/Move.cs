@@ -10,11 +10,8 @@ public class Move : Action
     ContactFilter2D movementFilter = new ContactFilter2D();
     List<RaycastHit2D> castCollisions = new List<RaycastHit2D>();
 
-    public Move(string id, string name, string description) : base(id, name, description)
-    {
-    }
 
-    public Move(Vector2 direction) : base(System.Guid.NewGuid().ToString(), "Move", "Move in a direction")
+    public Move(Vector2 direction) : base(System.Guid.NewGuid().ToString(), "Move", "Move in a direction", "")
     {
         this.direction = direction;
     }
@@ -22,10 +19,6 @@ public class Move : Action
     public override string ToString()
     {
         return $"[Move] Move based on a provided normalized vector (X, Y)." + "\n-- e.g. { \"type\": \"Move\", \"data\": { \"characterId\": \"A1\", \"x\": -1.0, \"y\": 0.0 }}";
-    }
-
-    public Move() : base(System.Guid.NewGuid().ToString(), "Move", "Move in a direction")
-    {
     }
 
     bool isAccessible(Character character, Vector2 direction)

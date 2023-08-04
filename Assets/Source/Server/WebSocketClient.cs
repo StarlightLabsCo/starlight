@@ -85,33 +85,37 @@ public class WebSocketClient : MonoBehaviour
                 case "ConnectionEstablished":
                     Debug.Log("Connection established!");
                     break;
-                case "MoveTo":
+                case "move_to":
                     MoveToEvent moveToEvent = jsonObject["data"].ToObject<MoveToEvent>();
                     OnMoveTo(moveToEvent);
                     break;
-                case "SwingSword":
+                case "swing_sword":
                     SwingSwordEvent swingSwordEvent = jsonObject["data"].ToObject<SwingSwordEvent>();
                     OnSwingSword(swingSwordEvent);
                     break;
-                case "SwingPickaxe":
+                case "swing_pickaxe":
                     SwingPickaxeEvent swingPickaxeEvent = jsonObject["data"].ToObject<SwingPickaxeEvent>();
                     OnSwingPickaxe(swingPickaxeEvent);
                     break;
-                case "SwingAxe":
+                case "swing_axe":
                     SwingAxeEvent swingAxeEvent = jsonObject["data"].ToObject<SwingAxeEvent>();
                     OnSwingAxe(swingAxeEvent);
                     break;
-                case "DropItem":
+                case "drop":
                     DropItemEvent dropItemEvent = jsonObject["data"].ToObject<DropItemEvent>();
                     OnDropItem(dropItemEvent);
                     break;
-                case "AddItemToChest":
+                case "add_to_chest":
                     AddItemToChestEvent addItemToChestEvent = jsonObject["data"].ToObject<AddItemToChestEvent>();
                     OnAddItemToChest(addItemToChestEvent);
                     break;
-                case "RemoveItemFromChest":
+                case "remove_from_chest":
                     RemoveItemFromChestEvent removeItemFromChestEvent = jsonObject["data"].ToObject<RemoveItemFromChestEvent>();
                     OnRemoveItemFromChest(removeItemFromChestEvent);
+                    break;
+                case "SetWorldTime":
+                    SetWorldTimeEvent setWorldTimeEvent = jsonObject["data"].ToObject<SetWorldTimeEvent>();
+                    OnSetWorldTime(setWorldTimeEvent);
                     break;
                 default:
                     // Try again
@@ -147,9 +151,18 @@ public class WebSocketClient : MonoBehaviour
 
         // Get current available actions from character
         List<Action> availableActions = character.GetAvailableActions();
-
-        // Convert list to array of string representations
-        string[] actionsArray = availableActions.Select(a => a.ToString()).ToArray();
+        string[] actionsArray = new string[availableActions.Count];
+        for (int i = 0; i < availableActions.Count; i++)
+        {
+            Debug.Log(availableActions[i].Name);
+            string json = JsonConvert.SerializeObject(new
+            {
+                name = availableActions[i].Name,
+                description = availableActions[i].Description,
+                parameters = availableActions[i].Parameters
+            }, Formatting.None);
+            actionsArray[i] = json;
+        }
 
         // Get environment (list of interactables in the vicinity of the character)
         string[] environmentArray = character.GetEnvironment();
@@ -182,7 +195,7 @@ public class WebSocketClient : MonoBehaviour
             string environmentJson = JsonConvert.SerializeObject(environmentArray);
             string hitboxJson = JsonConvert.SerializeObject(hitboxStringArray);
 
-            string jsonString = "{ \"type\": \"GetAction\", \"data\": { \"characterId\": \"" + character.Id + "\", \"location\": " + characterLocation + ", \"availableActions\": " + actionsJson + ", \"inventory\": " + JsonConvert.SerializeObject(inventoryArray) + ", \"environment\": " + environmentJson + ", \"hitbox\": " + hitboxJson + ", \"time\": \"" + WorldTime.Instance.GetTime() + "\" } }";
+            string jsonString = "{ \"type\": \"GetAction\", \"data\": { \"characterId\": \"" + character.Id + "\", \"location\": " + characterLocation + ", \"availableActions\": " + actionsJson + ", \"inventory\": " + JsonConvert.SerializeObject(inventoryArray) + ", \"environment\": " + environmentJson + ", \"hitbox\": " + hitboxJson + ", \"time\": \"" + Time.time + "\" } }";
 
             await websocket.SendText(jsonString);
         }
@@ -203,7 +216,7 @@ public class WebSocketClient : MonoBehaviour
         Debug.Log("Move to event received for character " + moveToEvent.characterId + " at X: " + moveToEvent.x + ", Y: " + moveToEvent.y);
         try
         {
-            characterDictionary[moveToEvent.characterId].ActionQueue.Enqueue(new MoveTo(moveToEvent.x, moveToEvent.y));
+            characterDictionary[moveToEvent.characterId].ActionQueue.Enqueue(new MoveTo(new Vector2(moveToEvent.x, moveToEvent.y)));
             characterDictionary[moveToEvent.characterId].IsRequestingAction = false;
         }
         catch (Exception e)
@@ -300,4 +313,15 @@ public class WebSocketClient : MonoBehaviour
         }
     }
 
+    public void OnSetWorldTime(SetWorldTimeEvent setWorldTimeEvent)
+    {
+        try
+        {
+            WorldTime.Instance.SetTime(setWorldTimeEvent.time);
+        }
+        catch (Exception e)
+        {
+            Debug.Log("Error setting world time: " + e);
+        }
+    }
 }

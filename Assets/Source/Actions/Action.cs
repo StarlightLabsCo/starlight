@@ -4,11 +4,14 @@ public abstract class Action
     public string Name { get; set; }
     public string Description { get; set; }
 
-    public Action(string id, string name, string description)
+    public string Parameters { get; set; }
+
+    public Action(string id, string name, string description, string parameters)
     {
         Id = id;
         Name = name;
         Description = description;
+        Parameters = parameters;
     }
 
     public override bool Equals(object obj)

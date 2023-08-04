@@ -1,6 +1,6 @@
 public abstract class AnimationAction : Action
 {
-    protected AnimationAction(string id, string name, string description) : base(id, name, description)
+    protected AnimationAction(string id, string name, string description, string parameters) : base(id, name, description, parameters)
     {
     }
 

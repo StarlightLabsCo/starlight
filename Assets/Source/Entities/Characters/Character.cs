@@ -138,8 +138,6 @@ public abstract class Character : Entity
         // Get any items nearby
         if (this is IHasInventory && (this as IHasInventory).EntityInventory.Items.Count < (this as IHasInventory).InventoryCapacity)
         {
-            // TODO: add observation here
-
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 0.3f);
             foreach (Collider2D collider in colliders)
             {
@@ -158,7 +156,8 @@ public abstract class Character : Entity
                                 data = new
                                 {
                                     observerId = Id.ToString(),
-                                    observation = Name + " dropped " + itemDisplay.item.Name + " at X: " + rb.transform.position.x + ", Y: " + rb.transform.position.y
+                                    observation = Name + " picked up " + itemDisplay.item.Name + " at X: " + rb.transform.position.x + ", Y: " + rb.transform.position.y,
+                                    time = Time.time
                                 }
                             }, Formatting.None);
 
@@ -179,7 +178,8 @@ public abstract class Character : Entity
                                 data = new
                                 {
                                     observerId = Id.ToString(),
-                                    observation = Name + " failed to pick up " + itemDisplay.item.Name + " at X: " + rb.transform.position.x + ", Y: " + rb.transform.position.y + " because their inventory is full."
+                                    observation = Name + " failed to pick up " + itemDisplay.item.Name + " at X: " + rb.transform.position.x + ", Y: " + rb.transform.position.y + " because their inventory is full.",
+                                    time = Time.time
                                 }
                             }, Formatting.None);
 

@@ -13,24 +13,31 @@ public class MoveTo : Action
 
     public Seeker seeker;
 
-    public MoveTo(string id, string name, string description) : base(id, name, description)
+
+    public MoveTo(Vector2 target) : base(System.Guid.NewGuid().ToString(), "move_to", "Move to a target location", JsonConvert.SerializeObject(new
     {
-
-    }
-
-    public MoveTo(Vector2 target) : base(System.Guid.NewGuid().ToString(), "MoveTo", "Move to a target location")
+        type = "object",
+        properties = new
+        {
+            characterId = new
+            {
+                type = "string",
+                description = "The character ID of the character that is adding the item to the chest."
+            },
+            x = new
+            {
+                type = "number",
+                description = "The X coordinate of the target location."
+            },
+            y = new
+            {
+                type = "number",
+                description = "The Y coordinate of the target location."
+            }
+        }
+    }))
     {
         this.target = target;
-    }
-
-    public MoveTo() : base(System.Guid.NewGuid().ToString(), "MoveTo", "Move to a target location")
-    {
-
-    }
-
-    public MoveTo(float x, float y) : base(System.Guid.NewGuid().ToString(), "MoveTo", "Move to a target location")
-    {
-        this.target = new Vector2(x, y);
     }
 
     public override string ToString()
@@ -52,6 +59,7 @@ public class MoveTo : Action
                 {
                     observerId = character.Id.ToString(),
                     observation = character.Name + " has started walking to " + target.x + ", Y: " + target.y + ".",
+                    time = Time.time
                 }
             }, Formatting.None);
 
@@ -83,6 +91,7 @@ public class MoveTo : Action
                     {
                         observerId = character.Id.ToString(),
                         observation = character.Name + " finished walking to " + target.x + ", Y: " + target.y + ".",
+                        time = Time.time
                     }
                 }, Formatting.None);
 
@@ -135,6 +144,7 @@ public class MoveTo : Action
                 {
                     characterId = character.Id.ToString(),
                     result = character.Name + " walked to X: " + target.x + ", Y: " + target.y + ".",
+                    resultTime = Time.time
                 }
             }, Formatting.None);
 

@@ -6,13 +6,18 @@ public class SwingPickaxe : AnimationAction
 {
     int hits = 0;
 
-    public SwingPickaxe() : base(System.Guid.NewGuid().ToString(), "SwingPickaxe", "Swing Pickaxe")
+    public SwingPickaxe() : base("swing_pickaxe", "swing_pickaxe", "Swing Pickaxe.", JsonConvert.SerializeObject(new
     {
-
-    }
-
-
-    public SwingPickaxe(string id, string name, string description) : base(id, name, description)
+        type = "object",
+        properties = new
+        {
+            characterId = new
+            {
+                type = "string",
+                description = "The character ID of the character that is adding the item to the chest."
+            },
+        }
+    }))
     {
 
     }
@@ -43,7 +48,7 @@ public class SwingPickaxe : AnimationAction
         Vector2 offset = new Vector2(character.transform.localScale.x, 0);
         Vector2 size = new Vector2(1.2f, 1f);
 
-        Collider2D[] collisions = Utilities.DetectCollisions(character, offset, size, LayerMask.GetMask("Default"));
+        Collider2D[] collisions = Utilities.DetectCollisions(character, offset, size, LayerMask.GetMask("Obstacles"));
 
         // If so deal damage
         foreach (Collider2D collision in collisions)
@@ -68,7 +73,8 @@ public class SwingPickaxe : AnimationAction
                 data = new
                 {
                     characterId = character.Id.ToString(),
-                    result = character.Name + " swong their pickaxe at X: " + character.transform.position.x + ", Y: " + character.transform.position.y + " and hit " + hits + " mineable entities."
+                    result = character.Name + " swong their pickaxe at X: " + character.transform.position.x + ", Y: " + character.transform.position.y + " and hit " + hits + " mineable entities.",
+                    resultTime = Time.time
                 }
             }, Formatting.None);
 

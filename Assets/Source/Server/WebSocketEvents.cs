@@ -60,4 +60,9 @@ namespace WebSocketEvents
         public string itemId { get; set; }
         public string chestId { get; set; }
     }
+
+    public class SetWorldTimeEvent : WebSocketEvent
+    {
+        public float time { get; set; }
+    }
 }

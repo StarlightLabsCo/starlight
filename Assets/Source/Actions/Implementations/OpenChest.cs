@@ -5,7 +5,7 @@ public class OpenChest : Action
 {
     private Chest chest;
 
-    public OpenChest(Chest chest) : base("open_chest", "Open Chest", "Open a chest")
+    public OpenChest(Chest chest) : base($"open_chest_{chest.Id}", $"open_chest_{chest.Id}", $"Open chest ${chest.Id} to see what's inside.", "")
     {
         this.chest = chest;
     }

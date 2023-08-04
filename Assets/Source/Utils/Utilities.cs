@@ -65,7 +65,8 @@ public static class Utilities
                 data = new
                 {
                     observerId = character.Id.ToString(),
-                    observation = character.Name + " sees " + entity.Name + " at X: " + entity.transform.position.x + ", Y: " + entity.transform.position.y + "."
+                    observation = character.Name + " sees " + entity.Name + " at X: " + entity.transform.position.x + ", Y: " + entity.transform.position.y + ".",
+                    time = Time.time
                 }
             }, Formatting.None);
 
@@ -81,7 +82,8 @@ public static class Utilities
                 data = new
                 {
                     observerId = character.Id.ToString(),
-                    observation = character.Name + " no longer sees " + entity.name + " at X: " + entity.transform.position.x + ", Y: " + entity.transform.position.y
+                    observation = character.Name + " no longer sees " + entity.name + " at X: " + entity.transform.position.x + ", Y: " + entity.transform.position.y,
+                    time = Time.time
                 }
             }, Formatting.None);
 
@@ -116,5 +118,18 @@ public static class Utilities
             default:
                 return null;
         }
+    }
+
+    public enum ItemId
+    {
+        wood,
+        stone,
+        iron,
+        diamond,
+        copper,
+        coal,
+        axe,
+        pickaxe,
+        sword
     }
 }

@@ -34,7 +34,7 @@ public class Human : Character, IHasInventory
         base.Start();
 
         BaseActions = new List<Action>();
-        BaseActions.Add(new MoveTo());
+        BaseActions.Add(new MoveTo(Vector2.zero));
 
         EntityInventory = new Inventory(InventoryCapacity);
         EntityInventory.Add(new Axe());
@@ -55,7 +55,8 @@ public class Human : Character, IHasInventory
         Vector2 offset = new Vector2(this.transform.localScale.x, 0);
         Vector2 size = new Vector2(1.2f, 1f);
 
-        Collider2D[] collisions = Utilities.DetectCollisions(this, offset, size, LayerMask.GetMask("Default"));
+        Collider2D[] collisions = Utilities.DetectCollisions(this, offset, size, LayerMask.GetMask("Obstacles"));
+        Debug.Log($"Hitbox collisions: {collisions.Length}");
 
         // Get available actions from inventory
         foreach (Item item in EntityInventory.Items)

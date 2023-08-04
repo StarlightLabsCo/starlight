@@ -3,17 +3,17 @@ using UnityEngine.Rendering.Universal;
 
 public class WorldTime : MonoBehaviour
 {
-    public float duration = 5f;
+    public static WorldTime Instance { get; private set; }
+
+    public float dayDuration = 5f;
 
     [SerializeField]
     private Gradient gradient;
     private Light2D light2D;
-    private float startTime;
 
-    public static WorldTime Instance { get; private set; }
+    private float worldTime = 0f;
 
-    float hour = 0;
-    float minute = 0;
+    private float previousTime = 0f;
 
     private void Awake()
     {
@@ -28,22 +28,23 @@ public class WorldTime : MonoBehaviour
         }
 
         light2D = GetComponent<Light2D>();
-        startTime = Time.time;
     }
 
     private void Update()
     {
-        float timeElapsed = Time.time - startTime;
-        float percentage = (timeElapsed / duration) % 1;
+        // Calculate the difference in time since the last frame
+        float difference = Time.time - previousTime;
+        previousTime = Time.time;
 
-        hour = percentage * 24;
-        minute = (hour % 1) * 60;
+        worldTime += difference;
+
+        float percentage = (worldTime / dayDuration) % 1;
 
         light2D.color = gradient.Evaluate(percentage);
     }
 
-    public string GetTime()
+    public void SetTime(float time)
     {
-        return Mathf.FloorToInt(hour) + ":" + Mathf.FloorToInt(minute).ToString("D2");
+        worldTime = time;
     }
 }

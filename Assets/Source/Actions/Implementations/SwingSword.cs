@@ -6,12 +6,18 @@ public class SwingSword : AnimationAction
 {
     int hits = 0;
 
-    public SwingSword() : base(System.Guid.NewGuid().ToString(), "SwingSword", "Swing sword")
+    public SwingSword() : base("swing_sword", "swing_sword", "Swing sword.", JsonConvert.SerializeObject(new
     {
-
-    }
-
-    public SwingSword(string id, string name, string description) : base(id, name, description)
+        type = "object",
+        properties = new
+        {
+            characterId = new
+            {
+                type = "string",
+                description = "The character ID of the character that is adding the item to the chest."
+            },
+        }
+    }))
     {
 
     }
@@ -66,7 +72,8 @@ public class SwingSword : AnimationAction
                 data = new
                 {
                     characterId = character.Id.ToString(),
-                    result = character.Name + " swong their sword at X: " + character.transform.position.x + ", Y: " + character.transform.position.y + " and hit " + hits + " characters."
+                    result = character.Name + " swong their sword at X: " + character.transform.position.x + ", Y: " + character.transform.position.y + " and hit " + hits + " characters.",
+                    resultTime = Time.time
                 }
             }, Formatting.None);
 
