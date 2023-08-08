@@ -11,7 +11,7 @@ public class WorldTime : MonoBehaviour
     private Gradient gradient;
     private Light2D light2D;
 
-    private float worldTime = 0f;
+    public float worldTime = 0f;
 
     private float previousTime = 0f;
 

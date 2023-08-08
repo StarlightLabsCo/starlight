@@ -15,7 +15,6 @@ public class AgentCharacterController : ICharacterController
     {
         if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
         {
-
             // Send Web Socket message
             WebSocketClient.Instance.SendWebSocketMessage(character);
 

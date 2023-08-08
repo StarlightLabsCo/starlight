@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
 
 [System.Serializable]
@@ -14,6 +15,20 @@ public class Human : Character, IHasInventory
 
 
     public Animator HairAnimator;
+
+    public enum HairType
+    {
+        Bowl,
+        Curly,
+        Long,
+        Mop,
+        Short,
+        Spikey
+    }
+
+    [SerializeField]
+    public HairType hairType = HairType.Mop;
+
     public Animator BaseAnimator;
     public Animator ToolsAnimator;
 
@@ -26,7 +41,25 @@ public class Human : Character, IHasInventory
         base.Awake();
 
         // Id = "human_" + System.Guid.NewGuid().ToString();
-        Name = "Thomas Smith";
+        if (Id == "A1")
+        {
+            Name = "Thomas Smith";
+        }
+        else if (Id == "A2")
+        {
+            Name = "George Brown";
+        }
+        else if (Id == "A3")
+        {
+            Name = "Will Turner";
+        }
+        else if (Id == "A4")
+        {
+            Name = "Lucy Wilde";
+        } else if (Id == "A5")
+        {
+            Name = "Eli Green";
+        }
     }
 
     protected override void Start()
@@ -40,6 +73,8 @@ public class Human : Character, IHasInventory
         EntityInventory.Add(new Axe());
         EntityInventory.Add(new Pickaxe());
         EntityInventory.Add(new Sword());
+
+        camera = GetComponentInChildren<CinemachineVirtualCamera>();
     }
 
     public override List<Action> GetAvailableActions()
@@ -107,7 +142,8 @@ public class Human : Character, IHasInventory
 
         CurrentAnimation = animationName;
 
-        HairAnimator.Play("human_hair_" + animationName, -1, 0f);
+        string hairAnimationName = "human_hair_" + hairType.ToString().ToLower() + "_" + animationName;
+        HairAnimator.Play(hairAnimationName, -1, 0f);
         BaseAnimator.Play("human_base_" + animationName, -1, 0f);
         ToolsAnimator.Play("human_tools_" + animationName, -1, 0f);
     }

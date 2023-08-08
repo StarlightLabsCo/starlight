@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using NativeWebSocket;
 using Newtonsoft.Json;
+using Cinemachine;
 
 [System.Serializable]
 public abstract class Character : Entity
@@ -36,6 +37,9 @@ public abstract class Character : Entity
 
     // Item animation
     public GameObject iconContainer;
+
+    // Cameras
+    public CinemachineVirtualCamera camera;
 
     [SerializeField]
     private SpriteRenderer itemDisplay;
@@ -123,7 +127,7 @@ public abstract class Character : Entity
             }
             else if (!IsRequestingAction)
             {
-                Debug.Log("Requesting action");
+                Debug.Log($"Requesting action for {Id}");
                 List<Action> availableActions = GetAvailableActions();
 
                 Controller.RequestAction(this, availableActions);
