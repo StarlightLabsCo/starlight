@@ -28,7 +28,7 @@ public class RemoveItemFromChest : Action
             itemId = new
             {
                 type = "string",
-                description = "The item ID of the item that is being added to the chest.",
+                description = "The item ID of the item that is being added to the chest. Must be lowercase.",
                 values = Enum.GetNames(typeof(ItemId))
             }
         }

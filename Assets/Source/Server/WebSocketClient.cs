@@ -23,9 +23,8 @@ public class WebSocketClient : MonoBehaviour
     private Dictionary<string, Chest> chestDictionary = new Dictionary<string, Chest>();
 
     // Camera handling (TODO: move this to dedicated camera manager class)
-    private float cameraLockoutEnd = 0f; // Timestamp for when the lockout ends
-    private const float CAMERA_LOCKOUT_DURATION = 3f; // Duration of the lockout
-
+    private Character focusedCharacter;
+    private Queue<Character> cameraFocusQueue = new Queue<Character>();
 
     private void Awake()
     {
@@ -139,9 +138,34 @@ public class WebSocketClient : MonoBehaviour
 #if !UNITY_WEBGL || UNITY_EDITOR
         websocket.DispatchMessageQueue();
 #endif
+
+        if (focusedCharacter != cameraFocusQueue.Peek())
+        {
+            SwitchCameraFocus(cameraFocusQueue.Peek());
+        }
     }
+
+
+
     public async void SendWebSocketMessage(Character character)
     {
+        // If the queue already contains the character, remove it so it can be added to the back once the websocket message is sent.
+        if (cameraFocusQueue.Contains(character))
+        {
+            Queue<Character> newQueue = new Queue<Character>();
+
+            foreach (Character item in cameraFocusQueue)
+            {
+                if (item != character)
+                {
+                    newQueue.Enqueue(item);
+                }
+            }
+
+            cameraFocusQueue = newQueue;
+
+        }
+
         string characterLocation = "{ \"x\": " + character.gameObject.transform.position.x + ", \"y\": " + character.gameObject.transform.position.y + " }";
 
         // Get current character inventory
@@ -203,6 +227,8 @@ public class WebSocketClient : MonoBehaviour
             string jsonString = "{ \"type\": \"GetAction\", \"data\": { \"characterId\": \"" + character.Id + "\", \"location\": " + characterLocation + ", \"availableActions\": " + actionsJson + ", \"inventory\": " + JsonConvert.SerializeObject(inventoryArray) + ", \"environment\": " + environmentJson + ", \"hitbox\": " + hitboxJson + ", \"time\": \"" + Time.time + "\" } }";
 
             await websocket.SendText(jsonString);
+
+            cameraFocusQueue.Enqueue(character);
         }
         else
         {
@@ -221,7 +247,6 @@ public class WebSocketClient : MonoBehaviour
         Debug.Log("Move to event received for character " + moveToEvent.characterId + " at X: " + moveToEvent.x + ", Y: " + moveToEvent.y);
         try
         {
-            SwitchCameraFocus(characterDictionary[moveToEvent.characterId]);
             characterDictionary[moveToEvent.characterId].ActionQueue.Enqueue(new MoveTo(new Vector2(moveToEvent.x, moveToEvent.y)));
             characterDictionary[moveToEvent.characterId].IsRequestingAction = false;
         }
@@ -237,7 +262,6 @@ public class WebSocketClient : MonoBehaviour
     {
         try
         {
-            SwitchCameraFocus(characterDictionary[swingAxeEvent.characterId]);
             characterDictionary[swingAxeEvent.characterId].ActionQueue.Enqueue(new SwingAxe());
             characterDictionary[swingAxeEvent.characterId].IsRequestingAction = false;
         }
@@ -251,7 +275,6 @@ public class WebSocketClient : MonoBehaviour
     {
         try
         {
-            SwitchCameraFocus(characterDictionary[swingSwordEvent.characterId]);
             characterDictionary[swingSwordEvent.characterId].ActionQueue.Enqueue(new SwingSword());
             characterDictionary[swingSwordEvent.characterId].IsRequestingAction = false;
         }
@@ -265,7 +288,6 @@ public class WebSocketClient : MonoBehaviour
     {
         try
         {
-            SwitchCameraFocus(characterDictionary[swingPickaxeEvent.characterId]);
             characterDictionary[swingPickaxeEvent.characterId].ActionQueue.Enqueue(new SwingPickaxe());
             characterDictionary[swingPickaxeEvent.characterId].IsRequestingAction = false;
         }
@@ -279,8 +301,6 @@ public class WebSocketClient : MonoBehaviour
     {
         try
         {
-            SwitchCameraFocus(characterDictionary[dropItemEvent.characterId]);
-
             DropItem dropItem = new(Utilities.idToItem(dropItemEvent.itemId));
             characterDictionary[dropItemEvent.characterId].ActionQueue.Enqueue(dropItem);
             characterDictionary[dropItemEvent.characterId].IsRequestingAction = false;
@@ -295,8 +315,6 @@ public class WebSocketClient : MonoBehaviour
     {
         try
         {
-            SwitchCameraFocus(characterDictionary[addItemToChestEvent.characterId]);
-
             Debug.Log("Adding item to chest " + addItemToChestEvent.chestId + " from character " + addItemToChestEvent.characterId + " with item " + addItemToChestEvent.itemId);
             Debug.Log("Chest dictionary: " + chestDictionary);
             Debug.Log("Chest dictionary result: " + chestDictionary[addItemToChestEvent.chestId]);
@@ -316,8 +334,6 @@ public class WebSocketClient : MonoBehaviour
     {
         try
         {
-            SwitchCameraFocus(characterDictionary[removeItemFromChestEvent.characterId]);
-
             RemoveItemFromChest removeItemFromChest = new(chestDictionary[removeItemFromChestEvent.chestId], Utilities.idToItem(removeItemFromChestEvent.itemId));
             characterDictionary[removeItemFromChestEvent.characterId].ActionQueue.Enqueue(removeItemFromChest);
             characterDictionary[removeItemFromChestEvent.characterId].IsRequestingAction = false;
@@ -342,10 +358,6 @@ public class WebSocketClient : MonoBehaviour
 
     public void SwitchCameraFocus(Character character)
     {
-        if (Time.time >= cameraLockoutEnd)
-        {
-            character.camera.Priority = (int)(Time.time * 100);
-            cameraLockoutEnd = Time.time + CAMERA_LOCKOUT_DURATION;
-        }
+        character.camera.Priority = (int)(Time.time * 100);
     }
 }
