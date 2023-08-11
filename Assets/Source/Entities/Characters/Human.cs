@@ -111,7 +111,7 @@ public class Human : Character, IHasInventory
             actions.Add(new DropItem(item));
         }
 
-        // Get actions from environment
+        // Get actions from environment - short range
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 1f);
         foreach (Collider2D collider in colliders)
         {
@@ -127,6 +127,15 @@ public class Human : Character, IHasInventory
                     actions.Add(new RemoveItemFromChest(collider.gameObject.GetComponent<Chest>(), collider.gameObject.GetComponent<Chest>().EntityInventory.Items[i]));
                 }
             }
+        }
+
+        Collider2D[] farColliders = Physics2D.OverlapCircleAll(transform.position, 2f);
+        foreach (Collider2D collider in farColliders) {
+            Human targetHuman = collider.gameObject.GetComponent<Human>();
+            if (targetHuman != null && targetHuman != this)
+            { 
+                actions.Add(new StartConversation(this, targetHuman, ""));
+            } 
         }
 
         return actions;

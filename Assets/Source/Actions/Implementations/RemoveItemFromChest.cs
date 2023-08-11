@@ -45,7 +45,21 @@ public class RemoveItemFromChest : Action
 
     public override void Cleanup(Character character)
     {
-        return;
+        if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+        {
+            string json = JsonConvert.SerializeObject(new
+            {
+                type = "ActionExecuted",
+                data = new
+                {
+                    characterId = character.Id.ToString(),
+                    result = character.Name + " removed " + item.Name + " from chest " + chest.Id + " at X: " + chest.transform.position.x + ", Y: " + chest.transform.position.y + ".",
+                    resultTime = Time.time
+                }
+            }, Formatting.None);
+
+            WebSocketClient.Instance.websocket.SendText(json);
+        }
     }
 
     public override void Execute(Character character)

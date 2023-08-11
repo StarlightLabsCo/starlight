@@ -61,6 +61,25 @@ namespace WebSocketEvents
         public string chestId { get; set; }
     }
 
+    public class StartConversationEvent : WebSocketEvent
+    {
+        public string characterId { get; set; }
+        public string targetCharacterId { get; set; }
+        public string conversationGoal { get; set; }
+    }
+
+    public class ConversationEvent : WebSocketEvent
+    {
+        public string characterId { get; set; }
+        public string content { get; set; }
+    }
+
+    public class EndConversationEvent : WebSocketEvent
+    {
+        public string characterId { get; set; }
+        public string targetCharacterId { get; set; }
+    }
+
     public class SetWorldTimeEvent : WebSocketEvent
     {
         public float time { get; set; }

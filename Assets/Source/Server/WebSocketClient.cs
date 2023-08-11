@@ -117,6 +117,18 @@ public class WebSocketClient : MonoBehaviour
                     RemoveItemFromChestEvent removeItemFromChestEvent = jsonObject["data"].ToObject<RemoveItemFromChestEvent>();
                     OnRemoveItemFromChest(removeItemFromChestEvent);
                     break;
+                case "start_conversation":
+                    StartConversationEvent startConversationEvent = jsonObject["data"].ToObject<StartConversationEvent>();
+                    OnStartConversation(startConversationEvent);
+                    break;
+                case "conversation":
+                    ConversationEvent conversationEvent = jsonObject["data"].ToObject<ConversationEvent>();
+                    OnConversation(conversationEvent);
+                    break;
+                case "end_conversation":
+                    EndConversationEvent endConversationEvent = jsonObject["data"].ToObject<EndConversationEvent>();
+                    OnEndConversation(endConversationEvent);
+                    break;
                 case "SetWorldTime":
                     SetWorldTimeEvent setWorldTimeEvent = jsonObject["data"].ToObject<SetWorldTimeEvent>();
                     OnSetWorldTime(setWorldTimeEvent);
@@ -341,6 +353,52 @@ public class WebSocketClient : MonoBehaviour
         catch (Exception e)
         {
             SendWebSocketMessage(characterDictionary[removeItemFromChestEvent.characterId]);
+        }
+    }
+
+    public void OnStartConversation(StartConversationEvent startConversationEvent)
+    {
+         try
+        {
+            StartConversation startConversation = new((Human)characterDictionary[startConversationEvent.characterId], (Human)characterDictionary[startConversationEvent.targetCharacterId], startConversationEvent.conversationGoal);
+
+            characterDictionary[startConversationEvent.characterId].ActionQueue.Enqueue(startConversation);
+            characterDictionary[startConversationEvent.characterId].IsRequestingAction = false;
+
+            characterDictionary[startConversationEvent.targetCharacterId].ActionQueue.Clear();
+            characterDictionary[startConversationEvent.targetCharacterId].ActionQueue.Enqueue(startConversation);
+            characterDictionary[startConversationEvent.targetCharacterId].IsRequestingAction = false;
+        } catch (Exception e)
+        {
+            SendWebSocketMessage(characterDictionary[startConversationEvent.characterId]);
+        }
+    }
+
+    public void OnConversation(ConversationEvent conversationEvent)
+    {
+        try
+        {
+            Debug.Log($"{characterDictionary[conversationEvent.characterId]} said: {conversationEvent.content}.");
+        } catch (Exception e)
+        {
+            Debug.Log(e);
+        }
+    }
+
+    public void OnEndConversation(EndConversationEvent endConversationEvent)
+    {
+        try
+        {
+            Debug.Log("On End Conversation");
+
+            Character character = characterDictionary[endConversationEvent.characterId];
+            Character targetCharacter = characterDictionary[endConversationEvent.targetCharacterId];
+
+            character.FinishAction();
+            targetCharacter.FinishAction();
+        } catch (Exception e)
+        {
+            Debug.Log(e);
         }
     }
 
