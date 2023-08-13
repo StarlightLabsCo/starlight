@@ -2,8 +2,8 @@ using UnityEngine;
 
 public abstract class Entity : MonoBehaviour
 {
-    public string Id { get; set; }
-    public string Name { get; set; }
+    public string Id;
+    public string Name;
 
     public int Health;
     public int MaxHealth;

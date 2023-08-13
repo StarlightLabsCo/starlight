@@ -32,34 +32,13 @@ public class Human : Character, IHasInventory
     public Animator BaseAnimator;
     public Animator ToolsAnimator;
 
-    public Human(string id, string name) : base("human", "Human")
+    public Human(string id, string name) : base(id, name)
     {
     }
 
     protected override void Awake()
     {
         base.Awake();
-
-        // Id = "human_" + System.Guid.NewGuid().ToString();
-        if (Id == "A1")
-        {
-            Name = "Thomas Smith";
-        }
-        else if (Id == "A2")
-        {
-            Name = "George Brown";
-        }
-        else if (Id == "A3")
-        {
-            Name = "Will Turner";
-        }
-        else if (Id == "A4")
-        {
-            Name = "Lucy Wilde";
-        } else if (Id == "A5")
-        {
-            Name = "Eli Green";
-        }
     }
 
     protected override void Start()

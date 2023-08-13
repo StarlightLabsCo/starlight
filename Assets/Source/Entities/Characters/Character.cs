@@ -23,7 +23,7 @@ public abstract class Character : Entity
 
     // Actions
     public List<Action> BaseActions; // Actions that are always available to the character
-    protected Action CurrentAction; // The action that the character is currently executing
+    public Action CurrentAction; // The action that the character is currently executing
     public Queue<Action> ActionQueue; // The queue of actions that the character will execute
     public bool IsRequestingAction;
 
@@ -41,6 +41,12 @@ public abstract class Character : Entity
     // Cameras
     public CinemachineVirtualCamera camera;
 
+
+    // UI Icons
+    [SerializeField]
+    private SpriteRenderer speechIcon;
+    public SpriteRenderer SpeechIcon { get => speechIcon; set => speechIcon = value; }
+
     [SerializeField]
     private SpriteRenderer itemDisplay;
     public SpriteRenderer ItemDisplay { get => itemDisplay; set => itemDisplay = value; }
@@ -53,6 +59,7 @@ public abstract class Character : Entity
     private SpriteRenderer minusIcon;
     public SpriteRenderer MinusIcon { get => minusIcon; set => minusIcon = value; }
 
+
     private Coroutine displayCoroutine;
 
     Vector3 iconPos;
@@ -62,7 +69,6 @@ public abstract class Character : Entity
 
 
     // Starlight
-    public string characterId;
     HashSet<Entity> observedEntities;
 
     protected Character(string id, string name) : base(id, name)
@@ -73,8 +79,7 @@ public abstract class Character : Entity
     {
         base.Awake();
 
-        Id = characterId;
-
+        SpeechIcon.enabled = false;
         ItemDisplay.enabled = false;
         PlusIcon.enabled = false;
         MinusIcon.enabled = false;

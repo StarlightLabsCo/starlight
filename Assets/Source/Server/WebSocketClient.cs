@@ -45,8 +45,8 @@ public class WebSocketClient : MonoBehaviour
         // Create a dictionary of id -> character
         foreach (Character c in character)
         {
-            Debug.Log("Adding character " + c.characterId + " to dictionary");
-            characterDictionary.Add(c.characterId, c);
+            Debug.Log("Adding character " + c.Id + " to dictionary");
+            characterDictionary.Add(c.Id, c);
         }
 
         foreach (Chest c in chests)
@@ -376,12 +376,19 @@ public class WebSocketClient : MonoBehaviour
 
     public void OnConversation(ConversationEvent conversationEvent)
     {
+        Debug.Log("On Conversation");
         try
         {
-            Debug.Log($"{characterDictionary[conversationEvent.characterId]} said: {conversationEvent.content}.");
+            Character character = characterDictionary[conversationEvent.characterId];
+
+            if (character.CurrentAction is StartConversation)
+            {
+                Debug.Log($"Added conversation to StartConversation action");
+                ((StartConversation)character.CurrentAction).conversationEvents.Enqueue(conversationEvent);
+            }
         } catch (Exception e)
         {
-            Debug.Log(e);
+            Debug.LogError(e);
         }
     }
 
@@ -392,13 +399,15 @@ public class WebSocketClient : MonoBehaviour
             Debug.Log("On End Conversation");
 
             Character character = characterDictionary[endConversationEvent.characterId];
-            Character targetCharacter = characterDictionary[endConversationEvent.targetCharacterId];
+            Action action = character.CurrentAction;
 
-            character.FinishAction();
-            targetCharacter.FinishAction();
+            if (action is StartConversation)
+            {
+                ((StartConversation)action).conversationFinished = true;
+            }
         } catch (Exception e)
         {
-            Debug.Log(e);
+            Debug.LogError(e);
         }
     }
 
