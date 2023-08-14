@@ -15,7 +15,7 @@ public class DialogueManager : MonoBehaviour
     [SerializeField]
     public TextMeshProUGUI dialogue;
 
-    int speakingWPM = 400;
+    public StartConversation activeConversation;
 
     private void Awake()
     {
@@ -35,52 +35,25 @@ public class DialogueManager : MonoBehaviour
         dialogueBox.SetActive(false);
     }
 
-    public void DisplayDialogue(string name, string dialogueText, System.Action callback)
-    {
-        float secondsToSpeak = (dialogueText.Length / 4.7f) / (speakingWPM / 60f);
-
-        this.name.text = name;
-        StartCoroutine(RevealDialogue(dialogueText, secondsToSpeak, callback));
-    }
-
-    private IEnumerator RevealDialogue(string dialogueText, float seconds, System.Action callback)
+    public void DisplayDialogueBox()
     {
         dialogueBox.SetActive(true);
-
-        float charSeconds = seconds / dialogueText.Length;
-
-        string[] words = dialogueText.Split(' ');
-        int i = 0;
-
-        while (i < words.Length)
-        {
-            string part = "";
-            while (i < words.Length && (part + words[i]).Length <= 185)
-            {
-                part += words[i] + " ";
-                i++;
-            }
-
-            yield return StartCoroutine(RevealPart(part, charSeconds * part.Length));
-        }
-
-        yield return new WaitForSeconds(3);
-        Clear();
-        callback(); 
     }
 
-    private IEnumerator RevealPart(string part, float partSeconds)
+    public void SetActiveConvseration(StartConversation conversation)
     {
-        dialogue.text = "";
-        foreach (char c in part)
-        {
-            dialogue.text += c;
-            yield return new WaitForSeconds(partSeconds / part.Length);
-        }
+        this.activeConversation = conversation;
+    }
+
+    public void SetDialogueDisplay(string name, string text)
+    {
+        this.name.text = name;
+        this.dialogue.text = text;
     }
 
     public void Clear()
     {
         dialogueBox.SetActive(false);
+        activeConversation = null;
     }
 }

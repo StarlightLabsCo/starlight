@@ -23,7 +23,7 @@ public class WebSocketClient : MonoBehaviour
     private Dictionary<string, Chest> chestDictionary = new Dictionary<string, Chest>();
 
     // Camera handling (TODO: move this to dedicated camera manager class)
-    private Character focusedCharacter;
+    public Character focusedCharacter;
     private Queue<Character> cameraFocusQueue = new Queue<Character>();
 
     private void Awake()
@@ -425,6 +425,22 @@ public class WebSocketClient : MonoBehaviour
 
     public void SwitchCameraFocus(Character character)
     {
+        this.focusedCharacter = character;
         character.camera.Priority = (int)(Time.time * 100);
+        if (DialogueManager.Instance.activeConversation != null && DialogueManager.Instance.activeConversation.character != character && DialogueManager.Instance.activeConversation.targetCharacter != character)
+        {
+            DialogueManager.Instance.SetActiveConvseration(null);
+
+            if (character.CurrentAction is StartConversation)
+            {
+                DialogueManager.Instance.SetActiveConvseration((StartConversation)character.CurrentAction);
+            }
+        } else if (DialogueManager.Instance.activeConversation == null)
+        {
+            if (character.CurrentAction is StartConversation)
+            {
+                DialogueManager.Instance.SetActiveConvseration((StartConversation)character.CurrentAction);
+            }
+        }
     }
 }

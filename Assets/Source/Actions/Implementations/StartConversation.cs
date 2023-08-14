@@ -8,14 +8,19 @@ using WebSocketEvents;
 public class StartConversation : Action
 {
 
-    Character character;
-    Character targetCharacter;
+    public Character character;
+    public Character targetCharacter;
+
     string conversationGoal;
-    Character currentSpeaker = null;
 
     public Queue<ConversationEvent> conversationEvents = new Queue<ConversationEvent>();
-
     public bool conversationFinished = false;
+
+    const int speakingWPM = 400;
+    const float secondsPerCharacter = 1 / (speakingWPM * 4.7f / 60);
+
+    public Character currentSpeaker = null;
+    public string currentlyDisplayedText = null;
 
     public StartConversation(Character character, Character targetCharacter, string conversationGoal) : base("start_conversation", "start_conversation", $"Start a conversation with {targetCharacter.Name} (ID: {targetCharacter.Id}).", JsonConvert.SerializeObject(new
     {
@@ -46,6 +51,11 @@ public class StartConversation : Action
 
     public override void Execute(Character character)
     {
+        if (WebSocketClient.Instance.focusedCharacter == character)
+        {
+            DialogueManager.Instance.SetActiveConvseration(this);
+        }
+
        if (this.character == character)
        {
             float directionToTarget = targetCharacter.transform.position.x - character.transform.position.x;
@@ -77,13 +87,18 @@ public class StartConversation : Action
         }
        else if (this.targetCharacter == character)
        {
-            float directionToTarget = character.transform.position.x - targetCharacter.transform.position.x;
+            // Reminder: this.character and character are different.. this.character is the starter of the conversation and character is who's currently exceuting
+            // this action.
+            float directionToTarget = this.character.transform.position.x - targetCharacter.transform.position.x;
+            Debug.Log($"Target character direction to target: {directionToTarget}");
             if (directionToTarget > 0 && targetCharacter.transform.localScale.x < 0)
             {
+                Debug.Log($"Target character flipping ${1}");
                 targetCharacter.Flip(1);
             }
             else if (directionToTarget < 0 && targetCharacter.transform.localScale.x > 0)
             {
+                Debug.Log($"Target character flipping ${-1}");
                 targetCharacter.Flip(-1);
             }
 
@@ -114,8 +129,14 @@ public class StartConversation : Action
 
             string content = conversationEvents.Peek().content;
 
-            character.SpeechIcon.enabled = true;
-            DialogueManager.Instance.DisplayDialogue(character.Name, content, () =>finishSpeaking(character));
+
+            if (DialogueManager.Instance.activeConversation == this)
+            {
+                DialogueManager.Instance.DisplayDialogueBox();
+                DialogueManager.Instance.SetDialogueDisplay(character.Name, "");
+            }
+
+            character.StartCoroutine(ProcessDialogue(content));
         }
         else if (conversationEvents.Count <= 0 && conversationFinished)
         {
@@ -126,13 +147,50 @@ public class StartConversation : Action
         }
     }
 
-    private void finishSpeaking(Character character)
+    private IEnumerator ProcessDialogue(string dialogueText)
     {
+        currentSpeaker.SpeechIcon.enabled = true;
+
+        // Average characters per word is 4.7f for english
+        // Speaking WPM is set to 400 (it's a sped up simulation after all, can alter as needed)
+        string[] words = dialogueText.Split(' ');
+
+        List<string> parts = new List<string>();
+
+        int i = 0;
+        while (i < words.Length)
+        {
+            string part = "";
+            while (i < words.Length && (part + words[i]).Length <= 185)
+            {
+                part += words[i] + " ";
+                i++;
+            }
+
+            parts.Add(part);
+        }
+
+        foreach (string part in parts)
+        {
+            currentlyDisplayedText = "";
+            foreach (char c in part)
+            {
+                currentlyDisplayedText += c;
+
+                if (DialogueManager.Instance.activeConversation == this)
+                {
+                    DialogueManager.Instance.SetDialogueDisplay(currentSpeaker.Name, currentlyDisplayedText);
+                }
+
+                yield return new WaitForSeconds(secondsPerCharacter);
+            }
+        }
+
         conversationEvents.Dequeue();
 
-        character.SpeechIcon.enabled = false;
+        currentSpeaker.SpeechIcon.enabled = false;
 
-        this.currentSpeaker = null;
+        currentSpeaker = null;
     }
 
     public override void FixedUpdate(Character character)
@@ -158,6 +216,11 @@ public class StartConversation : Action
             }, Formatting.None);
 
             WebSocketClient.Instance.websocket.SendText(json);
+        }
+
+        if (DialogueManager.Instance.activeConversation == this)
+        {
+            DialogueManager.Instance.Clear();
         }
     }
 
