@@ -529,6 +529,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8554842522103156747}
+  - {fileID: 4351409992035061291}
   - {fileID: 7800117728081928954}
   - {fileID: 3345481650019273595}
   - {fileID: 6943784069959056825}
@@ -624,8 +625,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 671a0c0a5bb6649b1b34ee7d295420c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Id: 
+  Name: 
   Health: 25
   MaxHealth: 25
+  healthbar: {fileID: 3401610803513230900}
   speed: 1.75
   collisionOffset: 0.2
   IsPlayerControlled: 0
@@ -637,7 +641,6 @@ MonoBehaviour:
   itemDisplay: {fileID: 1610557300082415060}
   plusIcon: {fileID: 6139070287899700040}
   minusIcon: {fileID: 4031395119199391757}
-  characterId: A1
   inventoryCapacity: 10
   HairAnimator: {fileID: 717321034389705221}
   hairType: 0
@@ -1044,3 +1047,80 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1001 &1648576280414433567
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4744601372732902747}
+    m_Modifications:
+    - target: {fileID: 3063497991817625396, guid: 88a013b03d1194aa4835fbc65c526491, type: 3}
+      propertyPath: m_RootOrder
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3063497991817625396, guid: 88a013b03d1194aa4835fbc65c526491, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3063497991817625396, guid: 88a013b03d1194aa4835fbc65c526491, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3063497991817625396, guid: 88a013b03d1194aa4835fbc65c526491, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3063497991817625396, guid: 88a013b03d1194aa4835fbc65c526491, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3063497991817625396, guid: 88a013b03d1194aa4835fbc65c526491, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3063497991817625396, guid: 88a013b03d1194aa4835fbc65c526491, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3063497991817625396, guid: 88a013b03d1194aa4835fbc65c526491, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3063497991817625396, guid: 88a013b03d1194aa4835fbc65c526491, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3063497991817625396, guid: 88a013b03d1194aa4835fbc65c526491, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3063497991817625396, guid: 88a013b03d1194aa4835fbc65c526491, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3470016484846481798, guid: 88a013b03d1194aa4835fbc65c526491, type: 3}
+      propertyPath: m_Name
+      value: Healthbar
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 88a013b03d1194aa4835fbc65c526491, type: 3}
+--- !u!114 &3401610803513230900 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4166982375897904939, guid: 88a013b03d1194aa4835fbc65c526491, type: 3}
+  m_PrefabInstance: {fileID: 1648576280414433567}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68fdc983c226f447dbc5b3190c8c61b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &4351409992035061291 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3063497991817625396, guid: 88a013b03d1194aa4835fbc65c526491, type: 3}
+  m_PrefabInstance: {fileID: 1648576280414433567}
+  m_PrefabAsset: {fileID: 0}

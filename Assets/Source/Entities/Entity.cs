@@ -8,6 +8,8 @@ public abstract class Entity : MonoBehaviour
     public int Health;
     public int MaxHealth;
 
+    public Healthbar healthbar;
+
     public virtual Item itemOnDeath { get; set; } = null;
     public virtual GameObject entityOnDeath { get; set; } = null;
 
@@ -45,6 +47,8 @@ public abstract class Entity : MonoBehaviour
     public virtual void TakeDamage(int damage)
     {
         Health = Mathf.Clamp(Health - damage, 0, MaxHealth);
+
+        healthbar.setHealthbar(Health, MaxHealth);
 
         if (Health <= 0)
         {
