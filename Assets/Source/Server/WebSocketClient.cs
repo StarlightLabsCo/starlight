@@ -15,16 +15,12 @@ public class WebSocketClient : MonoBehaviour
     public static WebSocketClient Instance { get; private set; }
 
     // Characters
-    public List<Character> character;
+    public List<Character> characters;
     private Dictionary<string, Character> characterDictionary = new Dictionary<string, Character>();
 
     // Chests
     public List<Chest> chests;
     private Dictionary<string, Chest> chestDictionary = new Dictionary<string, Chest>();
-
-    // Camera handling (TODO: move this to dedicated camera manager class)
-    public Character focusedCharacter;
-    private Queue<Character> cameraFocusQueue = new Queue<Character>();
 
     private void Awake()
     {
@@ -43,7 +39,7 @@ public class WebSocketClient : MonoBehaviour
     async void Start()
     {
         // Create a dictionary of id -> character
-        foreach (Character c in character)
+        foreach (Character c in characters)
         {
             Debug.Log("Adding character " + c.Id + " to dictionary");
             characterDictionary.Add(c.Id, c);
@@ -150,11 +146,6 @@ public class WebSocketClient : MonoBehaviour
 #if !UNITY_WEBGL || UNITY_EDITOR
         websocket.DispatchMessageQueue();
 #endif
-
-        if (focusedCharacter != cameraFocusQueue.Peek())
-        {
-            SwitchCameraFocus(cameraFocusQueue.Peek());
-        }
     }
 
 
@@ -162,11 +153,11 @@ public class WebSocketClient : MonoBehaviour
     public async void SendWebSocketMessage(Character character)
     {
         // If the queue already contains the character, remove it so it can be added to the back once the websocket message is sent.
-        if (cameraFocusQueue.Contains(character))
+        if (CameraManager.Instance.cameraFocusQueue.Contains(character))
         {
             Queue<Character> newQueue = new Queue<Character>();
 
-            foreach (Character item in cameraFocusQueue)
+            foreach (Character item in CameraManager.Instance.cameraFocusQueue)
             {
                 if (item != character)
                 {
@@ -174,7 +165,7 @@ public class WebSocketClient : MonoBehaviour
                 }
             }
 
-            cameraFocusQueue = newQueue;
+            CameraManager.Instance.cameraFocusQueue = newQueue;
 
         }
 
@@ -240,7 +231,7 @@ public class WebSocketClient : MonoBehaviour
 
             await websocket.SendText(jsonString);
 
-            cameraFocusQueue.Enqueue(character);
+            CameraManager.Instance.cameraFocusQueue.Enqueue(character);
         }
         else
         {
@@ -420,27 +411,6 @@ public class WebSocketClient : MonoBehaviour
         catch (Exception e)
         {
             Debug.Log("Error setting world time: " + e);
-        }
-    }
-
-    public void SwitchCameraFocus(Character character)
-    {
-        this.focusedCharacter = character;
-        character.camera.Priority = (int)(Time.time * 100);
-        if (DialogueManager.Instance.activeConversation != null && DialogueManager.Instance.activeConversation.character != character && DialogueManager.Instance.activeConversation.targetCharacter != character)
-        {
-            DialogueManager.Instance.SetActiveConvseration(null);
-
-            if (character.CurrentAction is StartConversation)
-            {
-                DialogueManager.Instance.SetActiveConvseration((StartConversation)character.CurrentAction);
-            }
-        } else if (DialogueManager.Instance.activeConversation == null)
-        {
-            if (character.CurrentAction is StartConversation)
-            {
-                DialogueManager.Instance.SetActiveConvseration((StartConversation)character.CurrentAction);
-            }
         }
     }
 }

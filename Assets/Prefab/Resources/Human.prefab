@@ -130,7 +130,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7800117728081928954}
   - component: {fileID: 1863793048626228625}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: SpeechIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -190,9 +190,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 4
+  m_SortingLayerID: 724332207
+  m_SortingLayer: 1
+  m_SortingOrder: 5
   m_Sprite: {fileID: 1098056515, guid: 396aea20a613b4de3af8a0d34f28c942, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -334,7 +334,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8951638427114761025}
   - component: {fileID: 6139070287899700040}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: PlusIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -394,9 +394,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 4
+  m_SortingLayerID: 724332207
+  m_SortingLayer: 1
+  m_SortingOrder: 5
   m_Sprite: {fileID: -311943587, guid: 396aea20a613b4de3af8a0d34f28c942, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -889,7 +889,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3345481650019273595}
   - component: {fileID: 1610557300082415060}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ItemDisplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -949,9 +949,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 4
+  m_SortingLayerID: 724332207
+  m_SortingLayer: 1
+  m_SortingOrder: 5
   m_Sprite: {fileID: -3753825769889500098, guid: f92eaa20f9b2a4e5f975c653143aac27, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -973,7 +973,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6943784069959056825}
   - component: {fileID: 4031395119199391757}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: MinusIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1033,9 +1033,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 4
+  m_SortingLayerID: 724332207
+  m_SortingLayer: 1
+  m_SortingOrder: 5
   m_Sprite: {fileID: -2096305952, guid: 396aea20a613b4de3af8a0d34f28c942, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

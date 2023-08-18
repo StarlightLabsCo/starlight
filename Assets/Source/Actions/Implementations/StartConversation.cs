@@ -51,7 +51,7 @@ public class StartConversation : Action
 
     public override void Execute(Character character)
     {
-        if (WebSocketClient.Instance.focusedCharacter == character)
+        if (CameraManager.Instance.focusedCharacter == character)
         {
             DialogueManager.Instance.SetActiveConvseration(this);
         }
