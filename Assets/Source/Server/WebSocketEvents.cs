@@ -80,6 +80,12 @@ namespace WebSocketEvents
         public string targetCharacterId { get; set; }
     }
 
+    public class EatEvent : WebSocketEvent
+    {
+        public string characterId { get; set; }
+        public string foodId { get; set; }
+    }
+
     public class SetWorldTimeEvent : WebSocketEvent
     {
         public float time { get; set; }

@@ -125,6 +125,10 @@ public class WebSocketClient : MonoBehaviour
                     EndConversationEvent endConversationEvent = jsonObject["data"].ToObject<EndConversationEvent>();
                     OnEndConversation(endConversationEvent);
                     break;
+                case "eat":
+                    EatEvent eatEvent = jsonObject["data"].ToObject<EatEvent>();
+                    OnEatEvent(eatEvent);
+                    break;
                 case "SetWorldTime":
                     SetWorldTimeEvent setWorldTimeEvent = jsonObject["data"].ToObject<SetWorldTimeEvent>();
                     OnSetWorldTime(setWorldTimeEvent);
@@ -169,7 +173,19 @@ public class WebSocketClient : MonoBehaviour
 
         }
 
+        // Get Character Location
         string characterLocation = "{ \"x\": " + character.gameObject.transform.position.x + ", \"y\": " + character.gameObject.transform.position.y + " }";
+
+
+        // Get Character Satiety
+        float characterSatiety = -1;
+        float characterMaxSatiety = -1;
+        if (character is IHasStomach)
+        {
+            characterSatiety = ((IHasStomach)character).Satiety;
+            characterMaxSatiety = ((IHasStomach)character).MaxSatiety;
+        }
+
 
         // Get current character inventory
         string[] inventoryArray = null;
@@ -227,7 +243,7 @@ public class WebSocketClient : MonoBehaviour
             string environmentJson = JsonConvert.SerializeObject(environmentArray);
             string hitboxJson = JsonConvert.SerializeObject(hitboxStringArray);
 
-            string jsonString = "{ \"type\": \"GetAction\", \"data\": { \"characterId\": \"" + character.Id + "\", \"location\": " + characterLocation + ", \"availableActions\": " + actionsJson + ", \"inventory\": " + JsonConvert.SerializeObject(inventoryArray) + ", \"environment\": " + environmentJson + ", \"hitbox\": " + hitboxJson + ", \"time\": \"" + Time.time + "\" } }";
+            string jsonString = "{ \"type\": \"GetAction\", \"data\": { \"characterId\": \"" + character.Id + "\", \"location\": " + characterLocation + ", \"availableActions\": " + actionsJson + ", \"inventory\": " + JsonConvert.SerializeObject(inventoryArray) + ", \"environment\": " + environmentJson + ", \"hitbox\": " + hitboxJson + ", \"time\": " + Time.time + ", \"satiety\": " + characterSatiety + ", \"maxSatiety\": " + characterMaxSatiety + " } }";
 
             await websocket.SendText(jsonString);
 
@@ -399,6 +415,20 @@ public class WebSocketClient : MonoBehaviour
         } catch (Exception e)
         {
             Debug.LogError(e);
+        }
+    }
+
+    public void OnEatEvent(EatEvent eatEvent)
+    {
+        try
+        {
+            Character character = characterDictionary[eatEvent.characterId];
+            EatableItem food = (EatableItem)Utilities.idToItem(eatEvent.foodId);
+
+            character.ActionQueue.Enqueue(new Eat(food));
+        } catch(Exception e)
+        {
+            SendWebSocketMessage(characterDictionary[eatEvent.characterId]);
         }
     }
 

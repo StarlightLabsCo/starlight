@@ -207,6 +207,21 @@ public abstract class Character : Entity
         {
             observedEntities = Utilities.UpdateObservedEntities(this, observedEntities, transform, 5f);
         }
+
+
+
+        // TODO: make this not standard across all characters
+        // TODO: make this dependent on action usage as well
+        // TODO: this is currently set to 1f because that means they'll need to eat once per day basically
+        if (this is IHasStomach stomach)
+        {
+            float reductionPerDay = stomach.MaxSatiety * 1f;
+            float reductionPerSecond = reductionPerDay / WorldTime.Instance.dayDuration;
+            stomach.Satiety -= reductionPerSecond * Time.deltaTime;
+
+            // Keep satiety within bounds
+            stomach.Satiety = Mathf.Max(0, stomach.Satiety);
+        }
     }
 
     public void PlayAddItemAnimation(Sprite item)

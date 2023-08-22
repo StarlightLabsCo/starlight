@@ -642,6 +642,8 @@ MonoBehaviour:
   plusIcon: {fileID: 6139070287899700040}
   minusIcon: {fileID: 4031395119199391757}
   inventoryCapacity: 10
+  satiety: 0
+  maxSatiety: 10
   HairAnimator: {fileID: 717321034389705221}
   hairType: 0
   BaseAnimator: {fileID: 7656891871494170837}

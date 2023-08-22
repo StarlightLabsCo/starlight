@@ -3,7 +3,7 @@ using Cinemachine;
 using UnityEngine;
 
 [System.Serializable]
-public class Human : Character, IHasInventory
+public class Human : Character, IHasInventory, IHasStomach
 {
 
     private Inventory entityInventory;
@@ -13,6 +13,13 @@ public class Human : Character, IHasInventory
     private int inventoryCapacity;
     public int InventoryCapacity { get => inventoryCapacity; set => inventoryCapacity = value; }
 
+    [SerializeField]
+    private float satiety;
+    public float Satiety { get => satiety; set => satiety = value; }
+
+    [SerializeField]
+    private float maxSatiety;
+    public float MaxSatiety { get => maxSatiety; set => maxSatiety = value; }
 
     public Animator HairAnimator;
 
@@ -48,10 +55,13 @@ public class Human : Character, IHasInventory
         BaseActions = new List<Action>();
         BaseActions.Add(new MoveTo(Vector2.zero));
 
+        // TODO: need to come up with a better way to start characters off with items than this
         EntityInventory = new Inventory(InventoryCapacity);
+        
         EntityInventory.Add(new Axe());
         EntityInventory.Add(new Pickaxe());
         EntityInventory.Add(new Sword());
+        EntityInventory.Add(new Berries());
 
         camera = GetComponentInChildren<CinemachineVirtualCamera>();
     }
@@ -74,7 +84,8 @@ public class Human : Character, IHasInventory
 
         // Get available actions from inventory
         foreach (Item item in EntityInventory.Items)
-        {
+        {           
+
             if (item is ActionItem)
             {
                 if ((item as ActionItem).action is AnimationAction && collisions.Length > 0)

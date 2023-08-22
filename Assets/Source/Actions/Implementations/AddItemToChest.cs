@@ -9,7 +9,7 @@ public class AddItemToChest : Action
     private Chest chest;
     private Item item;
 
-    public AddItemToChest(Chest chest, Item item) : base($"add_{item.Id}_to_chest", $"add_{item.Id}_to_chest", $"Add ${item.Name} to chest {chest.Id}.", JsonConvert.SerializeObject(new
+    public AddItemToChest(Chest chest, Item item) : base($"add_{item.Id}_to_chest", $"add_{item.Id}_to_chest", $"Add {item.Name} to chest {chest.Id}.", JsonConvert.SerializeObject(new
     {
         type = "object",
         properties = new

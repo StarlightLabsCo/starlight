@@ -115,6 +115,8 @@ public static class Utilities
                 return new Pickaxe();
             case "sword":
                 return new Sword();
+            case "berries":
+                return new Berries();
             default:
                 return null;
         }
@@ -130,6 +132,12 @@ public static class Utilities
         coal,
         axe,
         pickaxe,
-        sword
+        sword,
+        berries
+    }
+
+    public enum FoodId
+    {
+        berries,
     }
 }

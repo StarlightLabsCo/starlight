@@ -3938,7 +3938,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spr_tileset_sunnysideworld_16px_140
+      name: spr_berries
       rect:
         serializedVersion: 2
         x: 768
@@ -35701,6 +35701,7 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       spr_axe: -1949464106
+      spr_berries: -8095575422217817608
       spr_chest: -2029849499
       spr_coal: 1635281438
       spr_coal_ore_large: 526631014
@@ -36156,7 +36157,6 @@ TextureImporter:
       spr_tileset_sunnysideworld_16px_1398: 219412305
       spr_tileset_sunnysideworld_16px_1399: 37185728
       spr_tileset_sunnysideworld_16px_14: 787672671406750502
-      spr_tileset_sunnysideworld_16px_140: -8095575422217817608
       spr_tileset_sunnysideworld_16px_1400: -968736297
       spr_tileset_sunnysideworld_16px_1401: -2120467951
       spr_tileset_sunnysideworld_16px_1402: -847332405
