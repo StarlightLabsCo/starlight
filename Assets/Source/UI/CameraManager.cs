@@ -120,7 +120,10 @@ public class CameraManager : MonoBehaviour
         // Inventory Manager
         if (character is IHasInventory iHasInventory && character.IsPlayerControlled)
         {
+            // TODO: make this a function on inventory UI manager
             InventoryUIManager.Instance.displayedInventory = iHasInventory.EntityInventory;
+            iHasInventory.EntityInventory.subscribedUI = InventoryUIManager.Instance;
+
             InventoryUIManager.Instance.Render();
 
             InventoryUIManager.Instance.gameObject.SetActive(true);

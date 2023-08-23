@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class PlayerCharacterController : ICharacterController
@@ -8,22 +7,17 @@ public class PlayerCharacterController : ICharacterController
     public bool isMouseClicked;
     public bool isEKeyPressed;
     public bool isQKeyPressed;
-    private float lastActionTime;
-    private float actionCooldown = 0f; // Cooldown in seconds between actions
 
-    private float lastScrollTime;
-    private float scrollCooldown = 0.2f;
+    // Inventory
+    int selectedInventoryIndex = 0;
+    int inventorySize = 0;
 
-    // Tools
-    private List<string> availableTools = new List<string> { "Pickaxe", "Sword", "Axe" };
-    private string currentTool;
-    private int currentToolIndex = 0;
-
-
-
-    public PlayerCharacterController()
+    public PlayerCharacterController(Character character)
     {
-        currentTool = availableTools[currentToolIndex];
+        if (character is IHasInventory iHasInventory)
+        {
+            inventorySize = iHasInventory.InventoryCapacity;
+        }
     }
 
     public void ProcessInput(Character character)
@@ -35,27 +29,21 @@ public class PlayerCharacterController : ICharacterController
 
         // Handle tool switching
         float scroll = Input.GetAxis("Mouse ScrollWheel");
-        if (scroll != 0 && Time.time - lastScrollTime > scrollCooldown)
+        if (scroll != 0)
         {
-            if (scroll > 0) currentToolIndex--; // Scroll up
-            else if (scroll < 0) currentToolIndex++; // Scroll down
+            int previousIndex = selectedInventoryIndex;
+            if (scroll > 0) selectedInventoryIndex--; // Scroll up
+            else if (scroll < 0) selectedInventoryIndex++; // Scroll down
 
             // Ensure the index is within the bounds of the list
-            currentToolIndex = Mathf.Clamp(currentToolIndex, 0, availableTools.Count - 1);
+            selectedInventoryIndex = Mathf.Clamp(selectedInventoryIndex, 0, inventorySize - 1);
 
-            // Update current tool
-            currentTool = availableTools[currentToolIndex];
-
-            Debug.Log("Current tool: " + currentTool);
-
-            lastScrollTime = Time.time; // Update the last scroll time
-        }
-
-        // Only register a mouse click if enough time has passed since the last action
-        if (Input.GetMouseButtonDown(0) && Time.time - lastActionTime > actionCooldown)
-        {
-            isMouseClicked = true;
-            lastActionTime = Time.time;
+            // If the selection has changed, update the UI
+            if (previousIndex != selectedInventoryIndex)
+            {
+                InventoryUIManager.Instance.selectedItemIndex = selectedInventoryIndex;
+                InventoryUIManager.Instance.Render();
+            }
         }
 
         // Check for "E" key press
@@ -64,10 +52,20 @@ public class PlayerCharacterController : ICharacterController
             isEKeyPressed = true;
         }
 
-        // Check for "Q" key press
-        if (Input.GetKeyDown(KeyCode.Q))
+        // If selected inventory index is not null
+        if (character is IHasInventory iHasInventory && iHasInventory.EntityInventory.Items[selectedInventoryIndex] != null)
         {
-            isQKeyPressed = true;
+            // Register a mouse click
+            if (Input.GetMouseButtonDown(0))
+            {
+                isMouseClicked = true;
+            }
+
+            // Check for "Q" key press
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                isQKeyPressed = true;
+            }
         }
     }
 
@@ -80,35 +78,21 @@ public class PlayerCharacterController : ICharacterController
             actionQueue.Enqueue(new Move(direction));
         }
 
-        if (isMouseClicked)
+        if (isMouseClicked && character is IHasInventory iHasInventory && iHasInventory.EntityInventory.Items[selectedInventoryIndex] is ActionItem)
         {
-            switch (currentTool)
-            {
-                case "Pickaxe":
-                    actionQueue.Enqueue(new SwingPickaxe());
-                    isMouseClicked = false; // Reset the flag after enqueuing the action
-                    break;
-                case "Sword":
-                    actionQueue.Enqueue(new SwingSword());
-                    isMouseClicked = false; // Reset the flag after enqueuing the action
-                    break;
-                case "Axe":
-                    actionQueue.Enqueue(new SwingAxe());
-                    isMouseClicked = false; // Reset the flag after enqueuing the action
-                    break;
-            }
+            actionQueue.Enqueue(((ActionItem)iHasInventory.EntityInventory.Items[selectedInventoryIndex]).action);
+            isMouseClicked = false;
         }
-
 
         // Check if "Q" key was pressed
         if (isQKeyPressed && character is IHasInventory)
         {
             IHasInventory inventory = character as IHasInventory;
-            if (inventory.EntityInventory.AsList().Count > 0)
+            if (selectedInventoryIndex < inventory.EntityInventory.AsList().Count)
             {
-                // Enqueue a DropItem action for the first item in the inventory
-                actionQueue.Enqueue(new DropItem(inventory.EntityInventory.AsList()[0]));
-                isQKeyPressed = false; // Reset the flag after enqueuing the action
+                // Enqueue a DropItem action for the selected item in the inventory
+                actionQueue.Enqueue(new DropItem(inventory.EntityInventory.AsList()[selectedInventoryIndex]));
+                isQKeyPressed = false; 
             }
         }
 

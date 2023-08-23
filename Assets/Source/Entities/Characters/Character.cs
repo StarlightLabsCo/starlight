@@ -96,11 +96,11 @@ public abstract class Character : Entity
 
         if (IsPlayerControlled)
         {
-            Controller = new PlayerCharacterController();
+            Controller = new PlayerCharacterController(this);
         }
         else
         {
-            Controller = new AgentCharacterController();
+            Controller = new AgentCharacterController(this);
         }
 
         observedEntities = new HashSet<Entity>();
@@ -129,12 +129,10 @@ public abstract class Character : Entity
         {
             if (ActionQueue.Count > 0)
             {
-                Debug.Log("Executing " + ActionQueue.Peek().ToString() + " from queue (" + ActionQueue.Count + " remaining)");
                 ExecuteAction(ActionQueue.Dequeue());
             }
             else if (!IsRequestingAction)
             {
-                // Debug.Log($"Requesting action for {Id}");
                 List<Action> availableActions = GetAvailableActions();
 
                 Controller.RequestAction(this, availableActions);

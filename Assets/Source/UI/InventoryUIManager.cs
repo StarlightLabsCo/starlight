@@ -10,6 +10,8 @@ public class InventoryUIManager : MonoBehaviour
 
     public Inventory displayedInventory;
 
+    public int selectedItemIndex = 0;
+
     private void Awake()
     {
         if (Instance == null)
@@ -28,18 +30,32 @@ public class InventoryUIManager : MonoBehaviour
         if (displayedInventory != null)
         {
             displayedInventory.subscribedUI = this;
+            Render();
         } else
         {
             gameObject.SetActive(false);
         }
-        Render(); 
     }
 
     public void Render()
     {
+        if (displayedInventory == null)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+
         for (int i = 0; i < displayedInventory.Items.Length; i++)
         {
             slots[i].SetItem(displayedInventory.Items[i]);
+
+            if (i == selectedItemIndex)
+            {
+                slots[i].indicator.enabled = true;
+            } else
+            {
+                slots[i].indicator.enabled = false;
+            }
         }
     }
 }

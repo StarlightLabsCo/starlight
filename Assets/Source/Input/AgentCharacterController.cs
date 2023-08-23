@@ -6,6 +6,11 @@ using UnityEngine;
 public class AgentCharacterController : ICharacterController
 {
 
+    public AgentCharacterController(Character character)
+    {
+
+    }
+
     public void ProcessInput(Character character)
     {
         return;
