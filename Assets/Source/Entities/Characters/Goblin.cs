@@ -43,7 +43,7 @@ public class Goblin : Character, IHasInventory
         }
 
         // Get available actions from inventory
-        foreach (Item item in EntityInventory.Items)
+        foreach (Item item in EntityInventory.AsList())
         {
             if (item is ActionItem)
             {

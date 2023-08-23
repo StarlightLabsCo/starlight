@@ -46,24 +46,24 @@ public class Human : Character, IHasInventory, IHasStomach
     protected override void Awake()
     {
         base.Awake();
-    }
-
-    protected override void Start()
-    {
-        base.Start();
 
         BaseActions = new List<Action>();
         BaseActions.Add(new MoveTo(Vector2.zero));
 
         // TODO: need to come up with a better way to start characters off with items than this
         EntityInventory = new Inventory(InventoryCapacity);
-        
+
         EntityInventory.Add(new Axe());
         EntityInventory.Add(new Pickaxe());
         EntityInventory.Add(new Sword());
         EntityInventory.Add(new Berries());
 
         camera = GetComponentInChildren<CinemachineVirtualCamera>();
+    }
+
+    protected override void Start()
+    {
+        base.Start();
     }
 
     public override List<Action> GetAvailableActions()
@@ -80,10 +80,9 @@ public class Human : Character, IHasInventory, IHasStomach
         Vector2 size = new Vector2(1.2f, 1f);
 
         Collider2D[] collisions = Utilities.DetectCollisions(this, offset, size, LayerMask.GetMask("Obstacles"));
-        Debug.Log($"Hitbox collisions: {collisions.Length}");
 
         // Get available actions from inventory
-        foreach (Item item in EntityInventory.Items)
+        foreach (Item item in EntityInventory.AsList())
         {           
 
             if (item is ActionItem)
@@ -107,14 +106,14 @@ public class Human : Character, IHasInventory, IHasStomach
         {
             if (collider.gameObject.GetComponent<Chest>() != null)
             {
-                for (int i = 0; i < EntityInventory.Items.Count; i++)
+                for (int i = 0; i < EntityInventory.AsList().Count; i++)
                 {
-                    actions.Add(new AddItemToChest(collider.gameObject.GetComponent<Chest>(), EntityInventory.Items[i]));
+                    actions.Add(new AddItemToChest(collider.gameObject.GetComponent<Chest>(), EntityInventory.AsList()[i]));
                 }
 
-                for (int i = 0; i < collider.gameObject.GetComponent<Chest>().EntityInventory.Items.Count; i++)
+                for (int i = 0; i < collider.gameObject.GetComponent<Chest>().EntityInventory.AsList().Count; i++)
                 {
-                    actions.Add(new RemoveItemFromChest(collider.gameObject.GetComponent<Chest>(), collider.gameObject.GetComponent<Chest>().EntityInventory.Items[i]));
+                    actions.Add(new RemoveItemFromChest(collider.gameObject.GetComponent<Chest>(), collider.gameObject.GetComponent<Chest>().EntityInventory.AsList()[i]));
                 }
             }
         }

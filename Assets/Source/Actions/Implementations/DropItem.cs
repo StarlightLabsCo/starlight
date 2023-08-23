@@ -40,13 +40,6 @@ public class DropItem : Action
     {
         if (character is IHasInventory)
         {
-            Debug.Log("Dropping item " + item.Name + " from inventory");
-            Debug.Log("Inventory before: ");
-            foreach (Item i in (character as IHasInventory).EntityInventory.Items)
-            {
-                Debug.Log("- " + i.Name);
-            }
-
             IHasInventory inventory = character as IHasInventory;
             bool wasRemoved = inventory.EntityInventory.Remove(item);
             if (wasRemoved)

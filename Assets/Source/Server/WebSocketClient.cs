@@ -16,6 +16,8 @@ public class WebSocketClient : MonoBehaviour
 
     // Characters
     public List<Character> characters;
+    public Character player;
+
     private Dictionary<string, Character> characterDictionary = new Dictionary<string, Character>();
 
     // Chests
@@ -33,11 +35,9 @@ public class WebSocketClient : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
 
-    // Start is called before the first frame update
-    async void Start()
-    {
+        player = characters.Find(character => character.IsPlayerControlled && character.gameObject.activeInHierarchy);
+
         // Create a dictionary of id -> character
         foreach (Character c in characters)
         {
@@ -50,7 +50,11 @@ public class WebSocketClient : MonoBehaviour
             Debug.Log("Adding chest " + c.Id + " to dictionary");
             chestDictionary.Add(c.Id, c);
         }
+    }
 
+    // Start is called before the first frame update
+    async void Start()
+    {
         // Set up the websocket
         websocket = new WebSocket("ws://localhost:8082");
 
@@ -272,7 +276,7 @@ public class WebSocketClient : MonoBehaviour
         catch (Exception e)
         {
             // Retry
-            // TODO: make this more exlpicit on what failed
+            Debug.LogError(e);
             SendWebSocketMessage(characterDictionary[moveToEvent.characterId]);
         }
     }
@@ -286,6 +290,7 @@ public class WebSocketClient : MonoBehaviour
         }
         catch (Exception e)
         {
+            Debug.LogError(e);
             SendWebSocketMessage(characterDictionary[swingAxeEvent.characterId]);
         }
     }
@@ -299,6 +304,7 @@ public class WebSocketClient : MonoBehaviour
         }
         catch (Exception e)
         {
+            Debug.LogError(e);
             SendWebSocketMessage(characterDictionary[swingSwordEvent.characterId]);
         }
     }
@@ -312,6 +318,7 @@ public class WebSocketClient : MonoBehaviour
         }
         catch (Exception e)
         {
+            Debug.LogError(e);
             SendWebSocketMessage(characterDictionary[swingPickaxeEvent.characterId]);
         }
     }
@@ -326,6 +333,7 @@ public class WebSocketClient : MonoBehaviour
         }
         catch (Exception e)
         {
+            Debug.LogError(e);
             SendWebSocketMessage(characterDictionary[dropItemEvent.characterId]);
         }
     }
@@ -345,6 +353,7 @@ public class WebSocketClient : MonoBehaviour
         }
         catch (Exception e)
         {
+            Debug.LogError(e);
             SendWebSocketMessage(characterDictionary[addItemToChestEvent.characterId]);
         }
     }
@@ -359,6 +368,7 @@ public class WebSocketClient : MonoBehaviour
         }
         catch (Exception e)
         {
+            Debug.LogError(e);
             SendWebSocketMessage(characterDictionary[removeItemFromChestEvent.characterId]);
         }
     }
@@ -377,6 +387,7 @@ public class WebSocketClient : MonoBehaviour
             characterDictionary[startConversationEvent.targetCharacterId].IsRequestingAction = false;
         } catch (Exception e)
         {
+            Debug.LogError(e);
             SendWebSocketMessage(characterDictionary[startConversationEvent.characterId]);
         }
     }
@@ -428,6 +439,7 @@ public class WebSocketClient : MonoBehaviour
             character.ActionQueue.Enqueue(new Eat(food));
         } catch(Exception e)
         {
+            Debug.LogError(e);
             SendWebSocketMessage(characterDictionary[eatEvent.characterId]);
         }
     }

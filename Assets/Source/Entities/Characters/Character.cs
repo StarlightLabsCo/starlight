@@ -88,10 +88,7 @@ public abstract class Character : Entity
         iconInitialScale = PlusIcon.transform.localScale;
         itemPos = ItemDisplay.transform.localPosition;
         itemInitialScale = ItemDisplay.transform.localScale;
-    }
 
-    protected virtual void Start()
-    {
         rb = GetComponent<Rigidbody2D>();
 
         ActionQueue = new Queue<Action>();
@@ -110,6 +107,11 @@ public abstract class Character : Entity
 
         iconContainer = new GameObject("Icon Container");
         iconContainer.transform.position = transform.position;
+    }
+
+    protected virtual void Start()
+    {
+       
     }
 
     protected void Update()
@@ -132,7 +134,7 @@ public abstract class Character : Entity
             }
             else if (!IsRequestingAction)
             {
-                Debug.Log($"Requesting action for {Id}");
+                // Debug.Log($"Requesting action for {Id}");
                 List<Action> availableActions = GetAvailableActions();
 
                 Controller.RequestAction(this, availableActions);
@@ -145,7 +147,7 @@ public abstract class Character : Entity
         }
 
         // Get any items nearby
-        if (this is IHasInventory && (this as IHasInventory).EntityInventory.Items.Count < (this as IHasInventory).InventoryCapacity)
+        if (this is IHasInventory && (this as IHasInventory).EntityInventory.AsList().Count < (this as IHasInventory).InventoryCapacity)
         {
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 0.3f);
             foreach (Collider2D collider in colliders)

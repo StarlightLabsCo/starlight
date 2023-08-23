@@ -32,7 +32,7 @@ public class Chest : Entity, IHasInventory
 
     public List<Item> ViewItems()
     {
-        return EntityInventory.Items;
+        return entityInventory.AsList();
     }
 
     public bool AddItem(Item item)

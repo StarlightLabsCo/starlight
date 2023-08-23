@@ -104,10 +104,10 @@ public class PlayerCharacterController : ICharacterController
         if (isQKeyPressed && character is IHasInventory)
         {
             IHasInventory inventory = character as IHasInventory;
-            if (inventory.EntityInventory.Items.Count > 0)
+            if (inventory.EntityInventory.AsList().Count > 0)
             {
                 // Enqueue a DropItem action for the first item in the inventory
-                actionQueue.Enqueue(new DropItem(inventory.EntityInventory.Items[0]));
+                actionQueue.Enqueue(new DropItem(inventory.EntityInventory.AsList()[0]));
                 isQKeyPressed = false; // Reset the flag after enqueuing the action
             }
         }

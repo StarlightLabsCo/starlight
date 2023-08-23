@@ -1,9 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using Cinemachine;
 
 public class CameraManager : MonoBehaviour
 {
     public static CameraManager Instance { get; private set; }
+
+    public CinemachineBrain cinemachineBrain;
 
     public Character focusedCharacter;
     public Queue<Character> cameraFocusQueue = new Queue<Character>();
@@ -11,7 +15,8 @@ public class CameraManager : MonoBehaviour
     public enum CameraFollowMode
     {
         Auto,
-        Manual
+        Manual,
+        Player
     }
 
     public CameraFollowMode currentCameraFollowMode = CameraFollowMode.Auto;
@@ -31,14 +36,27 @@ public class CameraManager : MonoBehaviour
 
     void Start()
     {
-        List<Character> characters = WebSocketClient.Instance.characters;
+        Character player = WebSocketClient.Instance.player;
+        if (player != null)
+        {
+            this.focusedCharacter = WebSocketClient.Instance.player;
 
-        focusedCharacter = characters[0];
+            currentCameraFollowMode = CameraFollowMode.Player;
+            cinemachineBrain.m_DefaultBlend.m_Style = CinemachineBlendDefinition.Style.Cut;
+
+            player.camera.Priority = 100;
+
+            UpdateUI(player);
+        }
     }
 
     void Update()
     {
-        if (currentCameraFollowMode == CameraFollowMode.Auto)
+        if (currentCameraFollowMode == CameraFollowMode.Player && this.focusedCharacter != WebSocketClient.Instance.player)
+        {
+           // Do nothing
+        }
+        else if (currentCameraFollowMode == CameraFollowMode.Auto)
         {
             if (focusedCharacter != cameraFocusQueue.Peek())
             {
@@ -47,8 +65,12 @@ public class CameraManager : MonoBehaviour
         }
         else if (currentCameraFollowMode == CameraFollowMode.Manual)
         {
-            List<Character> characters = WebSocketClient.Instance.characters;
+            // Only switch between active characters
+            List<Character> characters = WebSocketClient.Instance.characters
+                                                       .Where(character => character.gameObject.activeInHierarchy)
+                                                       .ToList();
 
+            // If user presses key from 1-9, select that character in the list specifically
             for (int i = 0; i < Mathf.Min(9, characters.Count); i++)
             {
                 if (Input.GetKeyDown(KeyCode.Alpha1 + i))
@@ -58,6 +80,7 @@ public class CameraManager : MonoBehaviour
                 }
             }
 
+            // Otherwise check for + or - 
             int characterIndex = characters.IndexOf(focusedCharacter);
 
             if (Input.GetKeyDown(KeyCode.Plus) || Input.GetKeyDown(KeyCode.Equals))
@@ -79,14 +102,36 @@ public class CameraManager : MonoBehaviour
 
     public void SwitchCameraFocus(Character character)
     {
+
         if (this.focusedCharacter == character)
         {
             return;
         }
 
         this.focusedCharacter = character;
-        character.camera.Priority = (int)(Time.time * 100);
+        
+        character.camera.Priority = (int)((Time.time * 100) + 1); // The 1 is for when we call it on Start() and time.time is 0
 
+        UpdateUI(character);
+    }
+
+    public void UpdateUI(Character character)
+    {
+        // Inventory Manager
+        if (character is IHasInventory iHasInventory && character.IsPlayerControlled)
+        {
+            InventoryUIManager.Instance.displayedInventory = iHasInventory.EntityInventory;
+            InventoryUIManager.Instance.Render();
+
+            InventoryUIManager.Instance.gameObject.SetActive(true);
+        }
+        else
+        {
+            InventoryUIManager.Instance.gameObject.SetActive(false);
+        }
+
+
+        // Dialogue Manager
         if (DialogueManager.Instance.activeConversation != null && DialogueManager.Instance.activeConversation.character != character && DialogueManager.Instance.activeConversation.targetCharacter != character)
         {
             DialogueManager.Instance.SetActiveConvseration(null);
