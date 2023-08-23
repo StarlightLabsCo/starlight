@@ -177,6 +177,8 @@ public abstract class Character : Entity
 
                         PlayAddItemAnimation(itemDisplay.item.sprite);
 
+                        InventoryUIManager.Instance.Render();
+
                         Destroy(itemDisplay.gameObject);
                     }
                     else
