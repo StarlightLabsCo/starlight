@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ItemDisplay : MonoBehaviour
@@ -8,6 +9,9 @@ public class ItemDisplay : MonoBehaviour
     private float maxShadowScale = 0.6f;
     public SpriteRenderer itemRenderer;
     public SpriteRenderer shadowRenderer;
+
+    private Dictionary<string, float> immuneCharacters = new Dictionary<string, float>();
+    private const float immunityDuration = 3f;
 
     void Start()
     {
@@ -55,5 +59,23 @@ public class ItemDisplay : MonoBehaviour
     {
         Texture2D texture = GenerateSolidEllipse(width, height, Color.black);
         return Sprite.Create(texture, new Rect(0, 0, width * 2, height * 2), new Vector2(0.5f, 0.5f));
+    }
+
+    public void AddImmunity(string characterId)
+    {
+        immuneCharacters[characterId] = Time.time + immunityDuration;
+    }
+
+    public bool IsImmune(string characterId)
+    {
+        if (immuneCharacters.TryGetValue(characterId, out float immunityEndTime))
+        {
+            if (Time.time < immunityEndTime)
+                return true;
+
+            immuneCharacters.Remove(characterId);
+        }
+
+        return false;
     }
 }

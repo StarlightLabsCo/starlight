@@ -154,6 +154,8 @@ public abstract class Character : Entity
                 {
                     ItemDisplay itemDisplay = collider.gameObject.GetComponent<ItemDisplay>();
 
+                    if (itemDisplay.IsImmune(Id.ToString())) continue;
+
                     bool success = ((IHasInventory)this).EntityInventory.Add(itemDisplay.item);
                     if (success)
                     {

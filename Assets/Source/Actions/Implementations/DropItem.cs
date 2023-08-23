@@ -48,10 +48,13 @@ public class DropItem : Action
 
                 character.PlayRemoveItemAnimation(item.sprite);
 
-                // Create a new item display and place it at the character's position
+                // Create a new item display and place it at the character's position, add immunity
                 GameObject itemDisplay = GameObject.Instantiate(Resources.Load<GameObject>("Item"));
-                itemDisplay.GetComponent<ItemDisplay>().item = item;
                 itemDisplay.transform.position = character.transform.position;
+
+                ItemDisplay itemDisplayComponent = itemDisplay.GetComponent<ItemDisplay>();
+                itemDisplayComponent.item = item;
+                itemDisplayComponent.AddImmunity(character.Id.ToString());
 
                 // Apply a slight force so it moves away from the player in the direction they are facing
                 Rigidbody2D rb = itemDisplay.GetComponent<Rigidbody2D>();
