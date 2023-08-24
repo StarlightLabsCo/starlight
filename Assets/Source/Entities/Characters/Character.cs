@@ -225,6 +225,11 @@ public abstract class Character : Entity
 
             // Keep satiety within bounds
             stomach.Satiety = Mathf.Max(0, stomach.Satiety);
+
+            if (StatUIManager.Instance.displayedSatiety == stomach)
+            {
+                StatUIManager.Instance.setSatietyBar(stomach.Satiety, stomach.MaxSatiety);
+            }
         }
     }
 

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using NativeWebSocket;
 using Newtonsoft.Json;
@@ -53,7 +53,7 @@ public class StartConversation : Action
     {
         if (CameraManager.Instance.focusedCharacter == character)
         {
-            DialogueManager.Instance.SetActiveConvseration(this);
+            DialogueUIManager.Instance.SetActiveConvseration(this);
         }
 
        if (this.character == character)
@@ -130,10 +130,10 @@ public class StartConversation : Action
             string content = conversationEvents.Peek().content;
 
 
-            if (DialogueManager.Instance.activeConversation == this)
+            if (DialogueUIManager.Instance.activeConversation == this)
             {
-                DialogueManager.Instance.DisplayDialogueBox();
-                DialogueManager.Instance.SetDialogueDisplay(character.Name, "");
+                DialogueUIManager.Instance.DisplayDialogueBox();
+                DialogueUIManager.Instance.SetDialogueDisplay(character.Name, "");
             }
 
             character.StartCoroutine(ProcessDialogue(content));
@@ -141,7 +141,7 @@ public class StartConversation : Action
         else if (conversationEvents.Count <= 0 && conversationFinished)
         {
             Debug.Log($"Finishing action for ${character.Name}");
-            DialogueManager.Instance.Clear();
+            DialogueUIManager.Instance.Clear();
             character.ActionQueue.Clear();
             character.FinishAction();
         }
@@ -177,9 +177,9 @@ public class StartConversation : Action
             {
                 currentlyDisplayedText += c;
 
-                if (DialogueManager.Instance.activeConversation == this)
+                if (DialogueUIManager.Instance.activeConversation == this)
                 {
-                    DialogueManager.Instance.SetDialogueDisplay(currentSpeaker.Name, currentlyDisplayedText);
+                    DialogueUIManager.Instance.SetDialogueDisplay(currentSpeaker.Name, currentlyDisplayedText);
                 }
 
                 yield return new WaitForSeconds(secondsPerCharacter);
@@ -218,9 +218,9 @@ public class StartConversation : Action
             WebSocketClient.Instance.websocket.SendText(json);
         }
 
-        if (DialogueManager.Instance.activeConversation == this)
+        if (DialogueUIManager.Instance.activeConversation == this)
         {
-            DialogueManager.Instance.Clear();
+            DialogueUIManager.Instance.Clear();
         }
     }
 

@@ -133,22 +133,31 @@ public class CameraManager : MonoBehaviour
             InventoryUIManager.Instance.gameObject.SetActive(false);
         }
 
+        // Satiety Bar / Stats Bar
+        if (character is IHasStomach iHasStomach && character.IsPlayerControlled)
+        {
+            StatUIManager.Instance.displayedSatiety = iHasStomach;
+            StatUIManager.Instance.gameObject.SetActive(true);
+        } else
+        {
+            StatUIManager.Instance.gameObject.SetActive(false);
+        }
 
         // Dialogue Manager
-        if (DialogueManager.Instance.activeConversation != null && DialogueManager.Instance.activeConversation.character != character && DialogueManager.Instance.activeConversation.targetCharacter != character)
+        if (DialogueUIManager.Instance.activeConversation != null && DialogueUIManager.Instance.activeConversation.character != character && DialogueUIManager.Instance.activeConversation.targetCharacter != character)
         {
-            DialogueManager.Instance.SetActiveConvseration(null);
+            DialogueUIManager.Instance.SetActiveConvseration(null);
 
             if (character.CurrentAction is StartConversation)
             {
-                DialogueManager.Instance.SetActiveConvseration((StartConversation)character.CurrentAction);
+                DialogueUIManager.Instance.SetActiveConvseration((StartConversation)character.CurrentAction);
             }
         }
-        else if (DialogueManager.Instance.activeConversation == null)
+        else if (DialogueUIManager.Instance.activeConversation == null)
         {
             if (character.CurrentAction is StartConversation)
             {
-                DialogueManager.Instance.SetActiveConvseration((StartConversation)character.CurrentAction);
+                DialogueUIManager.Instance.SetActiveConvseration((StartConversation)character.CurrentAction);
             }
         }
     }
