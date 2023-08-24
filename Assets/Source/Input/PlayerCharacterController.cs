@@ -20,6 +20,9 @@ public class PlayerCharacterController : ICharacterController
         }
     }
 
+    // One thing to note is we have a bit of sphagetti design here
+    // The player character controller completely ignores the GetAvailableActions function on the Human and just does it's own thing
+    // The agent controller only does actions from the GetAvailableActions function
     public void ProcessInput(Character character)
     {
         float moveHorizontal = Input.GetAxisRaw("Horizontal");
@@ -47,7 +50,7 @@ public class PlayerCharacterController : ICharacterController
         }
 
         // Check for "E" key press
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) && character.interactableAction != null)
         {
             isEKeyPressed = true;
         }
@@ -96,6 +99,13 @@ public class PlayerCharacterController : ICharacterController
                 isQKeyPressed = false;
             }
             
+        }
+
+        // TODO: Check if "E" key is pressed and an interactable action is available
+        if (isEKeyPressed)
+        {
+            actionQueue.Enqueue(character.interactableAction);
+            isEKeyPressed = false;
         }
 
         for (int i = 0; i < actionQueue.Count; i++)

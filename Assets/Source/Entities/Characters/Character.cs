@@ -67,6 +67,14 @@ public abstract class Character : Entity
     Vector3 itemPos;
     Vector3 itemInitialScale;
 
+    // Interactable Actions
+    // TODO: we need a way for the character class (when it's controlled by a player) to know what action would happen when you click the "e" key
+    // we can do that by having a variable here with the action stored, and just play that action
+    // but we should eventually figure out a better way to handle the differences between player controled (which is a bit more limited since it
+    // can't select every action at once, vs agent controller which just gets carte blance pick of every available action from the getavailableactions
+    // function) if that makes sense
+
+    public Action interactableAction;
 
     // Starlight
     HashSet<Entity> observedEntities;
@@ -144,6 +152,13 @@ public abstract class Character : Entity
             CurrentAction.Update(this);
         }
 
+        // TODO: move this to the entity level, ehh i mean, does it really make sense for trees to have observations?
+        // Collect observations for the character and send them to the agent
+        if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+        {
+            observedEntities = Utilities.UpdateObservedEntities(this, observedEntities, transform, 5f);
+        }
+
         // Get any items nearby
         if (this is IHasInventory && (this as IHasInventory).EntityInventory.AsList().Count < (this as IHasInventory).InventoryCapacity)
         {
@@ -205,13 +220,51 @@ public abstract class Character : Entity
             }
         }
 
-        // TODO: move this to the entity level, ehh i mean, does it really make sense for trees to have observations?
-        // Collect observations for the character and send them to the agent
-        if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+        // If player, and near an NPC, show speech bubble to indicate
+        if (this.IsPlayerControlled)
         {
-            observedEntities = Utilities.UpdateObservedEntities(this, observedEntities, transform, 5f);
-        }
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 1.5f);
 
+            bool canStartConversation = false;
+            Character target = null;
+
+            foreach (Collider2D collider in colliders)
+            {
+                if (collider.gameObject != this.gameObject && collider.gameObject.GetComponent<Character>() != null)
+                {
+                    Vector2 directionToNPC = collider.transform.position - transform.position;
+                    Vector2 facingDirection;
+
+                    if (this.transform.localScale.x > 0)
+                    {
+                        facingDirection = Vector2.right;
+                    }
+                    else
+                    {
+                        facingDirection = Vector2.left;
+                    }
+
+                    float dotProduct = Vector2.Dot(facingDirection.normalized, directionToNPC.normalized);
+
+                    if (dotProduct > 0)
+                    {
+                        canStartConversation = true;
+                        target = collider.gameObject.GetComponent<Character>();
+                        break;
+                    }
+                }
+            }
+
+            if (canStartConversation && target != null)
+            {
+                this.SpeechIcon.enabled = true;
+                interactableAction = new StartConversation(this, target, "N/A");
+            } else
+            {
+                this.SpeechIcon.enabled = false;
+                interactableAction = null; // TODO: technically this would wipe any other interactable action checks
+            }
+        }
 
 
         // TODO: make this not standard across all characters

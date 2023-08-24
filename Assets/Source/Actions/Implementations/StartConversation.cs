@@ -51,6 +51,8 @@ public class StartConversation : Action
 
     public override void Execute(Character character)
     {
+        Debug.Log($"Starting conversation for {character.Name}.");
+
         if (CameraManager.Instance.focusedCharacter == character)
         {
             DialogueUIManager.Instance.SetActiveConvseration(this);
@@ -68,6 +70,7 @@ public class StartConversation : Action
             }
 
 
+            // TODO: detect if character is player, open input field, and then send as different websocket message "StartConversationAsPlayer"
             if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
             {
                 string json = JsonConvert.SerializeObject(new
@@ -122,6 +125,7 @@ public class StartConversation : Action
 
     public override void Update(Character character)
     {
+        // TODO: add loop in here that basically checks if character is a player, and instead of displaying text, request more text from user?
         if (conversationEvents.Count > 0 && conversationEvents.Peek().characterId == character.Id && this.currentSpeaker == null)
         {
             Debug.Log($"Starting conversation bubble for {character.Name}");
