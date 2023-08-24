@@ -26,6 +26,6 @@ public class Healthbar : MonoBehaviour
         int spriteIndex = Mathf.FloorToInt(ratio * (sprites.Length - 1));
         spriteIndex = Mathf.Clamp(spriteIndex, 0, sprites.Length - 1);
 
-        spriteRenderer.sprite = sprites[sprites.Length - spriteIndex - 1];
+        spriteRenderer.sprite = sprites[spriteIndex];
     }
 }

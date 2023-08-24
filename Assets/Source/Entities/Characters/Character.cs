@@ -391,6 +391,8 @@ public abstract class Character : Entity
 
         Health = Mathf.Clamp(Health - damage, 0, MaxHealth);
 
+        healthbar.setHealthbar(Health, MaxHealth);
+
         if (Health <= 0)
         {
             PlayAnimation("death");
