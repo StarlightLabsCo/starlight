@@ -220,8 +220,8 @@ public abstract class Character : Entity
             }
         }
 
-        // If player, and near an NPC, show speech bubble to indicate
-        if (this.IsPlayerControlled)
+        // If player, and near an NPC, show speech bubble to indicate, and set interactable action
+        if (this.IsPlayerControlled && CurrentAction is not StartConversation)
         {
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 1.5f);
 

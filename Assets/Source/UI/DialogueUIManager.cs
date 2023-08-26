@@ -15,6 +15,9 @@ public class DialogueUIManager : MonoBehaviour
     [SerializeField]
     public TextMeshProUGUI dialogue;
 
+    [SerializeField]
+    public GameObject input;
+
     public StartConversation activeConversation;
 
     private void Awake()

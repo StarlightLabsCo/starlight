@@ -198,7 +198,7 @@ public class WebSocketClient : MonoBehaviour
             IHasInventory characterWithInventory = (IHasInventory)character;
             Inventory characterInventory = characterWithInventory.EntityInventory;
 
-            inventoryArray = characterInventory.Items.Select(i => i.ToString()).ToArray();
+            inventoryArray = characterInventory.AsList().Select(i => i.ToString()).ToArray();
         }
 
         // Get current available actions from character
@@ -401,7 +401,7 @@ public class WebSocketClient : MonoBehaviour
 
             if (character.CurrentAction is StartConversation)
             {
-                Debug.Log($"Added conversation to StartConversation action");
+                Debug.Log($"Added conversation event to StartConversation action");
                 ((StartConversation)character.CurrentAction).conversationEvents.Enqueue(conversationEvent);
             }
         } catch (Exception e)
@@ -437,6 +437,7 @@ public class WebSocketClient : MonoBehaviour
             EatableItem food = (EatableItem)Utilities.idToItem(eatEvent.foodId);
 
             character.ActionQueue.Enqueue(new Eat(food));
+            character.IsRequestingAction = false;
         } catch(Exception e)
         {
             Debug.LogError(e);

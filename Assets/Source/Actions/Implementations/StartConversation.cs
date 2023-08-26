@@ -22,6 +22,8 @@ public class StartConversation : Action
     public Character currentSpeaker = null;
     public string currentlyDisplayedText = null;
 
+    bool shouldPlayerSpeak = false;
+
     public StartConversation(Character character, Character targetCharacter, string conversationGoal) : base("start_conversation", "start_conversation", $"Start a conversation with {targetCharacter.Name} (ID: {targetCharacter.Id}).", JsonConvert.SerializeObject(new
     {
         type = "object",
@@ -58,68 +60,118 @@ public class StartConversation : Action
             DialogueUIManager.Instance.SetActiveConvseration(this);
         }
 
-       if (this.character == character)
+        if (this.character == character)
        {
-            float directionToTarget = targetCharacter.transform.position.x - character.transform.position.x;
-            if (directionToTarget > 0 && character.transform.localScale.x < 0)
+            if (this.character.IsPlayerControlled)
             {
-                character.Flip(1);
-            } else if (directionToTarget < 0 && character.transform.localScale.x > 0)
-            {
-                character.Flip(-1);
-            }
+                if (targetCharacter.CurrentAction != null)
+                {
+                    targetCharacter.FinishAction();
+                }
+                targetCharacter.CurrentAction = this;
 
+                InventoryUIManager.Instance.gameObject.SetActive(false);
+                StatUIManager.Instance.gameObject.SetActive(false);
 
-            // TODO: detect if character is player, open input field, and then send as different websocket message "StartConversationAsPlayer"
-            if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
-            {
-                string json = JsonConvert.SerializeObject(new
-            {
-                    type = "StartConversation",
-                    data = new
+                DialogueUIManager.Instance.DisplayDialogueBox();
+                DialogueUIManager.Instance.SetDialogueDisplay(this.character.Name, "");
+
+                DialogueInputHandler.Instance.GetInputFromPlayer((string text) => {
+                    DialogueUIManager.Instance.SetDialogueDisplay(this.character.Name, text);
+
+                    if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
                     {
-                        characterId = this.character.Id,
-                        targetCharacterId = this.targetCharacter.Id,
-                        conversationGoal = this.conversationGoal,
-                        time = Time.time
-                    }
-                }, Formatting.None);
+                        string json = JsonConvert.SerializeObject(new
+                        {
+                            type = "PlayerConversation",
+                            data = new
+                            {
+                                playerId = this.character.Id,
+                                playerMessage = text,
+                                targetCharacterId = this.targetCharacter.Id,
+                                time = Time.time
+                            }
+                        }, Formatting.None);
 
-                WebSocketClient.Instance.websocket.SendText(json);
+                        WebSocketClient.Instance.websocket.SendText(json);
+                    } else
+                    {
+                        Debug.Log("callback worked but websocket not open");
+                    }
+
+                    character.SpeechIcon.enabled = false;
+                });
+            }
+            else
+            {
+                float directionToTarget = targetCharacter.transform.position.x - character.transform.position.x;
+                if (directionToTarget > 0 && character.transform.localScale.x < 0)
+                {
+                    character.Flip(1);
+                }
+                else if (directionToTarget < 0 && character.transform.localScale.x > 0)
+                {
+                    character.Flip(-1);
+                }
+
+                if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+                {
+                    string json = JsonConvert.SerializeObject(new
+                    {
+                        type = "StartConversation",
+                        data = new
+                        {
+                            characterId = this.character.Id,
+                            targetCharacterId = this.targetCharacter.Id,
+                            conversationGoal = this.conversationGoal,
+                            time = Time.time
+                        }
+                    }, Formatting.None);
+
+                    WebSocketClient.Instance.websocket.SendText(json);
+                }
             }
         }
        else if (this.targetCharacter == character)
        {
-            // Reminder: this.character and character are different.. this.character is the starter of the conversation and character is who's currently exceuting
-            // this action.
-            float directionToTarget = this.character.transform.position.x - targetCharacter.transform.position.x;
-            Debug.Log($"Target character direction to target: {directionToTarget}");
-            if (directionToTarget > 0 && targetCharacter.transform.localScale.x < 0)
+            if (this.targetCharacter.IsPlayerControlled)
             {
-                Debug.Log($"Target character flipping ${1}");
-                targetCharacter.Flip(1);
-            }
-            else if (directionToTarget < 0 && targetCharacter.transform.localScale.x > 0)
-            {
-                Debug.Log($"Target character flipping ${-1}");
-                targetCharacter.Flip(-1);
-            }
+                // What do I do if the player is a recipent of a conversation??????
 
-            if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+            } else
             {
-                string json = JsonConvert.SerializeObject(new
+                // Reminder: this.character and character are different.. this.character is the starter of the conversation and character is who's currently exceuting
+                // this action.
+                float directionToTarget = this.character.transform.position.x - targetCharacter.transform.position.x;
+                Debug.Log($"Target character direction to target: {directionToTarget}");
+                if (directionToTarget > 0 && targetCharacter.transform.localScale.x < 0)
                 {
-                    type = "Observation",
-                    data = new
-                    {
-                        observerId = this.targetCharacter.Id,
-                        observation = $"{this.character.Name} started a conversation with me.",
-                        time = Time.time
-                    }
-                }, Formatting.None);
+                    Debug.Log($"Target character flipping ${1}");
+                    targetCharacter.Flip(1);
+                }
+                else if (directionToTarget < 0 && targetCharacter.transform.localScale.x > 0)
+                {
+                    Debug.Log($"Target character flipping ${-1}");
+                    targetCharacter.Flip(-1);
+                }
 
-                WebSocketClient.Instance.websocket.SendText(json);
+                if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+                {
+                    string json = JsonConvert.SerializeObject(new
+                    {
+                        type = "Observation",
+                        data = new
+                        {
+                            observerId = this.targetCharacter.Id,
+                            observation = $"{this.character.Name} started a conversation with me.",
+                            time = Time.time
+                        }
+                    }, Formatting.None);
+
+                    WebSocketClient.Instance.websocket.SendText(json);
+                }
             }
+            
         }
     }
 
@@ -133,7 +185,6 @@ public class StartConversation : Action
 
             string content = conversationEvents.Peek().content;
 
-
             if (DialogueUIManager.Instance.activeConversation == this)
             {
                 DialogueUIManager.Instance.DisplayDialogueBox();
@@ -144,10 +195,43 @@ public class StartConversation : Action
         }
         else if (conversationEvents.Count <= 0 && conversationFinished)
         {
-            Debug.Log($"Finishing action for ${character.Name}");
             DialogueUIManager.Instance.Clear();
             character.ActionQueue.Clear();
             character.FinishAction();
+        } else if (conversationEvents.Count <= 0 && character.IsPlayerControlled && shouldPlayerSpeak)
+        {
+            shouldPlayerSpeak = false;
+            character.SpeechIcon.enabled = true;
+
+            DialogueUIManager.Instance.SetDialogueDisplay(this.character.Name, "");
+            DialogueInputHandler.Instance.Clear();
+
+            DialogueInputHandler.Instance.GetInputFromPlayer((string text) => {
+                DialogueUIManager.Instance.SetDialogueDisplay(this.character.Name, text);
+
+                if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+                {
+                    string json = JsonConvert.SerializeObject(new
+                    {
+                        type = "PlayerConversation",
+                        data = new
+                        {
+                            playerId = this.character.Id,
+                            playerMessage = text,
+                            targetCharacterId = this.targetCharacter.Id,
+                            time = Time.time
+                        }
+                    }, Formatting.None);
+
+                    WebSocketClient.Instance.websocket.SendText(json);
+                }
+                else
+                {
+                    Debug.Log("callback worked but websocket not open");
+                }
+
+                character.SpeechIcon.enabled = false;     
+            });
         }
     }
 
@@ -195,6 +279,13 @@ public class StartConversation : Action
         currentSpeaker.SpeechIcon.enabled = false;
 
         currentSpeaker = null;
+
+        // Only for player based conversations
+        if (character.IsPlayerControlled)
+        {
+            yield return new WaitForSeconds(3);
+            shouldPlayerSpeak = true;
+        }
     }
 
     public override void FixedUpdate(Character character)
@@ -225,6 +316,12 @@ public class StartConversation : Action
         if (DialogueUIManager.Instance.activeConversation == this)
         {
             DialogueUIManager.Instance.Clear();
+        }
+
+        if (character.IsPlayerControlled)
+        {
+            InventoryUIManager.Instance.gameObject.SetActive(true);
+            StatUIManager.Instance.gameObject.SetActive(true);
         }
     }
 
