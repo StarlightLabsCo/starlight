@@ -54,20 +54,59 @@ public class PlayerCharacterController : ICharacterController
         {
             isEKeyPressed = true;
         }
+       
 
         // If selected inventory index is not null
-        if (character is IHasInventory iHasInventory && iHasInventory.EntityInventory.Items[selectedInventoryIndex] != null)
+        if (character is IHasInventory iHasInventory)
         {
-            // Register a mouse click
-            if (Input.GetMouseButtonDown(0))
+            // Handle switching inventory items with number keys
+            for (int i = 0; i < Mathf.Min(9, iHasInventory.EntityInventory.Items.Length); i++)
             {
-                isMouseClicked = true;
+                if (Input.GetKeyDown(KeyCode.Alpha1 + i))
+                {
+                    selectedInventoryIndex = Mathf.Clamp(i, 0, inventorySize - 1);
+
+                    InventoryUIManager.Instance.selectedItemIndex = selectedInventoryIndex;
+                    InventoryUIManager.Instance.Render();                 
+                }
             }
 
-            // Check for "Q" key press
-            if (Input.GetKeyDown(KeyCode.Q))
+            // Handle 0 unique case
+            if (Input.GetKeyDown(KeyCode.Alpha0))
             {
-                isQKeyPressed = true;
+                selectedInventoryIndex = inventorySize - 1;
+                InventoryUIManager.Instance.selectedItemIndex = selectedInventoryIndex;
+                InventoryUIManager.Instance.Render();
+            }
+
+            // Handle + or - key for switching inventory
+            if (Input.GetKeyDown(KeyCode.Plus) || Input.GetKeyDown(KeyCode.Equals))
+            {
+                selectedInventoryIndex = (selectedInventoryIndex + 1) % iHasInventory.EntityInventory.Items.Length;
+                InventoryUIManager.Instance.selectedItemIndex = selectedInventoryIndex;
+                InventoryUIManager.Instance.Render();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Minus))
+            {
+                selectedInventoryIndex = (selectedInventoryIndex - 1 + iHasInventory.EntityInventory.Items.Length) % iHasInventory.EntityInventory.Items.Length;
+                InventoryUIManager.Instance.selectedItemIndex = selectedInventoryIndex;
+                InventoryUIManager.Instance.Render();
+            }
+
+            if (iHasInventory.EntityInventory.Items[selectedInventoryIndex] != null && character.CurrentAction == null)
+            {
+                // Register a mouse click
+                if (Input.GetMouseButtonDown(0))
+                {
+                    isMouseClicked = true;
+                }
+
+                // Check for "Q" key press
+                if (Input.GetKeyDown(KeyCode.Q))
+                {
+                    isQKeyPressed = true;
+                }
             }
         }
     }

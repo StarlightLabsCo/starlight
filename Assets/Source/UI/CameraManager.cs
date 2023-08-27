@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using Cinemachine;
+using System.Collections;
 
 public class CameraManager : MonoBehaviour
 {
@@ -50,6 +51,8 @@ public class CameraManager : MonoBehaviour
         }
     }
 
+    bool autoSwitchStarted = false;
+
     void Update()
     {
         if (currentCameraFollowMode == CameraFollowMode.Player && this.focusedCharacter != WebSocketClient.Instance.player)
@@ -58,10 +61,20 @@ public class CameraManager : MonoBehaviour
         }
         else if (currentCameraFollowMode == CameraFollowMode.Auto)
         {
-            if (focusedCharacter != cameraFocusQueue.Peek())
+            if (currentCameraFollowMode == CameraFollowMode.Auto && !autoSwitchStarted)
             {
-                SwitchCameraFocus(cameraFocusQueue.Peek());
+                StartCoroutine(AutoSwitchCameraFocus());
+                autoSwitchStarted = true;
             }
+            else if (currentCameraFollowMode != CameraFollowMode.Auto)
+            {
+                autoSwitchStarted = false;
+            }
+
+            //if (focusedCharacter != cameraFocusQueue.Peek())
+            //{
+            //    SwitchCameraFocus(cameraFocusQueue.Peek());
+            //}
         }
         else if (currentCameraFollowMode == CameraFollowMode.Manual)
         {
@@ -96,6 +109,26 @@ public class CameraManager : MonoBehaviour
                 SwitchCameraFocus(characters[characterIndex]);
                 return;
             }
+        }
+    }
+
+    IEnumerator AutoSwitchCameraFocus()
+    {
+        List<Character> characters = new List<Character>();
+
+        while (currentCameraFollowMode == CameraFollowMode.Auto)
+        {
+            // Refresh the list of active characters
+            characters = WebSocketClient.Instance.characters
+                                          .Where(character => character.gameObject.activeInHierarchy)
+                                          .ToList();
+
+            int characterIndex = characters.IndexOf(focusedCharacter);
+            characterIndex = (characterIndex + 1) % characters.Count;
+
+            SwitchCameraFocus(characters[characterIndex]);
+
+            yield return new WaitForSeconds(10); // Wait for 3 seconds
         }
     }
 

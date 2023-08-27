@@ -154,7 +154,7 @@ public abstract class Character : Entity
 
         // TODO: move this to the entity level, ehh i mean, does it really make sense for trees to have observations?
         // Collect observations for the character and send them to the agent
-        if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+        if (WebSocketClient.Instance.websocket.State == WebSocketState.Open && !this.IsPlayerControlled)
         {
             observedEntities = Utilities.UpdateObservedEntities(this, observedEntities, transform, 5f);
         }

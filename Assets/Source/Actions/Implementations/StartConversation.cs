@@ -64,11 +64,11 @@ public class StartConversation : Action
        {
             if (this.character.IsPlayerControlled)
             {
+                targetCharacter.ActionQueue.Enqueue(this);
                 if (targetCharacter.CurrentAction != null)
                 {
                     targetCharacter.FinishAction();
                 }
-                targetCharacter.CurrentAction = this;
 
                 InventoryUIManager.Instance.gameObject.SetActive(false);
                 StatUIManager.Instance.gameObject.SetActive(false);
@@ -169,7 +169,10 @@ public class StartConversation : Action
                     }, Formatting.None);
 
                     WebSocketClient.Instance.websocket.SendText(json);
+
                 }
+
+
             }
             
         }
@@ -177,6 +180,16 @@ public class StartConversation : Action
 
     public override void Update(Character character)
     {
+
+        // TODO: this is super rough and doesn't handle the other character or memory generation, is just an escape for now
+        if (Input.GetKeyDown(KeyCode.Escape) && character.IsPlayerControlled)
+        {
+            DialogueUIManager.Instance.Clear();
+            character.FinishAction();
+            return; 
+        }
+
+
         // TODO: add loop in here that basically checks if character is a player, and instead of displaying text, request more text from user?
         if (conversationEvents.Count > 0 && conversationEvents.Peek().characterId == character.Id && this.currentSpeaker == null)
         {
@@ -195,6 +208,7 @@ public class StartConversation : Action
         }
         else if (conversationEvents.Count <= 0 && conversationFinished)
         {
+            Debug.Log($"Ending conversation for {Name}");
             DialogueUIManager.Instance.Clear();
             character.ActionQueue.Clear();
             character.FinishAction();
