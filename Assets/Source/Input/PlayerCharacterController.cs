@@ -50,9 +50,9 @@ public class PlayerCharacterController : ICharacterController
         }
 
         // Check for "E" key press
-        if (Input.GetKeyDown(KeyCode.E) && character.interactableAction != null)
+        if (Input.GetKeyDown(KeyCode.E) && character.interactableAction != null && character.CurrentAction == null)
         {
-            isEKeyPressed = true;
+            isEKeyPressed = true;   
         }
        
 

@@ -64,10 +64,29 @@ public class StartConversation : Action
        {
             if (this.character.IsPlayerControlled)
             {
+                if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
+                {
+                    string json = JsonConvert.SerializeObject(new
+                    {
+                        type = "OccupyAgent",
+                        data = new
+                        {
+                            characterId = this.targetCharacter.Id,
+                            reason = $"{character.Name} interrupted this task and started a conversation with me before I could finish.",
+                            time = Time.time
+                        }
+                    }, Formatting.None) ;
+
+                    WebSocketClient.Instance.websocket.SendText(json);
+                }
+
                 targetCharacter.ActionQueue.Enqueue(this);
                 if (targetCharacter.CurrentAction != null)
                 {
-                    targetCharacter.FinishAction();
+                    targetCharacter.CurrentAction = null;
+                } else
+                {
+                    targetCharacter.IsRequestingAction = false;
                 }
 
                 InventoryUIManager.Instance.gameObject.SetActive(false);
@@ -83,7 +102,7 @@ public class StartConversation : Action
                     {
                         string json = JsonConvert.SerializeObject(new
                         {
-                            type = "PlayerConversation",
+                            type = "StartPlayerConversation",
                             data = new
                             {
                                 playerId = this.character.Id,
@@ -94,9 +113,6 @@ public class StartConversation : Action
                         }, Formatting.None);
 
                         WebSocketClient.Instance.websocket.SendText(json);
-                    } else
-                    {
-                        Debug.Log("callback worked but websocket not open");
                     }
 
                     character.SpeechIcon.enabled = false;
@@ -227,7 +243,7 @@ public class StartConversation : Action
                 {
                     string json = JsonConvert.SerializeObject(new
                     {
-                        type = "PlayerConversation",
+                        type = "ContinuePlayerConversation",
                         data = new
                         {
                             playerId = this.character.Id,
