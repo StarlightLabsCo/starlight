@@ -423,6 +423,14 @@ public class WebSocketClient : MonoBehaviour
             {
                 ((StartConversation)action).conversationFinished = true;
             }
+
+            Character targetCharacter = characterDictionary[endConversationEvent.targetCharacterId];
+            Action targetCharacterAction = targetCharacter.CurrentAction;
+
+            if (targetCharacterAction is StartConversation)
+            {
+                ((StartConversation)targetCharacterAction).conversationFinished = true;
+            }
         } catch (Exception e)
         {
             Debug.LogError(e);
