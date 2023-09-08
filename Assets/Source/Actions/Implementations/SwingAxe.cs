@@ -19,7 +19,7 @@ public class SwingAxe : AnimationAction
         }
     }))
     {
-
+        EnergyCost = 10;
     }
 
     public override string ToString()
@@ -29,9 +29,16 @@ public class SwingAxe : AnimationAction
 
     public override void Execute(Character character)
     {
-        // Play animation
-        Debug.Log("[1] SwingAxe execute");
+        if (character.Energy - EnergyCost < 0)
+        {
+            Debug.Log("Not enough energy, unable to execute!");
 
+            character.ClearAction();
+            return;
+        }
+
+        // Play animation
+        character.DecreaseEnergy(EnergyCost);
         character.PlayAnimation("axe");
     }
 

@@ -181,6 +181,10 @@ public class WebSocketClient : MonoBehaviour
         string characterLocation = "{ \"x\": " + character.gameObject.transform.position.x + ", \"y\": " + character.gameObject.transform.position.y + " }";
 
 
+        // Get Character Energy
+        float characterEnergy = character.Energy;
+        float characterMaxEnergy = character.MaxEnergy;
+
         // Get Character Satiety
         float characterSatiety = -1;
         float characterMaxSatiety = -1;
@@ -247,7 +251,7 @@ public class WebSocketClient : MonoBehaviour
             string environmentJson = JsonConvert.SerializeObject(environmentArray);
             string hitboxJson = JsonConvert.SerializeObject(hitboxStringArray);
 
-            string jsonString = "{ \"type\": \"GetAction\", \"data\": { \"characterId\": \"" + character.Id + "\", \"location\": " + characterLocation + ", \"availableActions\": " + actionsJson + ", \"inventory\": " + JsonConvert.SerializeObject(inventoryArray) + ", \"environment\": " + environmentJson + ", \"hitbox\": " + hitboxJson + ", \"time\": " + Time.time + ", \"satiety\": " + characterSatiety + ", \"maxSatiety\": " + characterMaxSatiety + " } }";
+            string jsonString = "{ \"type\": \"GetAction\", \"data\": { \"characterId\": \"" + character.Id + "\", \"location\": " + characterLocation + ", \"availableActions\": " + actionsJson + ", \"inventory\": " + JsonConvert.SerializeObject(inventoryArray) + ", \"environment\": " + environmentJson + ", \"hitbox\": " + hitboxJson + ", \"time\": " + Time.time + ", \"satiety\": " + characterSatiety + ", \"maxSatiety\": " + characterMaxSatiety + ", \"energy\": " + characterEnergy + ", \"maxEnergy\": " + characterMaxEnergy + " } }";
 
             await websocket.SendText(jsonString);
 

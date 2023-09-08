@@ -42,6 +42,10 @@ public abstract class Character : Entity
     public CinemachineVirtualCamera camera;
 
 
+    // Energy System - all characters have energy needed for actions, this could prob be made into an interface like IHasStomach if we want
+    public float Energy;
+    public float MaxEnergy;
+
     // UI Icons
     [SerializeField]
     private SpriteRenderer speechIcon;
@@ -115,6 +119,8 @@ public abstract class Character : Entity
 
         iconContainer = new GameObject("Icon Container");
         iconContainer.transform.position = transform.position;
+
+        Energy = MaxEnergy;
     }
 
     protected virtual void Start()
@@ -431,6 +437,11 @@ public abstract class Character : Entity
     {
         CurrentAction.Cleanup(this);
 
+        ClearAction();
+    }
+
+    public void ClearAction()
+    {
         CurrentAction = null;
     }
 
@@ -458,6 +469,16 @@ public abstract class Character : Entity
         else
         {
             PlayAnimation("hurt");
+        }
+    }
+
+    public void DecreaseEnergy(float energyCost)
+    {
+        Energy = Mathf.Clamp(Energy -= energyCost, 0, MaxEnergy);
+
+        if (StatUIManager.Instance.displayedCharacter == this)
+        {
+            StatUIManager.Instance.setEnergyBar(Energy, MaxEnergy);
         }
     }
 

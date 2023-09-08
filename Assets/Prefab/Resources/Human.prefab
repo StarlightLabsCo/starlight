@@ -637,6 +637,8 @@ MonoBehaviour:
   rb: {fileID: 0}
   iconContainer: {fileID: 0}
   camera: {fileID: 8502738366789623989}
+  Energy: 0
+  MaxEnergy: 100
   speechIcon: {fileID: 1863793048626228625}
   itemDisplay: {fileID: 1610557300082415060}
   plusIcon: {fileID: 6139070287899700040}

@@ -1,5 +1,7 @@
 public abstract class AnimationAction : Action
 {
+    public float EnergyCost;
+
     protected AnimationAction(string id, string name, string description, string parameters) : base(id, name, description, parameters)
     {
     }

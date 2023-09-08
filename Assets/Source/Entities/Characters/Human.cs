@@ -81,22 +81,22 @@ public class Human : Character, IHasInventory, IHasStomach
 
         Collider2D[] collisions = Utilities.DetectCollisions(this, offset, size, LayerMask.GetMask("Obstacles"));
 
-        // Get available actions from inventory
         foreach (Item item in EntityInventory.AsList())
-        {           
-
-            if (item is ActionItem)
+        {
+            if (item is ActionItem actionItem)
             {
-                if ((item as ActionItem).action is AnimationAction && collisions.Length > 0)
+                if (actionItem.action is AnimationAction animationAction)
                 {
-                    actions.Add((item as ActionItem).action);
+                    if (collisions.Length > 0 && Energy - animationAction.EnergyCost >= 0)
+                    {
+                        actions.Add(actionItem.action);
+                    }
                 }
-                else if (!((item as ActionItem).action is AnimationAction))
+                else
                 {
-                    actions.Add((item as ActionItem).action);
+                    actions.Add(actionItem.action);
                 }
             }
-
             actions.Add(new DropItem(item));
         }
 

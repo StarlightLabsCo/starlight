@@ -19,7 +19,7 @@ public class SwingHammer : AnimationAction
         }
     }))
     {
-
+        EnergyCost = 10;
     }
 
     public override string ToString()
@@ -29,7 +29,16 @@ public class SwingHammer : AnimationAction
 
     public override void Execute(Character character)
     {
+        if (character.Energy - EnergyCost <= 0)
+        {
+            Debug.Log("Not enough energy, unable to execute!");
+
+            character.ClearAction();
+            return;
+        }
+
         // Play animation
+        character.DecreaseEnergy(EnergyCost);
         character.PlayAnimation("hammering");
     }
 
