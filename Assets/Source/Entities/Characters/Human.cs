@@ -64,6 +64,8 @@ public class Human : Character, IHasInventory, IHasStomach
     protected override void Start()
     {
         base.Start();
+
+        WebSocketClient.Instance.characterDictionary.Add(this.Id, this);
     }
 
     public override List<Action> GetAvailableActions()
@@ -114,6 +116,19 @@ public class Human : Character, IHasInventory, IHasStomach
                 for (int i = 0; i < collider.gameObject.GetComponent<Chest>().EntityInventory.AsList().Count; i++)
                 {
                     actions.Add(new RemoveItemFromChest(collider.gameObject.GetComponent<Chest>(), collider.gameObject.GetComponent<Chest>().EntityInventory.AsList()[i]));
+                }
+            } else if (collider.gameObject.GetComponent<House>() != null && !collider.gameObject.GetComponent<House>().IsOccupied())
+            {
+                float worldTime = WorldTime.Instance.worldTime;
+                float dayDuration = WorldTime.Instance.dayDuration;
+                float eveningStart = dayDuration * 0.8f;
+                float earlyMorningEnd = dayDuration * 0.1f;
+
+                float currentTimeInDay = worldTime % dayDuration;
+
+                if (Energy < 0.2 || (currentTimeInDay >= eveningStart || currentTimeInDay <= earlyMorningEnd))
+                {
+                    actions.Add(new Sleep(collider.gameObject.GetComponent<House>()));
                 }
             }
         }

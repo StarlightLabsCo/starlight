@@ -11,7 +11,6 @@ public class CameraManager : MonoBehaviour
     public CinemachineBrain cinemachineBrain;
 
     public Character focusedCharacter;
-    public Queue<Character> cameraFocusQueue = new Queue<Character>();
 
     public enum CameraFollowMode
     {
@@ -70,18 +69,24 @@ public class CameraManager : MonoBehaviour
             {
                 autoSwitchStarted = false;
             }
-
-            //if (focusedCharacter != cameraFocusQueue.Peek())
-            //{
-            //    SwitchCameraFocus(cameraFocusQueue.Peek());
-            //}
         }
         else if (currentCameraFollowMode == CameraFollowMode.Manual)
         {
             // Only switch between active characters
-            List<Character> characters = WebSocketClient.Instance.characters
-                                                       .Where(character => character.gameObject.activeInHierarchy)
-                                                       .ToList();
+            List<Character> characters = new List<Character>();
+            foreach (KeyValuePair<string, Character> entry in WebSocketClient.Instance.characterDictionary)
+            {
+                if (entry.Value.gameObject.activeInHierarchy)
+                {
+                    characters.Add(entry.Value);
+                }
+            }
+
+            if (focusedCharacter == null)
+            {
+                SwitchCameraFocus(characters[0]);
+                return;
+            }
 
             // If user presses key from 1-9, select that character in the list specifically
             for (int i = 0; i < Mathf.Min(9, characters.Count); i++)
@@ -115,13 +120,16 @@ public class CameraManager : MonoBehaviour
     IEnumerator AutoSwitchCameraFocus()
     {
         List<Character> characters = new List<Character>();
-
         while (currentCameraFollowMode == CameraFollowMode.Auto)
         {
             // Refresh the list of active characters
-            characters = WebSocketClient.Instance.characters
-                                          .Where(character => character.gameObject.activeInHierarchy)
-                                          .ToList();
+            foreach (KeyValuePair<string, Character> entry in WebSocketClient.Instance.characterDictionary)
+            {
+                if (entry.Value.gameObject.activeInHierarchy)
+                {
+                    characters.Add(entry.Value);
+                }
+            }
 
             int characterIndex = characters.IndexOf(focusedCharacter);
             characterIndex = (characterIndex + 1) % characters.Count;

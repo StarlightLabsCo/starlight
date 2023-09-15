@@ -73,6 +73,7 @@ public class SwingSword : AnimationAction
     }
     public override void Cleanup(Character character)
     {
+
         if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
         {
             string json = JsonConvert.SerializeObject(new

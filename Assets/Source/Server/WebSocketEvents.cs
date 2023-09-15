@@ -86,6 +86,12 @@ namespace WebSocketEvents
         public string foodId { get; set; }
     }
 
+    public class SleepEvent: WebSocketEvent
+    {
+        public string characterId { get; set; }
+        public string targetHouseId { get; set; }
+    }
+
     public class SetWorldTimeEvent : WebSocketEvent
     {
         public float time { get; set; }

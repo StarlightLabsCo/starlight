@@ -637,7 +637,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   iconContainer: {fileID: 0}
   camera: {fileID: 8502738366789623989}
-  Energy: 0
+  Energy: -1
   MaxEnergy: 100
   speechIcon: {fileID: 1863793048626228625}
   itemDisplay: {fileID: 1610557300082415060}
@@ -704,7 +704,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7442967275739988317}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: -0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

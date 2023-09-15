@@ -15,14 +15,15 @@ public class WebSocketClient : MonoBehaviour
     public static WebSocketClient Instance { get; private set; }
 
     // Characters
-    public List<Character> characters;
     public Character player;
 
-    private Dictionary<string, Character> characterDictionary = new Dictionary<string, Character>();
+    public Dictionary<string, Character> characterDictionary = new Dictionary<string, Character>();
 
     // Chests
-    public List<Chest> chests;
-    private Dictionary<string, Chest> chestDictionary = new Dictionary<string, Chest>();
+    public Dictionary<string, Chest> chestDictionary = new Dictionary<string, Chest>();
+
+    // Houses
+    public Dictionary<string, House> houseDictionary = new Dictionary<string, House>();
 
     private void Awake()
     {
@@ -36,20 +37,9 @@ public class WebSocketClient : MonoBehaviour
             Destroy(gameObject);
         }
 
-        player = characters.Find(character => character.IsPlayerControlled && character.gameObject.activeInHierarchy);
 
-        // Create a dictionary of id -> character
-        foreach (Character c in characters)
-        {
-            Debug.Log("Adding character " + c.Id + " to dictionary");
-            characterDictionary.Add(c.Id, c);
-        }
-
-        foreach (Chest c in chests)
-        {
-            Debug.Log("Adding chest " + c.Id + " to dictionary");
-            chestDictionary.Add(c.Id, c);
-        }
+        Character[] allCharacters = FindObjectsOfType<Character>();
+        player = Array.Find(allCharacters, character => character.IsPlayerControlled && character.gameObject.activeInHierarchy);
     }
 
     // Start is called before the first frame update
@@ -133,6 +123,10 @@ public class WebSocketClient : MonoBehaviour
                     EatEvent eatEvent = jsonObject["data"].ToObject<EatEvent>();
                     OnEatEvent(eatEvent);
                     break;
+                case "sleep":
+                    SleepEvent sleepEvent = jsonObject["data"].ToObject<SleepEvent>();
+                    OnSleepEvent(sleepEvent);
+                    break;
                 case "SetWorldTime":
                     SetWorldTimeEvent setWorldTimeEvent = jsonObject["data"].ToObject<SetWorldTimeEvent>();
                     OnSetWorldTime(setWorldTimeEvent);
@@ -160,23 +154,6 @@ public class WebSocketClient : MonoBehaviour
 
     public async void SendWebSocketMessage(Character character)
     {
-        // If the queue already contains the character, remove it so it can be added to the back once the websocket message is sent.
-        if (CameraManager.Instance.cameraFocusQueue.Contains(character))
-        {
-            Queue<Character> newQueue = new Queue<Character>();
-
-            foreach (Character item in CameraManager.Instance.cameraFocusQueue)
-            {
-                if (item != character)
-                {
-                    newQueue.Enqueue(item);
-                }
-            }
-
-            CameraManager.Instance.cameraFocusQueue = newQueue;
-
-        }
-
         // Get Character Location
         string characterLocation = "{ \"x\": " + character.gameObject.transform.position.x + ", \"y\": " + character.gameObject.transform.position.y + " }";
 
@@ -254,8 +231,6 @@ public class WebSocketClient : MonoBehaviour
             string jsonString = "{ \"type\": \"GetAction\", \"data\": { \"characterId\": \"" + character.Id + "\", \"location\": " + characterLocation + ", \"availableActions\": " + actionsJson + ", \"inventory\": " + JsonConvert.SerializeObject(inventoryArray) + ", \"environment\": " + environmentJson + ", \"hitbox\": " + hitboxJson + ", \"time\": " + Time.time + ", \"satiety\": " + characterSatiety + ", \"maxSatiety\": " + characterMaxSatiety + ", \"energy\": " + characterEnergy + ", \"maxEnergy\": " + characterMaxEnergy + " } }";
 
             await websocket.SendText(jsonString);
-
-            CameraManager.Instance.cameraFocusQueue.Enqueue(character);
         }
         else
         {
@@ -454,6 +429,22 @@ public class WebSocketClient : MonoBehaviour
         {
             Debug.LogError(e);
             SendWebSocketMessage(characterDictionary[eatEvent.characterId]);
+        }
+    }
+
+    public void OnSleepEvent(SleepEvent sleepEvent)
+    {
+        try
+        {
+            Character character = characterDictionary[sleepEvent.characterId];
+            House targetHouse = houseDictionary[sleepEvent.targetHouseId];
+
+            character.ActionQueue.Enqueue(new Sleep(targetHouse));
+            character.IsRequestingAction = false;
+        } catch (Exception e)
+        {
+            Debug.LogError(e);
+            SendWebSocketMessage(characterDictionary[sleepEvent.characterId]);
         }
     }
 

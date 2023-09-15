@@ -28,6 +28,8 @@ public class Chest : Entity, IHasInventory
     {
         EntityInventory = new Inventory(InventoryCapacity);
         Id = "chest_(" + gameObject.transform.position.x + "," + gameObject.transform.position.y + ")";
+
+        WebSocketClient.Instance.chestDictionary.Add(this.Id, this);
     }
 
     public List<Item> ViewItems()

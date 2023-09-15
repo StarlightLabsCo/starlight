@@ -27,10 +27,10 @@ public abstract class Character : Entity
     public Queue<Action> ActionQueue; // The queue of actions that the character will execute
     public bool IsRequestingAction;
 
-    protected bool PauseCharacter = false;
+    protected bool pauseCharacter = false;
 
     // Animations
-    protected string CurrentAnimation;
+    public string CurrentAnimation;
 
     // References
     public Rigidbody2D rb;
@@ -120,7 +120,10 @@ public abstract class Character : Entity
         iconContainer = new GameObject("Icon Container");
         iconContainer.transform.position = transform.position;
 
-        Energy = MaxEnergy;
+        if (Energy == -1)
+        {
+            Energy = MaxEnergy;
+        }
     }
 
     protected virtual void Start()
@@ -130,12 +133,12 @@ public abstract class Character : Entity
 
     protected void Update()
     {
-        iconContainer.transform.position = transform.position;
-
-        if (PauseCharacter)
+        if (pauseCharacter)
         {
             return;
         }
+
+        iconContainer.transform.position = transform.position;
 
         Controller.ProcessInput(this);
 
@@ -356,7 +359,7 @@ public abstract class Character : Entity
 
     protected void FixedUpdate()
     {
-        if (PauseCharacter)
+        if (pauseCharacter)
         {
             return;
         }
@@ -456,7 +459,7 @@ public abstract class Character : Entity
         CurrentAction = null;
 
         // Pause the character's actions while they're taking damage
-        PauseCharacter = true;
+        PauseCharacter();
 
         Health = Mathf.Clamp(Health - damage, 0, MaxHealth);
 
@@ -482,10 +485,15 @@ public abstract class Character : Entity
         }
     }
 
+    public void PauseCharacter()
+    {
+        pauseCharacter = true;
+    }
+
     // Used after the character has finished taking damage
     public void ReturnToIdle()
     {
-        PauseCharacter = false;
+        pauseCharacter = false;
 
         PlayAnimation("idle");
     }

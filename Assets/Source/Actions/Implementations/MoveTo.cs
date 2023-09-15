@@ -73,50 +73,43 @@ public class MoveTo : Action
         return;
     }
 
+    private float collisionRadius = 0.5f;
+    private int collisionRetryCount = 0;
+    private int maxCollisionRetries = 5;
+    private float collisionPauseTime = 1.0f;
+    private float timeToUnpause;
+
     public override void FixedUpdate(Character character)
     {
         if (path == null) return;
+        if (Time.time < timeToUnpause) return;
 
-        if (currentWaypoint >= path.vectorPath.Count)
+        if (currentWaypoint >= path.vectorPath.Count || collisionRetryCount >= maxCollisionRetries)
         {
             Debug.Log("End Of Path Reached");
             character.FinishAction();
-
-            if (WebSocketClient.Instance.websocket.State == WebSocketState.Open)
-            {
-                string json = JsonConvert.SerializeObject(new
-                {
-                    type = "Observation",
-                    data = new
-                    {
-                        observerId = character.Id.ToString(),
-                        observation = character.Name + " finished walking to " + target.x + ", Y: " + target.y + ".",
-                        time = Time.time
-                    }
-                }, Formatting.None);
-
-                WebSocketClient.Instance.websocket.SendText(json);
-            }
-
             return;
         }
 
-        // Direction to the next waypoint
         Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - character.rb.position).normalized;
+        Collider2D hitCollider = Physics2D.OverlapCircle(character.rb.position + direction * character.Speed * Time.fixedDeltaTime, collisionRadius);
+
+        if (hitCollider != null && hitCollider.gameObject != character.gameObject)
+        {
+            timeToUnpause = Time.time + collisionPauseTime;
+            collisionRetryCount++;
+            return;
+        }
+
+        collisionRetryCount = 0;
 
         if (direction != Vector2.zero)
         {
-            // Flip the sprite if necessary
             character.Flip(direction.x);
-
-            // Play the walking animation
             character.PlayAnimation("walking");
         }
 
-        // Move the character
         character.rb.MovePosition(character.rb.position + direction * character.Speed * Time.fixedDeltaTime);
-
-        // Distance to the next waypoint
         float distance = Vector2.Distance(character.rb.position, path.vectorPath[currentWaypoint]);
 
         if (distance < nextWaypointDistance)
@@ -124,6 +117,7 @@ public class MoveTo : Action
             currentWaypoint++;
         }
     }
+
 
     public void OnPathComplete(Path p)
     {
